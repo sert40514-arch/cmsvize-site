@@ -34,9 +34,7 @@ import {
   Heart,
   ArrowLeft,
   Mail,
-  Linkedin as LinkedinIcon,
-  Instagram as InstagramIcon,
-  Facebook as FacebookIcon
+  ExternalLink
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -685,9 +683,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
               <div className="flex space-x-4 pt-4">
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><LinkedinIcon size={18} /></a>
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><InstagramIcon size={18} /></a>
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><FacebookIcon size={18} /></a>
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Share2 size={18} /></a>
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><ExternalLink size={18} /></a>
               </div>
             </div>
             <div className="space-y-6">
