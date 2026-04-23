@@ -32,9 +32,9 @@ import {
   TrendingUp,
   Award,
   Heart,
-  ArrowLeft,
   Mail,
-  ExternalLink
+  ExternalLink,
+  Search
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -75,12 +75,12 @@ const App = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const titles = {
-      home: "CMSVize | Profesyonel Vize Danışmanlık Hizmetleri",
+      home: "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı",
       kvkk: "KVKK Aydınlatma Metni | CMSVize",
       privacy: "Gizlilik Politikası | CMSVize",
       terms: "Kullanım Şartları | CMSVize"
     };
-    document.title = titles[currentPage] || "CMSVize | Profesyonel Vize Danışmanlık Hizmetleri";
+    document.title = titles[currentPage] || "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı";
     
     let link = document.querySelector("link[rel~='icon']");
     if (!link) {
@@ -88,7 +88,7 @@ const App = () => {
       link.rel = 'icon';
       document.getElementsByTagName('head')[0].appendChild(link);
     }
-    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230a66c2"/><text x="50" y="70" font-size="65" font-family="Arial" font-weight="bold" fill="%23facc15" text-anchor="middle">C</text></svg>';
+    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230B0F1A"/><path d="M50 20 L80 35 L80 60 C80 80 50 95 50 95 C50 95 20 80 20 60 L20 35 Z" fill="%23facc15"/></svg>';
   }, [currentPage]);
 
   // Stats Counter Logic
@@ -353,9 +353,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
             <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">İSTATİSTİK</button>
             <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">SSS</button>
-            <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-3 font-black">
-              HEMEN BAŞVUR
-            </button>
+            
+            <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
+              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
+                <Search size={16} className="text-[#0a66c2]" />
+                <span>BAŞVURU TAKİP</span>
+              </a>
+              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
+                HEMEN BAŞVUR
+              </button>
+            </div>
           </div>
 
           <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -372,7 +379,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
           <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">İSTATİSTİK</button>
           <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">SSS</button>
-          <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">BAŞVUR</button>
+          <div className="w-full space-y-4 pt-4 border-t border-white/10">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
+              <Search size={24} className="text-[#0a66c2]" />
+              <span>BAŞVURU TAKİP</span>
+            </a>
+            <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">BAŞVUR</button>
+          </div>
         </div>
       </div>
 
@@ -500,27 +513,31 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
-                  { name: "Ayşe K.", visa: "Litvanya Oturum İzni ve Çalışma Vizesi", time: "1 hafta önce", text: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu." },
-                  { name: "Burak E.", visa: "Polonya D Tipi Ulusal Vize", time: "2 hafta önce", text: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı." }
+                  { name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", flag: "🇩🇪", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
+                  { name: "Burak E.", visa: "Polonya D Tipi Ulusal Vize", flag: "🇵🇱", time: "1 hafta önce", text: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı." },
+                  { name: "Ayşe K.", visa: "Litvanya Oturum İzni", flag: "🇱🇹", time: "1 hafta önce", text: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu." },
+                  { name: "Mert Y.", visa: "Hollanda Nitelikli Çalışan", flag: "🇳🇱", time: "2 hafta önce", text: "Hollanda Yüksek Nitelikli Göçmen vizemi CMSVize desteğiyle aldım. Çok karmaşık görünen bu süreci benim için son derece basitleştirdiler." },
+                  { name: "Selin D.", visa: "Fransa Çalışma Vizesi", flag: "🇫🇷", time: "3 hafta önce", text: "Fransa'daki yeni görevim için gereken tüm çalışma izni süreçleri eksiksiz tamamlandı. Danışmanların ilgisi ve tecrübesi muazzamdı." }
                 ].map((ref, idx) => (
-                  <div key={idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300">
+                  <div key={idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
+                    <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform">
+                      {ref.flag}
+                    </div>
                     <div className="flex justify-between items-start">
                       <div className="flex space-x-3">
-                        <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl">{ref.name[0]}</div>
-                        <div>
+                        <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl z-10">{ref.name[0]}</div>
+                        <div className="z-10 pr-6">
                           <div className="flex items-center space-x-1">
                             <h4 className="font-bold text-sm text-white">{ref.name}</h4>
                             <BadgeCheck size={16} className="text-[#0a66c2] fill-[#0a66c2]/20" />
                           </div>
-                          <p className="text-[11px] text-gray-400 leading-tight">{ref.visa}</p>
-                          <p className="text-[10px] text-gray-500">{ref.time} • 🌐</p>
+                          <p className="text-[11px] text-[#facc15] font-bold leading-tight mt-0.5">{ref.visa}</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">{ref.time} • 🌐</p>
                         </div>
                       </div>
-                      <MoreHorizontal size={20} className="text-gray-500 cursor-pointer" />
                     </div>
-                    <div className="text-sm text-gray-200 leading-relaxed font-normal">{ref.text}</div>
-                    <div className="flex items-center space-x-1 pt-2">
+                    <div className="text-sm text-gray-200 leading-relaxed font-normal relative z-10">{ref.text}</div>
+                    <div className="flex items-center space-x-1 pt-2 relative z-10">
                       <div className="flex -space-x-1">
                         <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><ThumbsUp size={10} className="text-white fill-white" /></div>
                         <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Heart size={10} className="text-white fill-white" /></div>
@@ -542,12 +559,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[
-                  { icon: <Globe size={32} />, title: "A1 Transfer İle Giriş", desc: "Dil şartı olmadan Avrupa’ya giriş imkanı sağlayan A1 transfer sürecini sizin için uçtan uca yönetiyoruz." },
-                  { icon: <Factory size={32} />, title: "Farklı İş Kollarında Çalışma", desc: "Tır şoförlüğü dışında depo, üretim ve lojistik alanlarında geniş iş fırsatları ve yerleştirme imkanları sunuyoruz." },
-                  { icon: <ShieldCheck size={32} />, title: "2 Yıllık Oturum Kartı", desc: "Litvanya hükümeti onaylı, tüm Avrupa'da serbest dolaşım ve çalışma hakkı tanıyan oturum kartı süreciniz güvenli ellerde." }
+                  { icon: <span className="text-3xl">🇩🇪</span>, title: "Almanya İş Fırsatları", desc: "Tır şoförlüğü ve nitelikli çalışan vizesiyle Almanya'nın kapılarını aralıyoruz. Evrak sürecini uçtan uca yönetiyoruz." },
+                  { icon: <span className="text-3xl">🇱🇹</span>, title: "Litvanya Oturum & A1", desc: "Dil şartı olmadan Avrupa’ya giriş imkanı sağlayan A1 transfer ve 2 yıllık oturum kartı sürecinizi güvenle tamamlıyoruz." },
+                  { icon: <span className="text-3xl">🇵🇱</span>, title: "Polonya Çalışma İzni", desc: "Fabrika, depo ve lojistik alanlarında Polonya çalışma izni başvurularını hızla sonuçlandırıp iş yerleşiminizi sağlıyoruz." },
+                  { icon: <span className="text-3xl">🇳🇱</span>, title: "Hollanda Nitelikli Göçmen", desc: "Hollanda yüksek nitelikli çalışan vizelerinde eksiksiz danışmanlık ve başvuru takibi sağlıyoruz." },
+                  { icon: <span className="text-3xl">🇫🇷</span>, title: "Fransa Çalışma Vizesi", desc: "Fransa'da uzun dönem çalışma vizesi ve oturum izinleri için resmi kurumlar nezdinde profesyonel destek sunuyoruz." },
+                  { icon: <ShieldCheck size={32} />, title: "Tam Kapsamlı Destek", desc: "Hangi ülkeyi seçerseniz seçin, dosya hazırlığından konsolosluk mülakatına kadar her adımda yanınızdayız." }
                 ].map((item, i) => (
-                  <div key={i} className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
-                    <div className="w-16 h-16 bg-[#facc15]/10 rounded-lg flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">{item.icon}</div>
+                  <div key={i} className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden">
+                    <div className="w-16 h-16 bg-[#facc15]/10 rounded-full flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all border border-white/5">{item.icon}</div>
                     <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
                     <p className="text-gray-400 font-medium leading-relaxed mb-6">{item.desc}</p>
                     <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
@@ -645,9 +665,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
                           <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
                             <option className="bg-[#0B0F1A]">Almanya</option>
-                            <option className="bg-[#0B0F1A]">Litvanya</option>
                             <option className="bg-[#0B0F1A]">Polonya</option>
-                            <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
+                            <option className="bg-[#0B0F1A]">Litvanya</option>
+                            <option className="bg-[#0B0F1A]">Hollanda</option>
+                            <option className="bg-[#0B0F1A]">Fransa</option>
                           </select>
                         </div>
                       </div>
@@ -664,6 +685,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
                         <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
                       </div>
+
+                      <div className="flex items-start space-x-3 pt-2 pb-2">
+                        <input type="checkbox" required id="terms" className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#0a66c2] focus:ring-[#0a66c2] cursor-pointer" />
+                        <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
+                      </div>
+
                       <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
                     </form>
                   )}
