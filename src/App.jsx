@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Truck, 
-  ClipboardCheck, 
-  CreditCard, 
-  Briefcase, 
-  ShieldCheck, 
-  MapPin, 
-  Phone, 
-  MessageCircle, 
-  CheckCircle2, 
+import {
+  Truck,
+  ClipboardCheck,
+  CreditCard,
+  Briefcase,
+  ShieldCheck,
+  MapPin,
+  Phone,
+  MessageCircle,
+  CheckCircle2,
   ArrowRight,
   Clock,
   Users,
@@ -34,7 +34,11 @@ import {
   Heart,
   Mail,
   ExternalLink,
-  Search
+  Search,
+  BookOpen,
+  User,
+  Lock,
+  ChevronRight
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -62,7 +66,14 @@ const App = () => {
   const [activeFaq, setActiveFaq] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
-  
+
+  // New States for Features
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardStep, setWizardStep] = useState(1);
+  const [wizardData, setWizardData] = useState({ job: '', country: '', name: '', phone: '' });
+
+  const [portalLoggedIn, setPortalLoggedIn] = useState(false);
+
   // Routing State
   const [currentPage, setCurrentPage] = useState('home');
 
@@ -78,10 +89,12 @@ const App = () => {
       home: "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı",
       kvkk: "KVKK Aydınlatma Metni | CMSVize",
       privacy: "Gizlilik Politikası | CMSVize",
-      terms: "Kullanım Şartları | CMSVize"
+      terms: "Kullanım Şartları | CMSVize",
+      blog: "Vize Rehberi & Blog | CMSVize",
+      portal: "Müşteri Portalı | CMSVize"
     };
     document.title = titles[currentPage] || "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı";
-    
+
     let link = document.querySelector("link[rel~='icon']");
     if (!link) {
       link = document.createElement('link');
@@ -97,7 +110,7 @@ const App = () => {
     const targetSuccess = 98;
     const targetClients = 2500;
     const targetCountries = 15;
-    
+
     let currentSuccess = 0;
     let currentClients = 0;
     let currentCountries = 0;
@@ -107,9 +120,9 @@ const App = () => {
       if (currentSuccess < targetSuccess) { currentSuccess += 1; updated = true; }
       if (currentClients < targetClients) { currentClients += 25; updated = true; }
       if (currentCountries < targetCountries) { currentCountries += 1; updated = true; }
-      
+
       setStats({ success: currentSuccess, clients: currentClients, countries: currentCountries });
-      
+
       if (!updated) clearInterval(interval);
     }, 20);
 
@@ -163,7 +176,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // 1. CRM / Email Integration (Örn: Web3Forms, Formspree veya Kendi Backend'iniz)
       // Bu bölüm gerçek bir API bağlandığında aktif edilebilir:
@@ -172,13 +185,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       //   body: JSON.stringify({ access_key: "YOUR_ACCESS_KEY", ...formData })
       // });
-      
+
       // Şimdilik simüle ediyoruz (API bağlandığında burası çalışacak)
       await new Promise(resolve => setTimeout(resolve, 800));
 
       // 2. WhatsApp Yönlendirmesi (Anında Müşteri İletişimi)
       window.open(getWhatsAppURL(), '_blank');
-      
+
       setIsSubmitting(false);
       setFormSuccess(true);
     } catch (error) {
@@ -209,14 +222,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <span className="text-gray-300">{title}</span>
         </nav>
 
-        <button 
+        <button
           onClick={() => setCurrentPage('home')}
           className="btn-corporate glass px-6 py-3 flex items-center space-x-3 text-[#facc15] font-black uppercase italic tracking-widest text-xs"
         >
           <ArrowLeft size={16} />
           <span>Geri Dön</span>
         </button>
-        
+
         <div className="linkedin-faq p-10 rounded-2xl shadow-2xl border border-white/5 bg-[#1B1F23]/50 backdrop-blur-sm">
           <h1 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-[#facc15] mb-10 border-b border-white/10 pb-8">
             {title}
@@ -240,7 +253,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       content: (
         <>
           <p><strong>CMSVize</strong> ("Şirket") olarak, hizmetlerimizden faydalanan danışanlarımızın kişisel verilerinin korunmasına ve güvenliğine büyük önem vermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, "Veri Sorumlu" sıfatıyla, kişisel verilerinizi aşağıda açıklanan çerçevede işlemekteyiz.</p>
-          
+
           <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Sorumlusu</h3>
           <p>KVKK uyarınca kişisel verileriniz; veri sorumlusu olarak CMSVize tarafından, işbu Aydınlatma Metni’nde belirtilen amaçlar kapsamında işlenebilecektir.</p>
 
@@ -284,7 +297,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       content: (
         <>
           <p>CMSVize olarak, kullanıcılarımızın gizliliğine ve verilerinin korunmasına sarsılmaz bir bağlılık duyuyoruz. İşbu Gizlilik Politikası, web sitemizi ziyaret ettiğinizde veya hizmetlerimizden yararlandığınızda verilerinizin nasıl işlendiğini şeffaf bir şekilde açıklar.</p>
-          
+
           <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Güvenliği ve SSL Sertifikasyonu</h3>
           <p>Verilerinizin güvenliği, CMSVize'nin en üst önceliğidir. Web sitemiz üzerinden iletilen tüm bilgiler, endüstri standardı olan <strong>256-bit SSL (Secure Sockets Layer)</strong> şifreleme teknolojisi ile korunmaktadır. Sunucularımızda saklanan verileriniz, yetkisiz erişime karşı güçlü güvenlik duvarları ve modern şifreleme protokolleri ile güvence altına alınmıştır.</p>
 
@@ -307,7 +320,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       content: (
         <>
           <p>İşbu Kullanım Şartları, CMSVize web sitesinin ve sunulan danışmanlık hizmetlerinin kullanımına ilişkin kuralları belirlemektedir. Sitemizi ziyaret ederek veya hizmet alarak bu şartları kayıtsız şartsız kabul etmiş sayılırsınız.</p>
-          
+
           <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Hizmet Kapsamı ve Sınırları</h3>
           <p>CMSVize, Avrupa vize başvuruları, çalışma izinleri ve iş yerleştirme süreçlerinde profesyonel danışmanlık ve dosya hazırlama desteği sunmaktadır. <strong>Kritik Bilgi:</strong> Vize başvuruları hakkındaki nihai karar verme yetkisi tamamen ilgili ülkenin Büyükelçilikleri, Konsoloslukları ve Göç İdarelerine aittir. CMSVize, vize onayına dair %100 garanti vermez; ancak dosyanın en doğru şekilde hazırlanması ve başarının maksimize edilmesi için uzmanlık sunar.</p>
 
@@ -364,13 +377,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               CMS<span className="text-[#facc15]">Vize</span>
             </span>
           </div>
-          
+
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">İSTATİSTİK</button>
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">SSS</button>
-            
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
+            <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+            <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
+
             <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
               <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
                 <Search size={16} className="text-[#0a66c2]" />
@@ -392,10 +405,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
           <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">İSTATİSTİK</button>
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">SSS</button>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
+          <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+          <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
           <div className="w-full space-y-4 pt-4 border-t border-white/10">
             <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
               <Search size={24} className="text-[#0a66c2]" />
@@ -433,10 +446,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <span>HEMEN BAŞVUR</span>
                     <ArrowRight className="group-hover:translate-x-2 transition-transform" />
                   </button>
-                  <a href={getWhatsAppURL()} target="_blank" className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10">
-                    <MessageCircle className="text-green-500" fill="currentColor" />
-                    <span>BİLGİ AL</span>
-                  </a>
+                  <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <BookOpen className="text-[#facc15]" />
+                    <span>UYGUNLUK TESTİ</span>
+                  </button>
                 </div>
                 <div className="flex flex-wrap gap-4 pt-2">
                   {[
@@ -487,7 +501,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           {/* STATS TICKER */}
           <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
             <div className="flex animate-scroll whitespace-nowrap">
-              {[1,2,3,4].map(i => (
+              {[1, 2, 3, 4].map(i => (
                 <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
                   <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
                   <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
@@ -729,11 +743,93 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
             </div>
           </section>
+
+          {/* DYNAMIC MAP SECTION */}
+          <section className="py-24 px-6 bg-[#080C14] border-t border-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a66c2]/10 via-[#0B0F1A]/0 to-transparent"></div>
+            <div className="max-w-7xl mx-auto space-y-16 relative z-10">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Aktif <span className="text-[#facc15]">Avrupa Ağı</span></h2>
+                <p className="text-gray-400 font-medium">Uzmanlık alanımızdaki 5 ülkede kesintisiz hizmet.</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-6">
+                {[
+                  { country: "Almanya", flag: "🇩🇪", desc: "Tır & Nitelikli" },
+                  { country: "Polonya", flag: "🇵🇱", desc: "Lojistik & Depo" },
+                  { country: "Litvanya", flag: "🇱🇹", desc: "A1 & 2 Yıllık Oturum" },
+                  { country: "Hollanda", flag: "🇳🇱", desc: "High-Skilled" },
+                  { country: "Fransa", flag: "🇫🇷", desc: "Çalışma İzni" }
+                ].map((item, i) => (
+                  <div key={i} className="glass p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 w-40 hover:scale-105 hover:border-[#facc15]/30 transition-all cursor-pointer group">
+                    <div className="text-4xl group-hover:-translate-y-2 transition-transform drop-shadow-2xl">{item.flag}</div>
+                    <div className="text-center">
+                      <p className="font-black text-white text-sm uppercase">{item.country}</p>
+                      <p className="text-[10px] text-[#facc15] font-bold mt-1 tracking-widest">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </>
+      ) : currentPage === 'blog' ? (
+        <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
+          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">Vize <span className="text-[#facc15]">Rehberi</span></h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass p-8 rounded-xl hover:border-[#0a66c2]/50 transition-all cursor-pointer">
+              <span className="text-xs font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">Güncel 2026</span>
+              <h3 className="text-2xl font-black italic mt-4 mb-3">Avrupa'da Tır Şoförü Olmak: KOD95 Nedir?</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Sürücülerin Avrupa standartlarında çalışabilmesi için alması gereken eğitimler ve A1 transferi detayları.</p>
+            </div>
+            <div className="glass p-8 rounded-xl hover:border-[#0a66c2]/50 transition-all cursor-pointer">
+              <span className="text-xs font-black text-[#0a66c2] bg-[#0a66c2]/20 px-3 py-1 rounded-md uppercase tracking-widest">Oturum İzni</span>
+              <h3 className="text-2xl font-black italic mt-4 mb-3">Litvanya 2 Yıllık Oturum Kartı Avantajları</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Schengen bölgesinde serbest dolaşım ve çalışma hakkı tanıyan bu özel izne nasıl başvurulur?</p>
+            </div>
+          </div>
+        </div>
+      ) : currentPage === 'portal' ? (
+        <div className="pt-40 pb-32 px-6 max-w-xl mx-auto min-h-screen flex flex-col items-center justify-center">
+          <div className="glass p-12 rounded-2xl w-full text-center space-y-8 border-t-4 border-[#facc15]">
+            <Lock className="text-[#facc15] w-16 h-16 mx-auto" />
+            <div>
+              <h2 className="text-3xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#facc15]">Portalı</span></h2>
+              <p className="text-gray-400 mt-2 text-sm">Vize başvuru sürecinizi adım adım takip edin.</p>
+            </div>
+            {!portalLoggedIn ? (
+              <form onSubmit={(e) => { e.preventDefault(); setPortalLoggedIn(true); }} className="space-y-4">
+                <input required placeholder="T.C. Kimlik / Pasaport No" className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" />
+                <input required type="password" placeholder="Şifre" className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" />
+                <button className="w-full bg-[#facc15] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
+              </form>
+            ) : (
+              <div className="space-y-8 text-left bg-black/40 p-6 rounded-xl border border-white/5">
+                <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                  <h3 className="font-black text-lg">Sn. Ahmet Yılmaz</h3>
+                  <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-bold uppercase">Aktif Dosya</span>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <CheckCircle2 className="text-green-500" />
+                    <div className="flex-1"><p className="text-sm font-bold">1. Evraklar Toplandı</p><p className="text-xs text-gray-500">Tamamlandı</p></div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <CheckCircle2 className="text-green-500" />
+                    <div className="flex-1"><p className="text-sm font-bold">2. Tercümeler ve Noter</p><p className="text-xs text-gray-500">Tamamlandı</p></div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-6 h-6 rounded-full border-2 border-[#facc15] flex items-center justify-center bg-[#facc15]/20 animate-pulse"></div>
+                    <div className="flex-1"><p className="text-sm font-bold text-[#facc15]">3. Konsolosluk Randevusu</p><p className="text-xs text-gray-500">Bekleniyor (Tahmini: 14 Gün)</p></div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       ) : (
-        <LegalPage 
-          title={LegalContent[currentPage].title} 
-          content={LegalContent[currentPage].content} 
+        <LegalPage
+          title={LegalContent[currentPage].title}
+          content={LegalContent[currentPage].content}
         />
       )}
 
@@ -756,10 +852,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="space-y-6">
               <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Hızlı Bağlantılar</h4>
               <ul className="space-y-4 font-bold text-sm text-gray-400">
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
               </ul>
             </div>
             <div className="space-y-6 lg:col-span-2 lg:flex lg:space-y-0 lg:gap-16">
@@ -791,7 +887,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {/* WHATSAPP FLOAT - ENHANCED */}
       <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-10 right-10 z-50 group flex items-center">
         <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
-          Size nasıl yardımcı olabiliriz? 
+          Size nasıl yardımcı olabiliriz?
           <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
         </div>
         <div className="relative transition-transform duration-300 group-hover:scale-110">
@@ -808,6 +904,64 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
         </div>
         <button onClick={() => setShowPopup(false)} className="ml-4 text-gray-500 hover:text-white transition-colors"> <X size={20} /> </button>
+      </div>
+
+      {/* WIZARD MODAL (UYGUNLUK TESTİ) */}
+      <div className={`fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 transition-all duration-500 ${showWizard ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        <div className={`bg-[#0B0F1A] border border-white/10 p-10 lg:p-16 rounded-2xl w-full max-w-2xl relative shadow-2xl transition-all duration-500 delay-100 ${showWizard ? 'scale-100 translate-y-0' : 'scale-95 translate-y-10'}`}>
+          <X size={32} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white transition-colors" onClick={() => setShowWizard(false)} />
+
+          <div className="mb-10">
+            <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#facc15]">Avrupa Uygunluk Testi</h3>
+            <p className="text-gray-400 mt-2 font-medium">Sadece 3 adımda size en uygun vize rotasını çizelim.</p>
+            <div className="flex space-x-2 mt-6">
+              {[1, 2, 3].map(step => (
+                <div key={step} className={`h-2 flex-1 rounded-full transition-all duration-500 ${wizardStep >= step ? 'bg-[#facc15]' : 'bg-white/10'}`}></div>
+              ))}
+            </div>
+          </div>
+
+          {wizardStep === 1 && (
+            <div className="space-y-6 animate-fade-up">
+              <h4 className="text-xl font-bold">1. Mesleğiniz veya uzmanlığınız nedir?</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {['Tır Şoförü', 'Fabrika / Üretim', 'Depo / Lojistik', 'Diğer (Belirtiniz)'].map(job => (
+                  <button key={job} onClick={() => { setWizardData({ ...wizardData, job }); setWizardStep(2); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{job}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {wizardStep === 2 && (
+            <div className="space-y-6 animate-fade-up">
+              <h4 className="text-xl font-bold">2. Hangi ülkeyi hedefliyorsunuz?</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {['Almanya', 'Polonya', 'Litvanya', 'Fark Etmez / Öneri'].map(country => (
+                  <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{country}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {wizardStep === 3 && (
+            <div className="space-y-6 animate-fade-up">
+              <h4 className="text-xl font-bold">3. Raporunuz hazırlandı!</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">Size özel ücretsiz değerlendirme sonucunu iletebilmemiz ve uzmanlarımızın incelemesi için lütfen bilgilerinizi girin.</p>
+              <div className="space-y-4">
+                <input placeholder="Adınız Soyadınız" onChange={(e) => setWizardData({ ...wizardData, name: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
+                <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
+                <button onClick={() => {
+                  setShowWizard(false); setWizardStep(1);
+                  const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
+                  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
+                  <span>SONUCU İSTE</span>
+                  <ChevronRight size={24} />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <style>{`
