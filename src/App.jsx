@@ -17,17 +17,17 @@ import {
   X,
   Star,
   Zap,
-  Globe
+  Globe,
+  FileText
 } from 'lucide-react';
 
-// Assets
+// Assets - Using the actual filenames from disk
 import TirImg from './assets/tır.png';
 import OturumKartiImg from './assets/oturum kartı.png';
-import ServiceOneImg from './assets/1.png';
+import SupportingImg from './assets/1.png';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
-const accentColor = "#facc15"; // Yellow
 const darkBg = "#0B0F1A";
 
 const App = () => {
@@ -45,7 +45,7 @@ const App = () => {
 
   const formRef = useRef(null);
 
-  // Dynamic social proof logic
+  // Logic Preserved
   useEffect(() => {
     const vInterval = setInterval(() => {
       setActiveViewers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
@@ -53,7 +53,6 @@ const App = () => {
     return () => clearInterval(vInterval);
   }, []);
 
-  // Fake Live Popups
   const popups = [
     "Ahmet K. – Almanya başvurusu yaptı",
     "Mehmet T. – KOD95 sürecine başladı",
@@ -100,41 +99,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
   return (
     <div className="min-h-screen text-white font-sans selection:bg-yellow-400 selection:text-black overflow-x-hidden" style={{ backgroundColor: darkBg }}>
-      {/* Global Optimization Styles */}
+      {/* Visual Layout Surgeon - Premium CSS */}
       <style>{`
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-up {
-          animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .glow-button:hover {
-          box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
-          transform: translateY(-2px);
-        }
-        .glass { 
-          background: rgba(255, 255, 255, 0.03); 
-          backdrop-filter: blur(12px); 
-          border: 1px solid rgba(255, 255, 255, 0.08); 
-        }
-        .text-gradient {
-          background: linear-gradient(to right, #fff, #facc15);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        @keyframes pulse-soft {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.05); opacity: 0.8; }
-        }
+        @keyframes fade-up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-y:hover { box-shadow: 0 0 30px rgba(250, 204, 21, 0.2); transform: translateY(-3px); }
+        .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
         .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
+        .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 32px; overflow: hidden; border: 1px solid rgba(250, 204, 21, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
       `}</style>
 
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
+        <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
           <div className="flex items-center space-x-3 group cursor-pointer">
-            <div className="w-11 h-11 bg-[#facc15] rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12">
+            <div className="w-11 h-11 bg-[#facc15] rounded-xl flex items-center justify-center transition-all group-hover:rotate-12 group-hover:shadow-[0_0_15px_#facc15]">
               <Truck size={26} className="text-[#0B0F1A]" />
             </div>
             <span className="text-2xl font-black tracking-tighter uppercase italic">
@@ -142,12 +123,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </span>
           </div>
           
-          <div className="hidden lg:flex items-center space-x-10 font-bold text-sm tracking-wide">
-            <a href="#hizmetler" className="hover:text-[#facc15] transition-colors">HİZMETLER</a>
-            <a href="#nasil" className="hover:text-[#facc15] transition-colors">SÜREÇ</a>
+          <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
+            <a href="#surec" className="hover:text-[#facc15] transition-colors">GÖRSEL SÜREÇ</a>
+            <a href="#evrak" className="hover:text-[#facc15] transition-colors">EVRAK TAKİBİ</a>
             <a href="#guven" className="hover:text-[#facc15] transition-colors">GÜVEN</a>
-            <button onClick={scrollToForm} className="bg-[#facc15] text-[#0B0F1A] px-8 py-3 rounded-full font-black hover:scale-105 transition-all shadow-xl glow-button">
-              BAŞVUR
+            <button onClick={scrollToForm} className="bg-[#facc15] text-[#0B0F1A] px-8 py-3 rounded-full font-black hover:scale-105 transition-all shadow-xl glow-y">
+              HEMEN BAŞVUR
             </button>
           </div>
 
@@ -155,372 +136,279 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             {mobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
           </button>
         </div>
-
-        {/* Mobile Menu Overlay */}
-        <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/95 backdrop-blur-xl z-40 transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-          <div className="flex flex-col items-center justify-center h-full space-y-8 p-6">
-            <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
-            <a href="#hizmetler" onClick={() => setMobileMenuOpen(false)} className="text-3xl font-black italic">HİZMETLER</a>
-            <a href="#nasil" onClick={() => setMobileMenuOpen(false)} className="text-3xl font-black italic">SÜREÇ</a>
-            <a href="#guven" onClick={() => setMobileMenuOpen(false)} className="text-3xl font-black italic">GÜVEN</a>
-            <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-5 rounded-2xl font-black text-2xl shadow-2xl">
-              HEMEN BAŞVUR
-            </button>
-          </div>
-        </div>
       </nav>
 
-      {/* HERO SECTION */}
-      <section className="relative pt-32 lg:pt-48 pb-20 px-6 min-h-[90vh] flex items-center">
-        {/* Ambient Lights */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#facc15]/5 rounded-full blur-[120px] -z-10"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[120px] -z-10"></div>
+      {/* MOBILE MENU */}
+      <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+        <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
+          <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
+          <a href="#surec" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">SÜREÇ</a>
+          <a href="#evrak" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">EVRAK</a>
+          <a href="#guven" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">GÜVEN</a>
+          <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-2xl font-black text-2xl">BAŞVUR</button>
+        </div>
+      </div>
 
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          {/* Content Left */}
-          <div className="space-y-8 animate-fade-up">
-            <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-5 py-2.5 rounded-full text-[#facc15] font-bold text-xs tracking-widest uppercase animate-pulse-soft">
+      {/* HERO SECTION - RECONSTRUCTED */}
+      <section className="relative pt-40 lg:pt-56 pb-24 lg:pb-32 px-6">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10"></div>
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          
+          {/* LEFT: Text Content */}
+          <div className="space-y-10 animate-fade-up">
+            <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
               <Zap size={16} fill="currentColor" />
-              <span>Sınırlı Kontenjan • Son 12 Yer</span>
+              <span>Sınırlı Kontenjan • Son Başvurular</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tight">
-              2 Yıllık Litvanya <br />
-              <span className="text-gradient">Oturum Kartı</span> <br />
-              İle Avrupa'da Çalış
-            </h1>
-            
-            <p className="text-lg lg:text-xl text-gray-400 max-w-xl leading-relaxed">
-              KOD95 + A1 Transfer + İş Yerleştirme. Avrupa’nın en büyük lojistik firmalarında tır şoförü olarak yüksek maaşla çalışmaya hemen başlayın.
-            </p>
+            <div className="space-y-6">
+              <h1 className="text-5xl lg:text-8xl font-black leading-[0.95] tracking-tighter italic uppercase">
+                2 Yıllık <br />
+                Litvanya <br />
+                <span className="text-gradient">Oturum Kartı</span>
+              </h1>
+              <p className="text-xl lg:text-2xl text-gray-400 max-w-lg leading-relaxed font-medium">
+                Avrupa'da tır şoförü olarak yüksek maaşla çalışmaya başlayın. Tüm vize ve iş süreci bizden.
+              </p>
+            </div>
 
-            <div className="flex flex-col sm:flex-row gap-5 pt-4">
-              <button onClick={scrollToForm} className="bg-[#facc15] text-[#0B0F1A] px-10 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-2xl glow-button flex items-center justify-center space-x-3 group">
+            <div className="flex flex-col sm:flex-row gap-5">
+              <button onClick={scrollToForm} className="bg-[#facc15] text-[#0B0F1A] px-12 py-6 rounded-[24px] font-black text-xl hover:scale-105 transition-all shadow-2xl glow-y flex items-center justify-center space-x-3 group">
                 <span>HEMEN BAŞVUR</span>
                 <ArrowRight className="group-hover:translate-x-2 transition-transform" />
               </button>
               <a 
                 href={getWhatsAppURL()} 
                 target="_blank"
-                className="glass px-10 py-5 rounded-2xl font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 transition-all border border-white/10"
+                className="glass px-12 py-6 rounded-[24px] font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 transition-all border border-white/15"
               >
                 <MessageCircle className="text-green-500" fill="currentColor" />
-                <span>WHATSAPP YAZ</span>
+                <span>BİLGİ AL</span>
               </a>
             </div>
 
-            {/* Social Proof Counters */}
-            <div className="grid grid-cols-3 gap-8 pt-10 border-t border-white/5">
+            <div className="grid grid-cols-3 gap-10 pt-10 border-t border-white/5">
               <div>
-                <p className="text-3xl font-black text-[#facc15]">312+</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black mt-1">Başvuru</p>
+                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">312+</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Başvuru</p>
               </div>
               <div>
-                <p className="text-3xl font-black text-[#facc15]">{activeViewers}</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black mt-1">İnceleyen</p>
+                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">{activeViewers}</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Aktif</p>
               </div>
               <div>
-                <p className="text-3xl font-black text-[#facc15]">2 dk</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-black mt-1">Son Talep</p>
+                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">2dk</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Son Talep</p>
               </div>
             </div>
           </div>
 
-          {/* Image Right - Fixed Layout */}
-          <div className="relative lg:block animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 group">
+          {/* RIGHT: Premium Visual */}
+          <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            <div className="hero-img-container">
               <img 
                 src={TirImg} 
                 alt="European Truck CMSVize" 
-                className="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-40"></div>
-            </div>
-            
-            {/* Trust Badge Floating */}
-            <div className="absolute -bottom-10 -right-4 lg:-right-10 glass p-6 rounded-3xl flex items-center space-x-4 animate-pulse-soft z-20">
-              <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center border border-green-500/30">
-                <ShieldCheck size={32} className="text-green-400" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
+              
+              {/* Floating Badge - Over image but not covering key details */}
+              <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-2xl flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
+                <div className="w-12 h-12 bg-[#facc15] rounded-xl flex items-center justify-center shrink-0">
+                  <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
+                </div>
+                <div>
+                  <p className="text-sm font-black uppercase italic tracking-tighter">KOD95 + İŞ YERLEŞTİRME</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Garantili Süreç</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-black uppercase italic tracking-tighter">Oturum Kartı Garantili</p>
-                <p className="text-xs text-gray-400 font-bold">AB Yasalarına %100 Uygun</p>
-              </div>
             </div>
-
-            {/* Decorative element */}
-            <div className="absolute -top-12 -left-12 w-48 h-48 bg-[#facc15]/10 rounded-full blur-3xl -z-10"></div>
           </div>
         </div>
       </section>
 
-      {/* STATS STRIP */}
-      <div className="bg-[#facc15] py-4 overflow-hidden whitespace-nowrap border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105">
-        <div className="flex animate-scroll space-x-12 items-center">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="flex items-center space-x-6 text-[#0B0F1A] font-black italic text-xl">
-              <span>AVRUPA'DA TIR ŞOFÖRLÜĞÜ</span>
-              <Star size={24} fill="currentColor" />
-              <span>2 YILLIK OTURUM KARTI</span>
-              <Star size={24} fill="currentColor" />
-              <span>HIZLI İŞ YERLEŞTİRME</span>
-              <Star size={24} fill="currentColor" />
+      {/* STATS TICKER */}
+      <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
+        <div className="flex animate-scroll whitespace-nowrap">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
+              <span>Avrupa Tır Şoförlüğü</span> <Star size={24} fill="currentColor" />
+              <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+              <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
+              <span>Hızlı İşe Yerleştirme</span> <Star size={24} fill="currentColor" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* HİZMETLER */}
-      <section id="hizmetler" className="py-32 px-6 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="order-2 lg:order-1 grid grid-cols-2 gap-5">
-              <div className="space-y-5 pt-12">
-                <div className="glass p-2 rounded-3xl overflow-hidden aspect-[3/4]">
-                  <img src={OturumKartiImg} className="w-full h-full object-cover rounded-2xl" alt="Oturum Kartı" />
-                </div>
-                <div className="glass p-2 rounded-3xl overflow-hidden aspect-square">
-                  <img src={ServiceOneImg} className="w-full h-full object-cover rounded-2xl" alt="Lojistik" />
-                </div>
+      {/* SHOWCASE: GÖRSEL GÜVEN ALANI */}
+      <section id="surec" className="py-32 lg:py-48 px-6 bg-white/[0.01]">
+        <div className="max-w-7xl mx-auto space-y-20">
+          <div className="text-center space-y-6 max-w-3xl mx-auto">
+            <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
+              Süreçten <span className="text-[#facc15]">Kesitler</span>
+            </h2>
+            <p className="text-xl text-gray-400 font-medium">
+              Hayallerinize giden yolda her adımımız şeffaf ve kurumsal.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            {/* Card 1: Oturum Kartı */}
+            <div className="glass p-5 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col h-full">
+              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/5 flex items-center justify-center p-4">
+                <img 
+                  src={OturumKartiImg} 
+                  className="w-full h-full object-contain transform transition-transform duration-700 group-hover:scale-110" 
+                  alt="Litvanya Oturum Kartı" 
+                />
               </div>
-              <div className="space-y-5">
-                <div className="glass p-2 rounded-3xl overflow-hidden aspect-square">
-                  <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-700" alt="Tır Filosu" />
-                </div>
-                <div className="glass p-2 rounded-3xl overflow-hidden aspect-[3/4]">
-                  <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover rounded-2xl grayscale hover:grayscale-0 transition-all duration-700" alt="Eğitim" />
-                </div>
+              <div className="px-3 pb-3 flex-grow">
+                <h3 className="text-2xl font-black italic uppercase mb-2">Oturum Kartı Süreci</h3>
+                <p className="text-gray-400 font-medium leading-relaxed">Litvanya hükümeti onaylı 2 yıllık resmi çalışma ve oturum kartınız.</p>
               </div>
             </div>
 
-            <div className="order-1 lg:order-2 space-y-10">
-              <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">
-                Uzman Olduğumuz <br />
-                <span className="text-[#facc15]">Hizmetler</span>
-              </h2>
-              
-              <div className="space-y-8">
-                {[
-                  { title: "Litvanya Oturum Kartı", desc: "Tüm bürokratik süreci biz yönetiyoruz. 2 yıllık çalışma ve oturum izninizi hızlıca alıyoruz." },
-                  { title: "KOD95 Sertifikasyonu", desc: "Avrupa'da tır sürmek için zorunlu olan profesyonel sürücü belgelerini eksiksiz sağlıyoruz." },
-                  { title: "Garantili İş Yerleştirme", desc: "Litvanya, Almanya ve Polonya merkezli dev lojistik firmalarında işiniz hazır." },
-                  { title: "Tam Destek & Danışmanlık", desc: "Pasaporttan vizeye, konaklamadan sigortaya kadar her adımda yanınızdayız." }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex space-x-6 group cursor-default">
-                    <div className="mt-1">
-                      <div className="w-14 h-14 glass rounded-2xl flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500">
-                        <CheckCircle2 size={28} />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-2xl font-black mb-2 tracking-tight">{item.title}</h4>
-                      <p className="text-gray-400 text-lg leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+            {/* Card 2: Tır Şoförlüğü */}
+            <div className="glass p-5 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col h-full">
+              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/5">
+                <img 
+                  src={TirImg} 
+                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110" 
+                  alt="European Truck Driving" 
+                />
               </div>
+              <div className="px-3 pb-3 flex-grow">
+                <h3 className="text-2xl font-black italic uppercase mb-2">Avrupa'da Şoförlük</h3>
+                <p className="text-gray-400 font-medium leading-relaxed">En yeni tır modelleri ile Avrupa'nın dev lojistik ağlarında kariyer.</p>
+              </div>
+            </div>
+
+            {/* Card 3: Info Card */}
+            <div className="glass p-8 lg:p-10 rounded-[32px] bg-[#facc15]/5 border-[#facc15]/20 shadow-2xl flex flex-col justify-between border-2 border-dashed">
+              <div className="space-y-6">
+                <div className="w-16 h-16 bg-[#facc15] rounded-2xl flex items-center justify-center shadow-lg">
+                  <ShieldCheck size={36} className="text-[#0B0F1A]" />
+                </div>
+                <h3 className="text-3xl font-black italic uppercase leading-tight">KOD95 + <br /> A1 Transfer</h3>
+                <p className="text-gray-300 font-medium">Avrupa standartlarında mesleki yeterlilik belgeleri ve sigorta süreçleriniz eksiksiz yönetilir.</p>
+              </div>
+              <button onClick={scrollToForm} className="mt-10 flex items-center space-x-3 text-[#facc15] font-black text-xl hover:translate-x-2 transition-all group">
+                <span>DETAYLI BİLGİ AL</span>
+                <ArrowRight />
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* NASIL ÇALIŞIR */}
-      <section id="nasil" className="py-32 px-6 bg-white/[0.02] border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-6">
-            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">
-              4 Adımda <span className="text-[#facc15]">Yola Çıkın</span>
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-xl font-medium">
-              Süreçlerimiz şeffaf, hızlı ve tamamen sonuç odaklıdır.
-            </p>
+      {/* DOCUMENT SHOWCASE (Güven Alanı) */}
+      <section id="evrak" className="py-32 lg:py-48 px-6 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-blue-600/5 blur-[180px] -z-10"></div>
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          
+          <div className="glass p-8 lg:p-12 rounded-[48px] max-w-4xl w-full flex flex-col lg:flex-row items-center gap-12 border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)]">
+            <div className="lg:w-1/2 flex justify-center">
+              <div className="bg-black/40 p-6 rounded-[32px] border border-white/10 aspect-[4/3] flex items-center justify-center max-w-sm w-full">
+                <img 
+                  src={OturumKartiImg} 
+                  alt="Residency Card" 
+                  className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(250,204,21,0.2)]" 
+                />
+              </div>
+            </div>
+            <div className="lg:w-1/2 space-y-8 text-center lg:text-left">
+              <div className="space-y-4">
+                <h3 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter italic">2 Yıllık Oturum <br /><span className="text-[#facc15]">Karti Süreci</span></h3>
+                <p className="text-lg text-gray-400 font-medium leading-relaxed">
+                  Litvanya Cumhuriyeti tarafından onaylanan resmi oturum ve çalışma izniniz, tüm yasal süreçler sonunda adresinize teslim edilir.
+                </p>
+              </div>
+              <ul className="space-y-4 font-bold text-gray-300">
+                <li className="flex items-center space-x-3 justify-center lg:justify-start">
+                  <CheckCircle2 className="text-[#facc15]" /> <span>%100 Yasal Başvuru</span>
+                </li>
+                <li className="flex items-center space-x-3 justify-center lg:justify-start">
+                  <CheckCircle2 className="text-[#facc15]" /> <span>Aile Birleşimi Hakkı</span>
+                </li>
+                <li className="flex items-center space-x-3 justify-center lg:justify-start">
+                  <CheckCircle2 className="text-[#facc15]" /> <span>AB İçinde Serbest Dolaşım</span>
+                </li>
+              </ul>
+            </div>
           </div>
+          
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-4 gap-8">
+      {/* WHY US (Güven Bloğu) */}
+      <section id="guven" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto text-center space-y-16">
+          <div className="space-y-4">
+            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter italic">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
+            <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">Avrupa'da kariyer yapmak isteyen yüzlerce şoförün güvenini kazandık.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-12">
             {[
-              { icon: <ClipboardCheck size={36} />, title: "Ön Başvuru", desc: "Görüşme sağlanır ve profiliniz incelenir." },
-              { icon: <Globe size={36} />, title: "Evrak Dosyası", desc: "Litvanya için gerekli tüm dosyalar hazırlanır." },
-              { icon: <CreditCard size={36} />, title: "Oturum Onayı", desc: "2 yıllık çalışma kartınız tarafımıza teslim edilir." },
-              { icon: <Truck size={36} />, title: "İş Başı", desc: "Avrupa'daki yeni işinize yerleşip çalışmaya başlarsınız." }
-            ].map((step, idx) => (
-              <div key={idx} className="glass p-10 rounded-[2.5rem] group hover:border-[#facc15]/40 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#facc15]/5 rounded-bl-full -z-10 group-hover:bg-[#facc15]/10 transition-colors"></div>
-                <div className="text-[#facc15] mb-8 transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
-                  {step.icon}
-                </div>
-                <h3 className="text-2xl font-black mb-4 tracking-tighter italic uppercase">{step.title}</h3>
-                <p className="text-gray-400 leading-relaxed font-medium">{step.desc}</p>
-                <div className="mt-8 text-[#facc15]/20 font-black text-6xl italic group-hover:text-[#facc15]/40 transition-colors">
-                  0{idx + 1}
-                </div>
+              { icon: <ShieldCheck size={48} />, title: "Resmi Süreç", desc: "Tüm süreçlerimiz sözleşmeli ve Litvanya yasalarına tam uyumludur." },
+              { icon: <Users size={48} />, title: "Uzman Ekip", desc: "Yılların tecrübesiyle vize ve evrak işlemlerinizi hatasız yönetiyoruz." },
+              { icon: <Briefcase size={48} />, title: "İş Garantisi", desc: "Oturum kartınızla birlikte Avrupa'nın köklü firmalarında işiniz hazır." }
+            ].map((item, idx) => (
+              <div key={idx} className="space-y-6 p-10 glass rounded-[40px] hover:bg-white/[0.06] transition-all border-none shadow-xl">
+                <div className="text-[#facc15] flex justify-center">{item.icon}</div>
+                <h3 className="text-2xl font-black italic uppercase tracking-tighter italic">{item.title}</h3>
+                <p className="text-gray-400 font-medium leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* GÜVEN BLOĞU */}
-      <section id="guven" className="py-32 px-6">
-        <div className="max-w-7xl mx-auto glass p-12 lg:p-24 rounded-[4rem] text-center space-y-16 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#facc15]/5 to-transparent -z-10"></div>
-          
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="inline-block bg-[#facc15]/10 px-6 py-2 rounded-full text-[#facc15] font-black text-sm tracking-widest uppercase">
-              GÜVEN & ŞEFFAFLIK
-            </div>
-            <h2 className="text-5xl lg:text-7xl font-black tracking-tight italic uppercase italic">
-              Neden <span className="text-[#facc15]">CMSVize?</span>
-            </h2>
-            <p className="text-xl lg:text-2xl text-gray-400 font-medium">
-              Sadece vize değil, gelecek inşa ediyoruz. 500+ başarılı yerleştirme ile Avrupa'nın en güvenilir danışmanlık köprüsüyüz.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="space-y-6 group">
-              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center text-[#facc15] mx-auto group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500">
-                <ShieldCheck size={40} />
-              </div>
-              <h3 className="text-3xl font-black italic uppercase italic tracking-tighter">Resmi Süreç</h3>
-              <p className="text-gray-400 text-lg">Litvanya ve AB yasalarına %100 uyumlu, resmi sözleşmeli süreçler.</p>
-            </div>
-            <div className="space-y-6 group">
-              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center text-[#facc15] mx-auto group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500">
-                <Users size={40} />
-              </div>
-              <h3 className="text-3xl font-black italic uppercase italic tracking-tighter">Uzman Kadro</h3>
-              <p className="text-gray-400 text-lg">Lojistik ve vize konusunda 10 yılı aşkın saha tecrübesine sahip ekip.</p>
-            </div>
-            <div className="space-y-6 group">
-              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center text-[#facc15] mx-auto group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500">
-                <ArrowRight size={40} />
-              </div>
-              <h3 className="text-3xl font-black italic uppercase italic tracking-tighter">Hızlı Sonuç</h3>
-              <p className="text-gray-400 text-lg">Minimum bürokrasi ile ortalama 4-6 hafta içinde oturum kartı teslimi.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BAŞVURU FORMU */}
+      {/* FORM SECTION */}
       <section ref={formRef} className="py-32 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-0 rounded-[4rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.5)] border border-white/5">
-            {/* Form Side */}
+          <div className="grid lg:grid-cols-2 gap-0 rounded-[48px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5">
             <div className="bg-[#131926] p-10 lg:p-20">
-              <div className="mb-12">
-                <h2 className="text-5xl font-black italic uppercase italic tracking-tighter mb-4">
-                  Şimdi <span className="text-[#facc15]">Başvur</span>
-                </h2>
-                <p className="text-gray-400 font-bold tracking-wide">Ücretsiz ön değerlendirme için formu doldurun.</p>
-              </div>
-
+              <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Şimdi <span className="text-[#facc15]">Başvur</span></h2>
               <form onSubmit={handleFormSubmit} className="space-y-8">
-                <div className="space-y-3">
-                  <label className="block text-xs font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Ad Soyad</label>
-                  <input 
-                    required
-                    type="text" 
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="Örn: Ahmet Yılmaz" 
-                    className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none transition-all text-lg font-bold"
-                  />
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
+                  <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold" placeholder="Ahmet Yılmaz" />
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="block text-xs font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Telefon</label>
-                    <input 
-                      required
-                      type="tel" 
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+90" 
-                      className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none transition-all text-lg font-bold"
-                    />
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
+                    <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold" placeholder="+90" />
                   </div>
-                  <div className="space-y-3">
-                    <label className="block text-xs font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Hedef Ülke</label>
-                    <div className="relative">
-                      <select 
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none transition-all appearance-none text-lg font-bold cursor-pointer"
-                      >
-                        <option className="bg-[#0B0F1A]">Almanya</option>
-                        <option className="bg-[#0B0F1A]">Litvanya</option>
-                        <option className="bg-[#0B0F1A]">Polonya</option>
-                        <option className="bg-[#0B0F1A]">Fransa</option>
-                      </select>
-                    </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
+                    <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold">
+                      <option className="bg-[#0B0F1A]">Almanya</option>
+                      <option className="bg-[#0B0F1A]">Litvanya</option>
+                      <option className="bg-[#0B0F1A]">Polonya</option>
+                    </select>
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <label className="block text-xs font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Ek Not (Opsiyonel)</label>
-                  <textarea 
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows="3" 
-                    placeholder="Tır şoförlüğü tecrübenizden bahsedin..." 
-                    className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none transition-all text-lg font-bold"
-                  ></textarea>
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">MESAJ</label>
+                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold" rows="3" placeholder="Deneyiminizi kısaca yazın..."></textarea>
                 </div>
-                <button 
-                  type="submit" 
-                  className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-2xl font-black text-2xl hover:scale-[1.02] transition-all shadow-2xl glow-button uppercase tracking-tighter italic"
-                >
-                  WHATSAPP İLE BAŞVUR
-                </button>
+                <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-2xl font-black text-2xl hover:scale-[1.02] transition-all shadow-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
               </form>
             </div>
-            
-            {/* Info Side */}
-            <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-              
-              <div className="space-y-12 relative z-10">
-                <h3 className="text-4xl lg:text-5xl font-black italic uppercase italic leading-[1.1] tracking-tighter">
-                  AVRUPA'NIN <br /> YOLLARI <br /> SİZİ BEKLİYOR
-                </h3>
-                <div className="space-y-8">
-                  <div className="flex items-center space-x-5">
-                    <div className="w-12 h-12 bg-[#0B0F1A] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                      <Zap size={24} fill="currentColor" />
-                    </div>
-                    <span className="font-black text-xl italic tracking-tight">2500€ - 3500€ MAAŞ</span>
-                  </div>
-                  <div className="flex items-center space-x-5">
-                    <div className="w-12 h-12 bg-[#0B0F1A] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                      <CheckCircle2 size={24} />
-                    </div>
-                    <span className="font-black text-xl italic tracking-tight">AİLE BİRLEŞİMİ HAKKI</span>
-                  </div>
-                  <div className="flex items-center space-x-5">
-                    <div className="w-12 h-12 bg-[#0B0F1A] text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg">
-                      <Truck size={24} fill="currentColor" />
-                    </div>
-                    <span className="font-black text-xl italic tracking-tight">MODERN ARAÇ FİLOLARI</span>
-                  </div>
+            <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
+              <div className="space-y-12">
+                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">TIR ŞOFÖRÜ <br /> OLARAK <br /> AVRUPA'YA</h3>
+                <div className="space-y-6 font-black text-2xl italic tracking-tighter">
+                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€ - 3500€ MAAŞ</span> </p>
+                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
+                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>MODERN FİLOLAR</span> </p>
                 </div>
               </div>
-
-              <div className="space-y-6 pt-16 border-t border-[#0B0F1A]/10 relative z-10">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-[#0B0F1A] rounded-full text-[#facc15] shrink-0">
-                    <Phone size={24} />
-                  </div>
-                  <span className="text-3xl font-black tracking-tighter">+90 545 991 82 68</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-[#0B0F1A] rounded-full text-[#facc15] shrink-0">
-                    <MapPin size={24} />
-                  </div>
-                  <span className="font-black text-sm uppercase tracking-widest italic">Maslak, İstanbul / Vilnius, Litvanya</span>
-                </div>
+              <div className="space-y-4 pt-10 border-t border-black/10">
+                <p className="text-3xl font-black tracking-tighter flex items-center space-x-3"> <Phone /> <span>+90 545 991 82 68</span> </p>
+                <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Maslak, İstanbul / Vilnius</span> </p>
               </div>
             </div>
           </div>
@@ -528,75 +416,47 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       </section>
 
       {/* FOOTER */}
-      <footer className="py-20 border-t border-white/5 px-6 relative">
+      <footer className="py-20 border-t border-white/5 px-6">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-10">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-[#facc15] rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-[#facc15] rounded-xl flex items-center justify-center">
               <Truck size={22} className="text-[#0B0F1A]" />
             </div>
-            <span className="text-2xl font-black tracking-tighter uppercase italic">
-              CMS<span className="text-[#facc15]">Vize</span>
-            </span>
+            <span className="text-2xl font-black tracking-tighter uppercase italic">CMS<span className="text-[#facc15]">Vize</span></span>
           </div>
-          <p className="text-gray-500 text-sm font-medium">© 2026 CMSVize Danışmanlık. Avrupa Tır Şoförlüğü & Oturum Hizmetleri.</p>
-          <div className="flex space-x-10 text-xs font-black tracking-[0.2em] text-gray-500">
-            <a href="#" className="hover:text-[#facc15] transition-colors uppercase">KVKK</a>
-            <a href="#" className="hover:text-[#facc15] transition-colors uppercase">GİZLİLİK</a>
-            <a href="#" className="hover:text-[#facc15] transition-colors uppercase">İLETİŞİM</a>
+          <p className="text-gray-500 font-medium">© 2026 CMSVize. Tüm hakları saklıdır.</p>
+          <div className="flex space-x-8 text-xs font-black tracking-widest text-gray-500 uppercase">
+            <a href="#" className="hover:text-[#facc15]">KVKK</a>
+            <a href="#" className="hover:text-[#facc15]">Gizlilik</a>
+            <a href="#" className="hover:text-[#facc15]">İletişim</a>
           </div>
         </div>
       </footer>
 
-      {/* WHATSAPP FLOAT BUTTON - PREMIUM */}
-      <a 
-        href={getWhatsAppURL()} 
-        target="_blank"
-        className="fixed bottom-10 right-10 z-50 group"
-      >
+      {/* WHATSAPP FLOAT */}
+      <a href={getWhatsAppURL()} target="_blank" className="fixed bottom-10 right-10 z-50 group">
         <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-150"></div>
-        <div className="relative bg-[#25D366] p-5 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.4)] transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12 border-4 border-white/10">
+        <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:-rotate-12">
           <MessageCircle size={36} className="text-white" fill="currentColor" />
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center border-2 border-white">
-            <span className="text-[10px] font-black text-white">1</span>
-          </div>
-        </div>
-        <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 glass px-6 py-3 rounded-2xl text-sm font-black text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap shadow-2xl translate-x-4 group-hover:translate-x-0">
-          Size nasıl yardımcı olabilirim? 🚛
         </div>
       </a>
 
-      {/* FAKE LIVE POPUP - ENHANCED */}
-      <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-[2rem] flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
-        <div className="relative">
-          <div className="w-14 h-14 bg-[#facc15]/20 rounded-2xl flex items-center justify-center text-[#facc15] shadow-inner">
-            <Users size={28} />
-          </div>
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0B0F1A] animate-pulse"></div>
+      {/* FAKE LIVE POPUP */}
+      <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-[2.5rem] flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
+        <div className="w-12 h-12 bg-[#facc15]/20 rounded-2xl flex items-center justify-center text-[#facc15]">
+          <Users size={24} />
         </div>
         <div>
-          <p className="text-base font-black italic tracking-tight">{popupContent}</p>
-          <div className="flex items-center space-x-2 mt-1">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black">ŞİMDİ ONAYLANDI</p>
-          </div>
+          <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
+          <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Onaylandı</p>
         </div>
-        <button onClick={() => setShowPopup(false)} className="text-gray-500 hover:text-white transition-colors ml-4">
-          <X size={20} />
-        </button>
+        <button onClick={() => setShowPopup(false)} className="ml-4 text-gray-500 hover:text-white transition-colors"> <X size={20} /> </button>
       </div>
 
-      {/* Smooth Scroll behavior & Custom Animations */}
       <style>{`
         html { scroll-behavior: smooth; }
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          display: flex;
-          width: 200%;
-          animation: scroll 40s linear infinite;
-        }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { display: flex; width: fit-content; animation: scroll 30s linear infinite; }
       `}</style>
     </div>
   );
