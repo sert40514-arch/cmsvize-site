@@ -94,7 +94,8 @@ export default function CMSVizeLandingPage() {
   ];
 
   const whatsappMessage = `Merhaba, CMSVize üzerinden başvuru bırakıyorum.%0A%0AAd Soyad: ${form.fullName || "-"}%0ATelefon: ${form.phone || "-"}%0AHedef Ülke: ${form.country || "-"}%0AMesaj: ${form.message || "-"}`;
-  const whatsappLink = `https://wa.me/905459918268?text=${whatsappMessage}`;
+  const whatsappLink = `https://wa.me/905459918268?text=${encodeURIComponent(whatsappMessage)}`;
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -428,6 +429,7 @@ export default function CMSVizeLandingPage() {
                     placeholder="Ad Soyad"
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-yellow-400/40"
                     required
+                    
                   />
                 </div>
 
@@ -484,6 +486,9 @@ export default function CMSVizeLandingPage() {
               >
                 <Send className="h-4 w-4" /> Formu WhatsApp ile Gönder
               </button>
+              <p className="mt-4 text-xs text-slate-400">
+              Bilgileriniz gizli tutulur. Sadece sizinle iletişime geçmek için kullanılır.
+            </p>
             </form>
           </div>
         </div>
