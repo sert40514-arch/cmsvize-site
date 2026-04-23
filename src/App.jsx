@@ -31,7 +31,12 @@ import {
   BadgeCheck,
   TrendingUp,
   Award,
-  Heart
+  Heart,
+  ArrowLeft,
+  Mail,
+  Linkedin,
+  Instagram,
+  Facebook
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -57,14 +62,31 @@ const App = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeViewers, setActiveViewers] = useState(14);
   const [activeFaq, setActiveFaq] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Routing State
+  const [currentPage, setCurrentPage] = useState('home');
 
   // Counter State
   const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
 
   const formRef = useRef(null);
 
+  // SEO & Scroll Logic
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const titles = {
+      home: "CMSVize | Avrupa Kariyer ve Vize Danışmanlığı",
+      kvkk: "KVKK Aydınlatma Metni | CMSVize",
+      privacy: "Gizlilik Politikası | CMSVize",
+      terms: "Kullanım Şartları | CMSVize"
+    };
+    document.title = titles[currentPage] || "CMSVize";
+  }, [currentPage]);
+
   // Stats Counter Logic
   useEffect(() => {
+    if (currentPage !== 'home') return;
     const targetSuccess = 98;
     const targetClients = 2500;
     const targetCountries = 15;
@@ -85,7 +107,7 @@ const App = () => {
     }, 20);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentPage]);
 
   // Logic Preserved
   useEffect(() => {
@@ -133,12 +155,151 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    window.open(getWhatsAppURL(), '_blank');
+    setIsSubmitting(true);
+    setTimeout(() => {
+      window.open(getWhatsAppURL(), '_blank');
+      setIsSubmitting(false);
+    }, 800);
   };
 
   const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (currentPage !== 'home') {
+      setCurrentPage('home');
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
     setMobileMenuOpen(false);
+  };
+
+  // --- LEGAL PAGE COMPONENT ---
+  const LegalPage = ({ title, content }) => (
+    <div className="min-h-screen bg-[#0B0F1A] pt-32 pb-24 px-6 animate-fade-up">
+      <div className="max-w-4xl mx-auto space-y-12">
+        <nav className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-gray-500">
+          <button onClick={() => setCurrentPage('home')} className="hover:text-[#facc15] transition-colors">ANA SAYFA</button>
+          <span>/</span>
+          <span className="text-gray-300">{title}</span>
+        </nav>
+
+        <button 
+          onClick={() => setCurrentPage('home')}
+          className="btn-corporate glass px-6 py-3 flex items-center space-x-3 text-[#facc15] font-black uppercase italic tracking-widest text-xs"
+        >
+          <ArrowLeft size={16} />
+          <span>Geri Dön</span>
+        </button>
+        
+        <div className="linkedin-faq p-10 rounded-2xl shadow-2xl border border-white/5 bg-[#1B1F23]/50 backdrop-blur-sm">
+          <h1 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-[#facc15] mb-10 border-b border-white/10 pb-8">
+            {title}
+          </h1>
+          <div className="prose prose-invert max-w-none text-gray-400 font-medium leading-relaxed space-y-8">
+            {content}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center space-y-6 pt-12">
+          <p className="text-sm font-black italic text-gray-500 uppercase tracking-widest">Sorularınız mı var?</p>
+          <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-4 font-black text-sm">BİZE ULAŞIN</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const LegalContent = {
+    kvkk: {
+      title: "6698 Sayılı KVKK Aydınlatma Metni",
+      content: (
+        <>
+          <p><strong>CMSVize</strong> ("Şirket") olarak, hizmetlerimizden faydalanan danışanlarımızın kişisel verilerinin korunmasına ve güvenliğine büyük önem vermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, "Veri Sorumlu" sıfatıyla, kişisel verilerinizi aşağıda açıklanan çerçevede işlemekteyiz.</p>
+          
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Sorumlusu</h3>
+          <p>KVKK uyarınca kişisel verileriniz; veri sorumlusu olarak CMSVize tarafından, işbu Aydınlatma Metni’nde belirtilen amaçlar kapsamında işlenebilecektir.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. İşlenen Kişisel Veri Kategorileri</h3>
+          <p>Vize danışmanlık süreçlerinin yürütülmesi amacıyla aşağıdaki veri kategorileri işlenmektedir:</p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li><strong>Kimlik Bilgileri:</strong> Ad, soyad, T.C. kimlik numarası, doğum tarihi, pasaport numarası ve pasaport geçerlilik tarihi.</li>
+            <li><strong>İletişim Bilgileri:</strong> Telefon numarası, e-posta adresi, ikametgah adresi.</li>
+            <li><strong>Mesleki Bilgiler:</strong> Mevcut iş durumu, mesleki tecrübe ve yetkinlik belgeleri.</li>
+          </ul>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Kişisel Verilerin İşlenme Amaçları</h3>
+          <p>Kişisel verileriniz, aşağıdaki amaçlar doğrultusunda işlenmektedir:</p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Avrupa ülkeleri (Litvanya, Almanya, Polonya vb.) vize başvuru süreçlerinin takibi ve yönetimi,</li>
+            <li>Konsolosluk ve aracı kurumlardan randevu alımı,</li>
+            <li>A1 transfer ve çalışma izni süreçlerinin yürütülmesi,</li>
+            <li>Hizmetlerimize ilişkin bilgilendirme ve danışmanlık süreçlerinin yürütülmesi,</li>
+            <li>Yasal yükümlülüklerin yerine getirilmesi.</li>
+          </ul>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Verilerin Saklanma Süresi</h3>
+          <p>Kişisel verileriniz, vize danışmanlık hizmetinin devamı süresince ve hizmet sona erdikten sonra yasal zaman aşımı süreleri (genellikle 10 yıl) veya ilgili mevzuatta öngörülen süreler boyunca saklanır. Süre sona erdiğinde verileriniz KVKK uyarınca silinir veya anonim hale getirilir.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. Veri Sahibi Hakları (Madde 11)</h3>
+          <p>KVKK’nın 11. maddesi uyarınca CMSVize'ye başvurarak aşağıdaki haklarınızı kullanabilirsiniz:</p>
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme,</li>
+            <li>İşlenmişse buna ilişkin bilgi talep etme,</li>
+            <li>İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme,</li>
+            <li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme,</li>
+            <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme,</li>
+            <li>KVKK çerçevesinde silinmesini veya yok edilmesini isteme,</li>
+            <li>İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme.</li>
+          </ul>
+        </>
+      )
+    },
+    privacy: {
+      title: "Gizlilik Politikası",
+      content: (
+        <>
+          <p>CMSVize olarak, kullanıcılarımızın gizliliğine ve verilerinin korunmasına sarsılmaz bir bağlılık duyuyoruz. İşbu Gizlilik Politikası, web sitemizi ziyaret ettiğinizde veya hizmetlerimizden yararlandığınızda verilerinizin nasıl işlendiğini şeffaf bir şekilde açıklar.</p>
+          
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Güvenliği ve SSL Sertifikasyonu</h3>
+          <p>Verilerinizin güvenliği, CMSVize'nin en üst önceliğidir. Web sitemiz üzerinden iletilen tüm bilgiler, endüstri standardı olan <strong>256-bit SSL (Secure Sockets Layer)</strong> şifreleme teknolojisi ile korunmaktadır. Sunucularımızda saklanan verileriniz, yetkisiz erişime karşı güçlü güvenlik duvarları ve modern şifreleme protokolleri ile güvence altına alınmıştır.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. Üçüncü Taraflarla Veri Paylaşımı</h3>
+          <p>Kişisel verileriniz, yalnızca vize başvurunuzun ve çalışma izni süreçlerinizin tamamlanabilmesi amacıyla; ilgili <strong>Büyükelçilikler, Konsolosluklar, Vize Aracı Kurumları (VFS Global, iDATA vb.)</strong> ve resmi makamlarla, hizmetin gerektirdiği ölçüde sınırlı olarak paylaşılır.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Ticari Amaçla Satış Garantisi</h3>
+          <p><strong>Kurumsal Garanti:</strong> CMSVize, danışanlarına ait hiçbir veriyi üçüncü şahıslara veya kurumlara reklam, pazarlama ya da ticari kazanç amacıyla <u>asla satmaz, kiralamaz ve takas etmez.</u> Verileriniz yalnızca sizin onay verdiğiniz vize süreçleri için kullanılır.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Çerez (Cookie) Kullanımı</h3>
+          <p>Sitemizde, kullanıcı deneyimini optimize etmek, site trafiğini analiz etmek ve hizmetlerimizi iyileştirmek amacıyla teknik çerezler kullanılmaktadır. Bu çerezler kişisel kimlik bilgilerini içermez ve tarayıcı ayarlarınız üzerinden istediğiniz zaman devre dışı bırakılabilir.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. Politika Güncellemeleri</h3>
+          <p>Teknolojik gelişmelere ve yasal değişikliklere uyum sağlamak amacıyla bu politikada zaman zaman güncellemeler yapabiliriz. Güncel sürüm her zaman web sitemizde yayınlanacaktır.</p>
+        </>
+      )
+    },
+    terms: {
+      title: "Kullanım Şartları",
+      content: (
+        <>
+          <p>İşbu Kullanım Şartları, CMSVize web sitesinin ve sunulan danışmanlık hizmetlerinin kullanımına ilişkin kuralları belirlemektedir. Sitemizi ziyaret ederek veya hizmet alarak bu şartları kayıtsız şartsız kabul etmiş sayılırsınız.</p>
+          
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Hizmet Kapsamı ve Sınırları</h3>
+          <p>CMSVize, Avrupa vize başvuruları, çalışma izinleri ve iş yerleştirme süreçlerinde profesyonel danışmanlık ve dosya hazırlama desteği sunmaktadır. <strong>Kritik Bilgi:</strong> Vize başvuruları hakkındaki nihai karar verme yetkisi tamamen ilgili ülkenin Büyükelçilikleri, Konsoloslukları ve Göç İdarelerine aittir. CMSVize, vize onayına dair %100 garanti vermez; ancak dosyanın en doğru şekilde hazırlanması ve başarının maksimize edilmesi için uzmanlık sunar.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. Fikri Mülkiyet Hakları</h3>
+          <p>Web sitesinde yer alan tüm tasarım, logo, metin, grafik ve görsel içeriklerin mülkiyeti CMSVize'ye aittir. Bu içeriklerin CMSVize'nin yazılı izni olmaksızın kopyalanması, çoğaltılması veya ticari amaçla kullanılması yasaktır ve yasal işlem başlatılmasına neden olabilir.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Sorumluluk Reddi Beyanı</h3>
+          <p>CMSVize, sitede yer alan bilgilerin güncelliği ve doğruluğu için azami gayret göstermektedir. Ancak, vize mevzuatları ve ülkelerin göç politikaları anlık olarak değişebilmektedir. Resmi makamlarca yapılan ani mevzuat değişikliklerinden veya kullanıcı tarafından hatalı beyan edilen bilgilerden kaynaklanan gecikme ve ret durumlarından CMSVize sorumlu tutulamaz.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Kullanım Kuralları</h3>
+          <p>Kullanıcılar, site üzerindeki formları doldururken doğru ve güncel bilgi vermeyi taahhüt ederler. Yanıltıcı bilgi verilmesi durumunda danışmanlık hizmeti tek taraflı olarak askıya alınabilir.</p>
+
+          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. İletişim ve Uyuşmazlıklar</h3>
+          <p>Kullanım şartlarına ilişkin her türlü soru ve uyuşmazlık durumunda Türkiye Cumhuriyeti yasaları ve ilgili mahkemeler yetkilidir.</p>
+        </>
+      )
+    }
   };
 
   return (
@@ -152,40 +313,25 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
         .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(250, 204, 21, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        
-        /* LinkedIn-Style UI Elements */
         .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
         .linkedin-faq { background: #1B1F23; border: 1px solid #30363D; }
-
-        /* Smoother Transitions */
-        .btn-corporate {
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .btn-corporate { border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .btn-corporate:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        .input-corporate { border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+        .input-corporate:focus { border-color: #0a66c2; box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.2); outline: none; }
+        
+        .shimmer {
+          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+          background-size: 200% 100%;
+          animation: shimmer 2s infinite;
         }
-        .btn-corporate:hover {
-          transform: translateY(-2px);
-          filter: brightness(1.1);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Focus Effects - Corporate Navy Shadow */
-        .input-corporate {
-          border-radius: 8px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.3s ease;
-        }
-        .input-corporate:focus {
-          border-color: #0a66c2;
-          box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.2);
-          outline: none;
-        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
       `}</style>
 
       {/* NAVBAR */}
       <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
-          <div className="flex items-center space-x-3 group cursor-pointer">
+          <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
             <div className="w-10 h-10 bg-[#facc15] rounded-lg flex items-center justify-center transition-all group-hover:rotate-6">
               <Truck size={24} className="text-[#0B0F1A]" />
             </div>
@@ -195,10 +341,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </div>
           
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-            <a href="#hizmetler" className="hover:text-[#facc15] transition-colors">HİZMETLER</a>
-            <a href="#referanslar" className="hover:text-[#facc15] transition-colors">REFERANSLAR</a>
-            <a href="#istatistik" className="hover:text-[#facc15] transition-colors">İSTATİSTİK</a>
-            <a href="#sss" className="hover:text-[#facc15] transition-colors">SSS</a>
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">İSTATİSTİK</button>
+            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-[#facc15] transition-colors">SSS</button>
             <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-3 font-black">
               HEMEN BAŞVUR
             </button>
@@ -214,433 +360,367 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
           <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
-          <a href="#hizmetler" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">HİZMETLER</a>
-          <a href="#referanslar" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</a>
-          <a href="#istatistik" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">İSTATİSTİK</a>
-          <a href="#sss" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">SSS</a>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('istatistik')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">İSTATİSTİK</button>
+          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="text-4xl font-black italic tracking-tighter">SSS</button>
           <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">BAŞVUR</button>
         </div>
       </div>
 
-      {/* HERO SECTION */}
-      <section className="relative pt-40 lg:pt-56 pb-24 lg:pb-32 px-6">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10"></div>
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          
-          {/* LEFT: Text Content */}
-          <div className="space-y-10 animate-fade-up">
-            <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-lg text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
-              <Zap size={16} fill="currentColor" />
-              <span>Sınırlı Kontenjan • Son Başvurular</span>
+      {/* RENDER PAGES */}
+      {currentPage === 'home' ? (
+        <>
+          {/* HERO SECTION */}
+          <section className="relative pt-40 lg:pt-56 pb-24 lg:pb-32 px-6">
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10"></div>
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+              <div className="space-y-10 animate-fade-up">
+                <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-lg text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
+                  <Zap size={16} fill="currentColor" />
+                  <span>Sınırlı Kontenjan • Son Başvurular</span>
+                </div>
+                <div className="space-y-6">
+                  <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tighter italic uppercase">
+                    2 Yıllık Litvanya <br />
+                    <span className="text-gradient">Oturum Kartı</span> <br />
+                    İle Avrupa'da Çalışma
+                  </h1>
+                  <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
+                    Tır Şoförlüğü (KOD95) • Fabrika & Depo İşleri • A1 Transfer İle Hızlı Giriş. Her profil için uygun Avrupa iş planı hazırlıyoruz.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-5">
+                  <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 group">
+                    <span>HEMEN BAŞVUR</span>
+                    <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  </button>
+                  <a href={getWhatsAppURL()} target="_blank" className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10">
+                    <MessageCircle className="text-green-500" fill="currentColor" />
+                    <span>BİLGİ AL</span>
+                  </a>
+                </div>
+                <div className="flex flex-wrap gap-4 pt-2">
+                  {[
+                    { icon: <Truck size={14} />, text: "Tır Şoförlüğü (KOD95)" },
+                    { icon: <Zap size={14} />, text: "A1 Transfer İle Giriş" },
+                    { icon: <Package size={14} />, text: "Fabrika & Depo İşleri" },
+                    { icon: <ShieldCheck size={14} />, text: "2 Yıllık Oturum Garantisi" }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest text-[#facc15]">
+                      {item.icon}
+                      <span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-3 gap-10 pt-10 border-t border-white/5">
+                  <div>
+                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">312+</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Başvuru</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">{activeViewers}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Aktif</p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">2dk</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Son Talep</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
+                <div className="hero-img-container">
+                  <img src={TirImg} alt="European Truck CMSVize" className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
+                  <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-lg flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
+                    <div className="w-12 h-12 bg-[#facc15] rounded-md flex items-center justify-center shrink-0">
+                      <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black uppercase italic tracking-tighter">AVRUPA KAPISI ARALANIYOR</p>
+                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Tüm İş Kolları Dahil</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="space-y-6">
-              <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tighter italic uppercase">
-                2 Yıllık Litvanya <br />
-                <span className="text-gradient">Oturum Kartı</span> <br />
-                İle Avrupa'da Çalışma
-              </h1>
-              <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
-                Tır Şoförlüğü (KOD95) • Fabrika & Depo İşleri • A1 Transfer İle Hızlı Giriş. Her profil için uygun Avrupa iş planı hazırlıyoruz.
-              </p>
-            </div>
+          </section>
 
-            <div className="flex flex-col sm:flex-row gap-5">
-              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 group">
-                <span>HEMEN BAŞVUR</span>
-                <ArrowRight className="group-hover:translate-x-2 transition-transform" />
-              </button>
-              <a 
-                href={getWhatsAppURL()} 
-                target="_blank"
-                className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10"
-              >
-                <MessageCircle className="text-green-500" fill="currentColor" />
-                <span>BİLGİ AL</span>
-              </a>
-            </div>
-
-            <div className="flex flex-wrap gap-4 pt-2">
-              {[
-                { icon: <Truck size={14} />, text: "Tır Şoförlüğü (KOD95)" },
-                { icon: <Zap size={14} />, text: "A1 Transfer İle Giriş" },
-                { icon: <Package size={14} />, text: "Fabrika & Depo İşleri" },
-                { icon: <ShieldCheck size={14} />, text: "2 Yıllık Oturum Garantisi" }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest text-[#facc15]">
-                  {item.icon}
-                  <span>{item.text}</span>
+          {/* STATS TICKER */}
+          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
+            <div className="flex animate-scroll whitespace-nowrap">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
+                  <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
+                  <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
+                  <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
+                  <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
                 </div>
               ))}
             </div>
-
-            <div className="grid grid-cols-3 gap-10 pt-10 border-t border-white/5">
-              <div>
-                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">312+</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Başvuru</p>
-              </div>
-              <div>
-                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">{activeViewers}</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Aktif</p>
-              </div>
-              <div>
-                <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">2dk</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Son Talep</p>
-              </div>
-            </div>
           </div>
 
-          {/* RIGHT: Visual */}
-          <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <div className="hero-img-container">
-              <img 
-                src={TirImg} 
-                alt="European Truck CMSVize" 
-                className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
-              
-              <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-lg flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
-                <div className="w-12 h-12 bg-[#facc15] rounded-md flex items-center justify-center shrink-0">
-                  <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
+          {/* İSTATİSTİK */}
+          <section id="istatistik" className="py-24 bg-white/[0.02]">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div className="text-center space-y-4">
+                  <div className="flex justify-center text-[#facc15] mb-2"> <TrendingUp size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">%{stats.success}</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Vize Başarı Oranı</p>
                 </div>
-                <div>
-                  <p className="text-sm font-black uppercase italic tracking-tighter">AVRUPA KAPISI ARALANIYOR</p>
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Tüm İş Kolları Dahil</p>
+                <div className="text-center space-y-4 border-y md:border-y-0 md:border-x border-white/5 py-10 md:py-0">
+                  <div className="flex justify-center text-[#facc15] mb-2"> <Users size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.clients}+</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Mutlu Müşteri</p>
+                </div>
+                <div className="text-center space-y-4">
+                  <div className="flex justify-center text-[#facc15] mb-2"> <Globe size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.countries}+</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Hedef Ülke</p>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* STATS TICKER */}
-      <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
-        <div className="flex animate-scroll whitespace-nowrap">
-          {[1,2,3,4].map(i => (
-            <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
-              <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
-              <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
-              <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
-              <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* VİZE BAŞARI İSTATİSTİKLERİ (Counter) */}
-      <section id="istatistik" className="py-24 bg-white/[0.02]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="text-center space-y-4">
-              <div className="flex justify-center text-[#facc15] mb-2"> <TrendingUp size={48} /> </div>
-              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">%{stats.success}</p>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Vize Başarı Oranı</p>
-            </div>
-            <div className="text-center space-y-4 border-y md:border-y-0 md:border-x border-white/5 py-10 md:py-0">
-              <div className="flex justify-center text-[#facc15] mb-2"> <Users size={48} /> </div>
-              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.clients}+</p>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Mutlu Müşteri</p>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="flex justify-center text-[#facc15] mb-2"> <Globe size={48} /> </div>
-              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.countries}+</p>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Hedef Ülke</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HİZMETLER */}
-      <section id="hizmetler" className="py-32 lg:py-48 px-6">
-        <div className="max-w-7xl mx-auto space-y-20">
-          <div className="text-center space-y-6 max-w-3xl mx-auto">
-            <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
-              Genişletilmiş <br /> <span className="text-[#facc15]">Hizmetlerimiz</span>
-            </h2>
-            <p className="text-xl text-gray-400 font-medium">
-              Her profil için uygun bir Avrupa iş planı hazırlıyoruz.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
-              <div className="w-16 h-16 bg-[#facc15]/10 rounded-lg flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
-                <Globe size={32} />
+          {/* HİZMETLER */}
+          <section id="hizmetler" className="py-32 lg:py-48 px-6">
+            <div className="max-w-7xl mx-auto space-y-20">
+              <div className="text-center space-y-6 max-w-3xl mx-auto">
+                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Genişletilmiş <br /> <span className="text-[#facc15]">Hizmetlerimiz</span></h2>
+                <p className="text-xl text-gray-400 font-medium">Her profil için uygun bir Avrupa iş planı hazırlıyoruz.</p>
               </div>
-              <h3 className="text-2xl font-black italic uppercase mb-4">A1 Transfer İle Giriş</h3>
-              <p className="text-gray-400 font-medium leading-relaxed mb-6">Dil şartı olmadan Avrupa’ya giriş imkanı sağlayan A1 transfer sürecini sizin için uçtan uca yönetiyoruz.</p>
-              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
-                <span>Detaylar</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-
-            <div className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
-              <div className="w-16 h-16 bg-[#facc15]/10 rounded-lg flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
-                <Factory size={32} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                  { icon: <Globe size={32} />, title: "A1 Transfer İle Giriş", desc: "Dil şartı olmadan Avrupa’ya giriş imkanı sağlayan A1 transfer sürecini sizin için uçtan uca yönetiyoruz." },
+                  { icon: <Factory size={32} />, title: "Farklı İş Kollarında Çalışma", desc: "Tır şoförlüğü dışında depo, üretim ve lojistik alanlarında geniş iş fırsatları ve yerleştirme imkanları sunuyoruz." },
+                  { icon: <ShieldCheck size={32} />, title: "2 Yıllık Oturum Kartı", desc: "Litvanya hükümeti onaylı, tüm Avrupa'da serbest dolaşım ve çalışma hakkı tanıyan oturum kartı süreciniz güvenli ellerde." }
+                ].map((item, i) => (
+                  <div key={i} className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
+                    <div className="w-16 h-16 bg-[#facc15]/10 rounded-lg flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">{item.icon}</div>
+                    <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
+                    <p className="text-gray-400 font-medium leading-relaxed mb-6">{item.desc}</p>
+                    <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
+                      <span>Detaylar</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                ))}
               </div>
-              <h3 className="text-2xl font-black italic uppercase mb-4">Farklı İş Kollarında Çalışma</h3>
-              <p className="text-gray-400 font-medium leading-relaxed mb-6">Tır şoförlüğü dışında depo, üretim ve lojistik alanlarında geniş iş fırsatları ve yerleştirme imkanları sunuyoruz.</p>
-              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
-                <span>İş İmkanları</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </button>
             </div>
+          </section>
 
-            <div className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
-              <div className="w-16 h-16 bg-[#facc15]/10 rounded-lg flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
-                <ShieldCheck size={32} />
+          {/* REFERANSLAR */}
+          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A]">
+            <div className="max-w-6xl mx-auto space-y-16">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Başarı <span className="text-[#facc15]">Hikayeleri</span></h2>
+                <p className="text-gray-400 font-medium text-lg">Müşterilerimizin CMSVize deneyimleri.</p>
               </div>
-              <h3 className="text-2xl font-black italic uppercase mb-4">2 Yıllık Oturum Kartı</h3>
-              <p className="text-gray-400 font-medium leading-relaxed mb-6">Litvanya hükümeti onaylı, tüm Avrupa'da serbest dolaşım ve çalışma hakkı tanıyan oturum kartı süreciniz güvenli ellerde.</p>
-              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
-                <span>Başvuru Yap</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* REFERANSLAR (LinkedIn Style) */}
-      <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A]">
-        <div className="max-w-6xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">
-              Başarı <span className="text-[#facc15]">Hikayeleri</span>
-            </h2>
-            <p className="text-gray-400 font-medium text-lg">Müşterilerimizin CMSVize deneyimleri.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { name: "Ahmet Yılmaz", visa: "Almanya C Tipi Vize", time: "1 hafta önce", text: "CMSVize ekibi sayesinde Almanya vizemi sorunsuz bir şekilde aldım. Başvuru sürecindeki her soruma hızlıca yanıt verdiler. Kesinlikle tavsiye ediyorum!" },
-              { name: "Mehmet Demir", visa: "Litvanya Oturum Kartı", time: "2 hafta önce", text: "2 yıllık oturum kartım elime ulaştı. Şimdi aile birleşimi sürecini başlatıyoruz. CMSVize uzmanlığına güvenebilirsiniz." },
-              { name: "Selin Kaya", visa: "Polonya Çalışma İzni", time: "1 ay önce", text: "Lojistik alanında Polonya'da işe başladım. Evrak takibi ve iş yerleştirme süreci beklediğimden çok daha profesyonel ilerledi." }
-            ].map((ref, idx) => (
-              <div key={idx} className="linkedin-card p-4 space-y-4 shadow-xl">
-                <div className="flex justify-between items-start">
-                  <div className="flex space-x-3">
-                    <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl">
-                      {ref.name[0]}
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-1">
-                        <h4 className="font-bold text-sm text-white">{ref.name}</h4>
-                        <BadgeCheck size={16} className="text-blue-500 fill-blue-500/20" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { name: "Ahmet Yılmaz", visa: "Almanya C Tipi Vize", time: "1 hafta önce", text: "CMSVize ekibi sayesinde Almanya vizemi sorunsuz bir şekilde aldım. Başvuru sürecindeki her soruma hızlıca yanıt verdiler." },
+                  { name: "Mehmet Demir", visa: "Litvanya Oturum Kartı", time: "2 hafta önce", text: "2 yıllık oturum kartım elime ulaştı. Şimdi aile birleşimi sürecini başlatıyoruz. CMSVize uzmanlığına güvenebilirsiniz." },
+                  { name: "Selin Kaya", visa: "Polonya Çalışma İzni", time: "1 ay önce", text: "Lojistik alanında Polonya'da işe başladım. Evrak takibi ve iş yerleştirme süreci beklediğimden çok profesyonel ilerledi." }
+                ].map((ref, idx) => (
+                  <div key={idx} className="linkedin-card p-4 space-y-4 shadow-xl">
+                    <div className="flex justify-between items-start">
+                      <div className="flex space-x-3">
+                        <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl">{ref.name[0]}</div>
+                        <div>
+                          <div className="flex items-center space-x-1">
+                            <h4 className="font-bold text-sm text-white">{ref.name}</h4>
+                            <BadgeCheck size={16} className="text-blue-500 fill-blue-500/20" />
+                          </div>
+                          <p className="text-[11px] text-gray-400 leading-tight">{ref.visa}</p>
+                          <p className="text-[10px] text-gray-500">{ref.time} • 🌐</p>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-gray-400 leading-tight">{ref.visa}</p>
-                      <p className="text-[10px] text-gray-500">{ref.time} • 🌐</p>
+                      <MoreHorizontal size={20} className="text-gray-500 cursor-pointer" />
+                    </div>
+                    <div className="text-sm text-gray-200 leading-relaxed font-normal">{ref.text}</div>
+                    <div className="flex items-center space-x-1 pt-2">
+                      <div className="flex -space-x-1">
+                        <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center border border-[#1B1F23]"><ThumbsUp size={8} className="text-white fill-white" /></div>
+                        <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center border border-[#1B1F23]"><Star size={8} className="text-white fill-white" /></div>
+                      </div>
+                      <span className="text-[10px] text-gray-400">12 • 4 yorum</span>
                     </div>
                   </div>
-                  <MoreHorizontal size={20} className="text-gray-500 cursor-pointer" />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* SÜREÇTEN KESİTLER */}
+          <section id="surec" className="py-32 px-6 bg-white/[0.01]">
+            <div className="max-w-7xl mx-auto space-y-20">
+              <div className="text-center space-y-6 max-w-3xl mx-auto">
+                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Görsel <span className="text-[#facc15]">Sürecimiz</span></h2>
+                <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="glass p-5 rounded-xl shadow-2xl">
+                  <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40 p-4 text-center flex items-center justify-center">
+                    <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
+                  </div>
+                  <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Resmi Oturum & Çalışma Kartı</p>
                 </div>
-                <div className="text-sm text-gray-200 leading-relaxed font-normal">{ref.text}</div>
-                <div className="flex items-center space-x-1 pt-2">
-                  <div className="flex -space-x-1">
-                    <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center border border-[#1B1F23]">
-                      <ThumbsUp size={8} className="text-white fill-white" />
+                <div className="glass p-5 rounded-xl shadow-2xl">
+                  <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40">
+                    <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" />
+                  </div>
+                  <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Uluslararası Lojistik Ağı</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SSS */}
+          <section id="sss" className="py-32 px-6 bg-[#0B0F1A]">
+            <div className="max-w-4xl mx-auto space-y-16">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Sıkça Sorulan <span className="text-[#facc15]">Sorular</span></h2>
+                <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve çalışma süreçlerine dair bilmeniz gerekenler.</p>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { q: "Vize randevusu ne kadar sürer?", a: "Vize randevu süreçleri seçilen ülkeye ve yoğunluğa göre 1-4 hafta sürer." },
+                  { q: "Red durumunda ne yapılır?", a: "Red durumunda uzman ekibimiz gerekçeleri inceleyip itiraz veya yeni başvuru sürecini başlatır." },
+                  { q: "Gerekli evraklar nelerdir?", a: "Pasaport, biyometrik fotoğraf, adli sicil kaydı temel evraklardır. Detaylı liste seçilen işe göre iletilir." },
+                  { q: "Oturum kartı süreci ne kadar sürer?", a: "Litvanya oturum kartı süreci ortalama 4-6 hafta sürmektedir." }
+                ].map((faq, idx) => (
+                  <div key={idx} className="linkedin-faq overflow-hidden transition-all duration-300 rounded-lg">
+                    <button onClick={() => setActiveFaq(activeFaq === idx ? null : idx)} className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02]">
+                      <span className={`text-lg font-bold transition-colors ${activeFaq === idx ? 'text-[#facc15]' : 'text-gray-200'}`}>{faq.q}</span>
+                      <ChevronDown className={`transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-[#facc15]' : 'text-gray-500'}`} />
+                    </button>
+                    <div className={`transition-all duration-500 overflow-hidden ${activeFaq === idx ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="p-6 pt-0 text-gray-400 font-normal border-t border-white/5 bg-white/[0.01] leading-relaxed">{faq.a}</div>
                     </div>
-                    <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center border border-[#1B1F23]">
-                      <Star size={8} className="text-white fill-white" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* FORM SECTION */}
+          <section ref={formRef} className="py-32 px-6">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-0 rounded-xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5 relative">
+                <div className="bg-[#131926] p-10 lg:p-20 relative">
+                  {isSubmitting && <div className="absolute inset-0 bg-[#131926]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center space-y-4">
+                    <div className="w-12 h-12 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">Yönlendiriliyorsunuz...</p>
+                  </div>}
+                  <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
+                  <form onSubmit={handleFormSubmit} className="space-y-8">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
+                      <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
+                        <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
+                        <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
+                          <option className="bg-[#0B0F1A]">Almanya</option>
+                          <option className="bg-[#0B0F1A]">Litvanya</option>
+                          <option className="bg-[#0B0F1A]">Polonya</option>
+                          <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
+                      <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
+                        <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
+                        <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
+                        <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
+                        <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
+                      <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                    </div>
+                    <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
+                  </form>
+                </div>
+                <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
+                  <div className="space-y-12">
+                    <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
+                    <div className="space-y-6 font-black text-2xl italic tracking-tighter">
+                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>HERKES İÇİN İŞ İMKANI</span> </p>
+                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€+ MAAŞ FIRSATI</span> </p>
+                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
                     </div>
                   </div>
-                  <span className="text-[10px] text-gray-400">12 • 4 yorum</span>
-                </div>
-                <div className="border-t border-gray-700 pt-2 flex justify-around text-gray-400 font-bold">
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
-                    <ThumbsUp size={18} />
-                    <span className="text-xs text-gray-400">Beğen</span>
-                  </div>
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
-                    <MessageSquare size={18} />
-                    <span className="text-xs text-gray-400">Yorum</span>
-                  </div>
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
-                    <Share2 size={18} />
-                    <span className="text-xs text-gray-400">Paylaş</span>
+                  <div className="space-y-4 pt-10 border-t border-black/10">
+                    <p className="text-3xl font-black tracking-tighter flex items-center space-x-3"> <Phone /> <span>+90 545 991 82 68</span> </p>
+                    <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Merkez, Aksaray / Vilnius</span> </p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SÜREÇTEN KESİTLER */}
-      <section id="surec" className="py-32 px-6 bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto space-y-20">
-          <div className="text-center space-y-6 max-w-3xl mx-auto">
-            <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
-              Görsel <span className="text-[#facc15]">Sürecimiz</span>
-            </h2>
-            <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="glass p-5 rounded-xl shadow-2xl">
-              <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40 p-4 text-center flex items-center justify-center">
-                <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
-              </div>
-              <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Resmi Oturum & Çalışma Kartı</p>
-            </div>
-            <div className="glass p-5 rounded-xl shadow-2xl">
-              <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40">
-                <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" />
-              </div>
-              <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Uluslararası Lojistik Ağı</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SSS (LinkedIn Aesthetic) */}
-      <section id="sss" className="py-32 px-6 bg-[#0B0F1A]">
-        <div className="max-w-4xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">
-              Sıkça Sorulan <span className="text-[#facc15]">Sorular</span>
-            </h2>
-            <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve çalışma süreçlerine dair bilmeniz gerekenler.</p>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { q: "Vize randevusu ne kadar sürer?", a: "Vize randevu süreçleri seçilen ülkeye ve dönemsel yoğunluğa bağlı olarak 1-4 hafta arasında değişmektedir. CMSVize olarak en erken randevu için tüm süreci optimize ediyoruz." },
-              { q: "Red durumunda ne yapılır?", a: "Vize reddi durumunda uzman ekibimiz ret gerekçelerini titizlikle inceleyerek itiraz sürecini başlatır veya eksikleri gidererek yeni bir başvuru planı hazırlar." },
-              { q: "Gerekli evraklar nelerdir?", a: "Temel olarak pasaport, biyometrik fotoğraf, adli sicil kaydı ve ikametgah belgesi gerekmektedir. Mesleki belgeler ve ek evrak listesi seçtiğiniz iş koluna göre size özel olarak iletilmektedir." },
-              { q: "Oturum kartı süreci ne kadar sürer?", a: "Litvanya oturum kartı süreci evrakların tesliminden itibaren ortalama 4-6 hafta sürmektedir." }
-            ].map((faq, idx) => (
-              <div key={idx} className="linkedin-faq overflow-hidden transition-all duration-300">
-                <button 
-                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors group"
-                >
-                  <span className={`text-lg font-bold tracking-tight transition-colors ${activeFaq === idx ? 'text-[#facc15]' : 'text-gray-200'}`}>{faq.q}</span>
-                  <ChevronDown className={`text-gray-500 transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-[#facc15]' : ''}`} />
-                </button>
-                <div className={`transition-all duration-500 overflow-hidden ${activeFaq === idx ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className="p-6 pt-0 text-gray-400 font-normal text-base leading-relaxed border-t border-white/5 bg-white/[0.01]">
-                    {faq.a}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FORM SECTION */}
-      <section ref={formRef} className="py-32 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-0 rounded-xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5">
-            <div className="bg-[#131926] p-10 lg:p-20">
-              <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
-              <form onSubmit={handleFormSubmit} className="space-y-8">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
-                  <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
-                </div>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
-                    <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
-                    <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
-                      <option className="bg-[#0B0F1A]">Almanya</option>
-                      <option className="bg-[#0B0F1A]">Litvanya</option>
-                      <option className="bg-[#0B0F1A]">Polonya</option>
-                      <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
-                  <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
-                    <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
-                    <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
-                    <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
-                    <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
-                </div>
-                <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
-              </form>
-            </div>
-            <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
-              <div className="space-y-12">
-                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
-                <div className="space-y-6 font-black text-2xl italic tracking-tighter">
-                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>HERKES İÇİN İŞ İMKANI</span> </p>
-                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€+ MAAŞ FIRSATI</span> </p>
-                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
-                </div>
-              </div>
-              <div className="space-y-4 pt-10 border-t border-black/10">
-                <p className="text-3xl font-black tracking-tighter flex items-center space-x-3"> <Phone /> <span>+90 545 991 82 68</span> </p>
-                <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Merkez, Aksaray / Vilnius</span> </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        </>
+      ) : (
+        <LegalPage 
+          title={LegalContent[currentPage].title} 
+          content={LegalContent[currentPage].content} 
+        />
+      )}
 
       {/* FOOTER */}
       <footer className="py-24 border-t border-white/5 bg-[#0B0F1A]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
             <div className="space-y-6">
-              <div className="flex items-center space-x-3 group cursor-pointer">
-                <div className="w-10 h-10 bg-[#facc15] rounded-md flex items-center justify-center">
-                  <Truck size={22} className="text-[#0B0F1A]" />
-                </div>
-                <span className="text-2xl font-black tracking-tighter uppercase italic">
-                  CMS<span className="text-[#facc15]">Vize</span>
-                </span>
+              <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
+                <div className="w-10 h-10 bg-[#facc15] rounded-md flex items-center justify-center"><Truck size={22} className="text-[#0B0F1A]" /></div>
+                <span className="text-2xl font-black tracking-tighter uppercase italic">CMS<span className="text-[#facc15]">Vize</span></span>
               </div>
-              <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">
-                Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.
-              </p>
+              <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
+              <div className="flex space-x-4 pt-4">
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Linkedin size={18} /></a>
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Instagram size={18} /></a>
+                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Facebook size={18} /></a>
+              </div>
             </div>
             <div className="space-y-6">
               <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Hızlı Bağlantılar</h4>
               <ul className="space-y-4 font-bold text-sm text-gray-400">
-                <li><a href="#hizmetler" className="hover:text-white transition-colors">Hizmetlerimiz</a></li>
-                <li><a href="#surec" className="hover:text-white transition-colors">Süreç Yönetimi</a></li>
-                <li><a href="#referanslar" className="hover:text-white transition-colors">Başarı Hikayeleri</a></li>
-                <li><a href="#sss" className="hover:text-white transition-colors">Sıkça Sorulan Sorular</a></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
+                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({behavior:'smooth'}), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
               </ul>
             </div>
             <div className="space-y-6 lg:col-span-2 lg:flex lg:space-y-0 lg:gap-16">
               <div className="space-y-6">
                 <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Yasal</h4>
                 <ul className="space-y-4 font-bold text-sm text-gray-400">
-                  <li><a href="#" className="hover:text-white transition-colors uppercase tracking-tighter italic">KVKK Aydınlatma Metni</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors uppercase tracking-tighter italic">Gizlilik Politikası</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors uppercase tracking-tighter italic">Kullanım Şartları</a></li>
+                  <li><button onClick={() => setCurrentPage('kvkk')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">KVKK Aydınlatma Metni</button></li>
+                  <li><button onClick={() => setCurrentPage('privacy')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Gizlilik Politikası</button></li>
+                  <li><button onClick={() => setCurrentPage('terms')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Kullanım Şartları</button></li>
                 </ul>
               </div>
               <div className="space-y-6">
                 <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">İletişim</h4>
                 <ul className="space-y-4 font-bold text-sm text-gray-400">
                   <li className="flex items-center space-x-2"><Phone size={14} /> <span>+90 545 991 82 68</span></li>
+                  <li className="flex items-center space-x-2"><Mail size={14} /> <span>bilgi@cmsvize.com</span></li>
                   <li className="flex items-center space-x-2"><MapPin size={14} /> <span>Aksaray, Türkiye</span></li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">
-              © 2026 CMSVize Danışmanlık. Tüm hakları saklıdır.
-            </p>
-            <div className="flex space-x-6 text-[10px] font-black text-gray-600 uppercase tracking-widest">
-              <span>Made with ❤️ for Global Careers</span>
-            </div>
+            <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 CMSVize Danışmanlık. Tüm hakları saklıdır.</p>
+            <div className="flex space-x-6 text-[10px] font-black text-gray-600 uppercase tracking-widest"><span>Designed for Excellence</span></div>
           </div>
         </div>
       </footer>
@@ -648,16 +728,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {/* WHATSAPP FLOAT */}
       <a href={getWhatsAppURL()} target="_blank" className="fixed bottom-10 right-10 z-50 group transition-transform hover:scale-110">
         <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-150"></div>
-        <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl transition-all duration-500">
-          <MessageCircle size={36} className="text-white" fill="currentColor" />
-        </div>
+        <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl transition-all duration-500"><MessageCircle size={36} className="text-white" fill="currentColor" /></div>
       </a>
 
       {/* FAKE LIVE POPUP */}
       <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-lg flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
-        <div className="w-12 h-12 bg-[#facc15]/20 rounded-md flex items-center justify-center text-[#facc15]">
-          <Users size={24} />
-        </div>
+        <div className="w-12 h-12 bg-[#facc15]/20 rounded-md flex items-center justify-center text-[#facc15]"><Users size={24} /></div>
         <div>
           <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
           <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
