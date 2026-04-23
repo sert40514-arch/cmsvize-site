@@ -500,9 +500,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { name: "Caner T.", visa: "Almanya Ulusal Vize", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
-                  { name: "Ayşe K.", visa: "İngiltere Nitelikli Çalışan", time: "1 hafta önce", text: "İngiltere çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde onaylandı. Gerekli evrakların çevirisinden randevu alımına kadar her şey kusursuzdu." },
-                  { name: "Burak E.", visa: "ABD E2 Yatırımcı Vizesi", time: "2 hafta önce", text: "ABD yatırımcı vizesi gibi zorlu bir süreçte bana verdikleri kurumsal ve dürüst destek için teşekkür ederim. Artık işime odaklanabiliyorum." }
+                  { name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
+                  { name: "Ayşe K.", visa: "Litvanya Oturum İzni ve Çalışma Vizesi", time: "1 hafta önce", text: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu." },
+                  { name: "Burak E.", visa: "Polonya D Tipi Ulusal Vize", time: "2 hafta önce", text: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı." }
                 ].map((ref, idx) => (
                   <div key={idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300">
                     <div className="flex justify-between items-start">
