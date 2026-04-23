@@ -1,4 +1,18 @@
-import { ShieldCheck, FileBadge2, Truck, Globe2, Phone, CheckCircle2, ArrowRight, Briefcase, FileText, Clock3, BadgeCheck, MessageCircleMore, Building2 } from "lucide-react";
+import {
+  ShieldCheck,
+  FileBadge2,
+  Truck,
+  Globe2,
+  Phone,
+  CheckCircle2,
+  ArrowRight,
+  Briefcase,
+  FileText,
+  Clock3,
+  BadgeCheck,
+  MessageCircleMore,
+  Building2,
+} from "lucide-react";
 
 export default function CMSVizeLandingPage() {
   const stats = [
@@ -77,20 +91,35 @@ export default function CMSVizeLandingPage() {
             </div>
             <div>
               <div className="text-lg font-black tracking-tight">CMSVize</div>
-              <div className="text-xs text-slate-400">Avrupa Oturum ve Sürücü Danışmanlığı</div>
+              <div className="text-xs text-slate-400">
+                Avrupa Oturum ve Sürücü Danışmanlığı
+              </div>
             </div>
           </div>
 
           <nav className="hidden items-center gap-8 text-sm text-slate-300 lg:flex">
-            <a href="#hizmetler" className="transition hover:text-white">Hizmetler</a>
-            <a href="#surec" className="transition hover:text-white">Süreç</a>
-            <a href="#neden-biz" className="transition hover:text-white">Neden Biz?</a>
-            <a href="#iletisim" className="transition hover:text-white">İletişim</a>
+            <a href="#hizmetler" className="transition hover:text-white">
+              Hizmetler
+            </a>
+            <a href="#surec" className="transition hover:text-white">
+              Süreç
+            </a>
+            <a href="#neden-biz" className="transition hover:text-white">
+              Neden Biz?
+            </a>
+            <a href="#iletisim" className="transition hover:text-white">
+              İletişim
+            </a>
           </nav>
 
-          <button className="hidden rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:scale-[1.02] lg:inline-flex">
+          <a
+            href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:scale-[1.02] lg:inline-flex"
+          >
             Hızlı Başvuru
-          </button>
+          </a>
         </div>
       </header>
 
@@ -105,29 +134,51 @@ export default function CMSVizeLandingPage() {
             </div>
 
             <h1 className="max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
-              Avrupa Yolunda
-              <span className="mt-2 block text-yellow-400">Güvenli, Koyu ve Kurumsal</span>
-              <span className="mt-2 block text-white">Bir Dijital Vitrin</span>
+              2 Yıllık Litvanya Oturum
+              <span className="mt-2 block text-yellow-400">
+                KOD 95 ile Avrupa Yolunda
+              </span>
+              <span className="mt-2 block text-white">
+                Güvenli ve Profesyonel Başlangıç
+              </span>
             </h1>
 
             <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
-              Litvanya oturum, KOD 95 ve Avrupa iş fırsatları için güçlü marka algısı oluşturan, tamamen profesyonel ve koyu temalı bir açılış sayfası.
+              Litvanya oturum, KOD 95 ve Avrupa iş fırsatları için güçlü marka
+              algısı oluşturan, tamamen profesyonel ve koyu temalı bir açılış
+              sayfası.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-4">
-              <button className="inline-flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 text-sm font-bold text-slate-950 shadow-xl shadow-yellow-500/20 transition hover:scale-[1.02]">
+              <a
+                href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 text-sm font-bold text-slate-950 shadow-xl shadow-yellow-500/20 transition hover:scale-[1.02]"
+              >
                 Hemen Başvuru <ArrowRight className="h-4 w-4" />
-              </button>
-              <button className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/10">
+              </a>
+
+              <a
+                href="#hizmetler"
+                className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
                 Hizmetleri İncele
-              </button>
+              </a>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {stats.map((item) => (
-                <div key={item.label} className="rounded-3xl border border-white/10 bg-white/5 px-5 py-5 backdrop-blur-sm">
-                  <div className="text-2xl font-black text-yellow-400">{item.value}</div>
-                  <div className="mt-1 text-sm text-slate-300">{item.label}</div>
+                <div
+                  key={item.label}
+                  className="rounded-3xl border border-white/10 bg-white/5 px-5 py-5 backdrop-blur-sm"
+                >
+                  <div className="text-2xl font-black text-yellow-400">
+                    {item.value}
+                  </div>
+                  <div className="mt-1 text-sm text-slate-300">
+                    {item.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -138,8 +189,12 @@ export default function CMSVizeLandingPage() {
               <div className="rounded-[28px] border border-blue-400/10 bg-[#071226] p-6">
                 <div className="mb-6 flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-sm text-slate-400">Kurumsal Süreç Paneli</div>
-                    <div className="mt-1 text-3xl font-black tracking-tight">CMSVize</div>
+                    <div className="text-sm text-slate-400">
+                      Kurumsal Süreç Paneli
+                    </div>
+                    <div className="mt-1 text-3xl font-black tracking-tight">
+                      CMSVize
+                    </div>
                   </div>
                   <div className="rounded-2xl bg-yellow-400 px-4 py-3 text-sm font-bold text-slate-950">
                     2 Yıllık Oturum
@@ -149,30 +204,59 @@ export default function CMSVizeLandingPage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-[24px] border border-white/10 bg-slate-800/40 p-5">
                     <div className="text-sm text-slate-400">Ana Hizmet</div>
-                    <div className="mt-3 text-3xl font-black">Litvanya Oturum</div>
-                    <div className="mt-2 text-sm leading-7 text-slate-300">Başvuru, evrak ve süreç yönetimi ile güven veren danışmanlık yapısı.</div>
+                    <div className="mt-3 text-3xl font-black">
+                      Litvanya Oturum
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-slate-300">
+                      Başvuru, evrak ve süreç yönetimi ile güven veren
+                      danışmanlık yapısı.
+                    </div>
                   </div>
+
                   <div className="rounded-[24px] border border-yellow-400/20 bg-yellow-400/10 p-5">
-                    <div className="text-sm text-yellow-200/70">Profesyonel Sürücü</div>
-                    <div className="mt-3 text-3xl font-black text-yellow-300">KOD 95</div>
-                    <div className="mt-2 text-sm leading-7 text-yellow-100/80">Mesleki yeterlilik odaklı, premium destek ve süreç rehberliği.</div>
+                    <div className="text-sm text-yellow-200/70">
+                      Profesyonel Sürücü
+                    </div>
+                    <div className="mt-3 text-3xl font-black text-yellow-300">
+                      KOD 95
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-yellow-100/80">
+                      Mesleki yeterlilik odaklı, premium destek ve süreç
+                      rehberliği.
+                    </div>
                   </div>
+
                   <div className="rounded-[24px] border border-white/10 bg-slate-800/40 p-5 md:col-span-2">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <div className="text-sm text-slate-400">Transit Hatlar</div>
-                        <div className="mt-2 text-2xl font-black">Litvanya → Almanya / Fransa / İtalya</div>
-                        <div className="mt-2 text-sm text-slate-300">Avrupa hedefli sürücü ve oturum süreçleri için odak pazarlama yapısı.</div>
+                        <div className="text-sm text-slate-400">
+                          Transit Hatlar
+                        </div>
+                        <div className="mt-2 text-2xl font-black">
+                          Litvanya → Almanya / Fransa / İtalya
+                        </div>
+                        <div className="mt-2 text-sm text-slate-300">
+                          Avrupa hedefli sürücü ve oturum süreçleri için odak
+                          pazarlama yapısı.
+                        </div>
                       </div>
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-2xl">🌍</div>
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-2xl">
+                        🌍
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">Kurumsal güven algısı</div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">Premium müşteri sunumu</div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">Dijital reklam uyumu</div>
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">
+                    Kurumsal güven algısı
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">
+                    Premium müşteri sunumu
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-slate-300">
+                    Dijital reklam uyumu
+                  </div>
                 </div>
               </div>
             </div>
@@ -184,24 +268,37 @@ export default function CMSVizeLandingPage() {
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
-              <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">Hizmetlerimiz</div>
-              <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Tamamen profesyonel çözümler</h2>
+              <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">
+                Hizmetlerimiz
+              </div>
+              <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">
+                Tamamen profesyonel çözümler
+              </h2>
             </div>
             <p className="max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              Koyu tema, premium görünüm ve güven veren mesaj dili ile CMSVize markasını güçlü gösterecek hizmet blokları burada sunulur.
+              Koyu tema, premium görünüm ve güven veren mesaj dili ile CMSVize
+              markasını güçlü gösterecek hizmet blokları burada sunulur.
             </p>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {services.map((service) => (
-              <div key={service.title} className="group rounded-[28px] border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-yellow-400/20 hover:bg-white/[0.06]">
+              <div
+                key={service.title}
+                className="group rounded-[28px] border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-yellow-400/20 hover:bg-white/[0.06]"
+              >
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-yellow-400/20 bg-yellow-400/10 text-yellow-300">
                   {service.icon}
                 </div>
-                <h3 className="mt-6 text-2xl font-black tracking-tight">{service.title}</h3>
-                <p className="mt-4 text-sm leading-8 text-slate-300">{service.desc}</p>
+                <h3 className="mt-6 text-2xl font-black tracking-tight">
+                  {service.title}
+                </h3>
+                <p className="mt-4 text-sm leading-8 text-slate-300">
+                  {service.desc}
+                </p>
                 <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-yellow-300">
-                  Detayı Gör <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  Detayı Gör{" "}
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </div>
               </div>
             ))}
@@ -212,78 +309,129 @@ export default function CMSVizeLandingPage() {
       <section id="surec" className="bg-[#030712]">
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
           <div className="text-center">
-            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">Süreç Planı</div>
-            <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Başvurudan sonuca kadar net akış</h2>
+            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">
+              Süreç Planı
+            </div>
+            <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">
+              Başvurudan sonuca kadar net akış
+            </h2>
             <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-slate-400 sm:text-lg">
-              Ziyaretçinin kafasını karıştırmayan, adım adım güven veren bir süreç anlatımıyla dönüşüm oranını yükseltecek profesyonel yapı.
+              Ziyaretçinin kafasını karıştırmayan, adım adım güven veren bir
+              süreç anlatımıyla dönüşüm oranını yükseltecek profesyonel yapı.
             </p>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {process.map((item) => (
-              <div key={item.step} className="rounded-[28px] border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] p-7">
+              <div
+                key={item.step}
+                className="rounded-[28px] border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] p-7"
+              >
                 <div className="flex items-center justify-between">
-                  <div className="text-5xl font-black text-yellow-400/90">{item.step}</div>
+                  <div className="text-5xl font-black text-yellow-400/90">
+                    {item.step}
+                  </div>
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-200">
                     {item.icon}
                   </div>
                 </div>
                 <h3 className="mt-8 text-2xl font-black">{item.title}</h3>
-                <p className="mt-4 text-sm leading-8 text-slate-300">{item.desc}</p>
+                <p className="mt-4 text-sm leading-8 text-slate-300">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="neden-biz" className="border-y border-white/10 bg-[#020817]">
+      <section
+        id="neden-biz"
+        className="border-y border-white/10 bg-[#020817]"
+      >
         <div className="mx-auto grid max-w-7xl gap-8 px-6 py-24 lg:grid-cols-[1fr_0.95fr] lg:px-8">
           <div className="rounded-[32px] border border-white/10 bg-gradient-to-br from-[#0a1630] to-[#07101f] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-10">
-            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">Neden Biz?</div>
-            <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Güven veren marka hissi</h2>
+            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-400">
+              Neden Biz?
+            </div>
+            <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">
+              Güven veren marka hissi
+            </h2>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              Bu yapı sadece güzel görünmek için değil, potansiyel müşterinin markaya güvenmesini sağlamak ve iletişime geçmesini kolaylaştırmak için tasarlandı.
+              Bu yapı sadece güzel görünmek için değil, potansiyel müşterinin
+              markaya güvenmesini sağlamak ve iletişime geçmesini kolaylaştırmak
+              için tasarlandı.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {reasons.map((reason) => (
-                <div key={reason} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div
+                  key={reason}
+                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"
+                >
                   <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-yellow-400" />
-                  <div className="text-sm leading-7 text-slate-200">{reason}</div>
+                  <div className="text-sm leading-7 text-slate-200">
+                    {reason}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div id="iletisim" className="rounded-[32px] border border-yellow-400/15 bg-yellow-400/10 p-8 sm:p-10">
-            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-300">İletişim Alanı</div>
-            <h3 className="mt-4 text-3xl font-black sm:text-4xl">Müşteriyi harekete geçiren bölüm</h3>
+          <div
+            id="iletisim"
+            className="rounded-[32px] border border-yellow-400/15 bg-yellow-400/10 p-8 sm:p-10"
+          >
+            <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-300">
+              İletişim Alanı
+            </div>
+            <h3 className="mt-4 text-3xl font-black sm:text-4xl">
+              Müşteriyi harekete geçiren bölüm
+            </h3>
             <p className="mt-5 text-base leading-8 text-yellow-100/85">
-              Buraya WhatsApp, telefon, iletişim formu ve reklamdan gelen müşteriyi hızlıca dönüştürecek başvuru alanı eklenebilir.
+              Buraya WhatsApp, telefon, iletişim formu ve reklamdan gelen
+              müşteriyi hızlıca dönüştürecek başvuru alanı eklenebilir.
             </p>
 
             <div className="mt-8 space-y-4">
               <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
                 <div className="text-sm text-yellow-100/70">Telefon</div>
-                <div className="mt-2 text-lg font-bold text-white">+90 5XX XXX XX XX</div>
+                <div className="mt-2 text-lg font-bold text-white">
+                  +90 545 991 82 68
+                </div>
               </div>
+
               <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
                 <div className="text-sm text-yellow-100/70">E-posta</div>
-                <div className="mt-2 text-lg font-bold text-white">info@cmsvize.com</div>
+                <div className="mt-2 text-lg font-bold text-white">
+                  info@cmsvize.com
+                </div>
               </div>
+
               <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
                 <div className="text-sm text-yellow-100/70">Hızlı Mesaj</div>
-                <div className="mt-2 text-lg font-bold text-white">Başvurunuzu şimdi başlatın</div>
+                <div className="mt-2 text-lg font-bold text-white">
+                  Başvurunuzu şimdi başlatın
+                </div>
               </div>
             </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-black">
+              <a
+                href="tel:+905459918268"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-black"
+              >
                 <Phone className="h-4 w-4" /> Hemen Ara
-              </button>
-              <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/15">
+              </a>
+
+              <a
+                href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/15"
+              >
                 <MessageCircleMore className="h-4 w-4" /> WhatsApp Yaz
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -292,8 +440,10 @@ export default function CMSVizeLandingPage() {
       <footer className="bg-[#030712]">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-8 text-sm text-slate-400 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
-            <span className="font-black text-white">CMSVize</span> • Koyu, premium ve güven veren kurumsal açılış sayfası.
+            <span className="font-black text-white">CMSVize</span> • Koyu,
+            premium ve güven veren kurumsal açılış sayfası.
           </div>
+
           <div className="flex flex-wrap gap-5">
             <span>Ana Sayfa</span>
             <span>Hizmetler</span>
@@ -302,6 +452,27 @@ export default function CMSVizeLandingPage() {
           </div>
         </div>
       </footer>
+
+      <a
+        href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="WhatsApp ile iletişime geç"
+        className="group fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-full border border-green-400/30 bg-green-500 px-5 py-3 text-white shadow-[0_12px_35px_rgba(34,197,94,0.35)] transition duration-300 hover:scale-105 hover:bg-green-400 animate-bounce [animation-duration:2.2s]"
+      >
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15">
+          <MessageCircleMore className="h-6 w-6" />
+        </div>
+
+        <div className="pr-1">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">
+            Hemen Yaz
+          </div>
+          <div className="text-sm font-black leading-none">
+            WhatsApp Destek
+          </div>
+        </div>
+      </a>
     </div>
   );
 }
