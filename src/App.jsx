@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ShieldCheck,
   FileBadge2,
@@ -12,9 +13,20 @@ import {
   BadgeCheck,
   MessageCircleMore,
   Building2,
+  Send,
+  User,
+  MapPinned,
+  MessageSquareText,
 } from "lucide-react";
 
 export default function CMSVizeLandingPage() {
+  const [form, setForm] = useState({
+    fullName: "",
+    phone: "",
+    country: "Almanya",
+    message: "",
+  });
+
   const stats = [
     { value: "2 Yıl", label: "Oturum Odaklı Süreç" },
     { value: "KOD 95", label: "Profesyonel Sürücü Desteği" },
@@ -81,6 +93,19 @@ export default function CMSVizeLandingPage() {
     "Avrupa hedefi olan başvurular için düzenli planlama",
   ];
 
+  const whatsappMessage = `Merhaba, CMSVize üzerinden başvuru bırakıyorum.%0A%0AAd Soyad: ${form.fullName || "-"}%0ATelefon: ${form.phone || "-"}%0AHedef Ülke: ${form.country || "-"}%0AMesaj: ${form.message || "-"}`;
+  const whatsappLink = `https://wa.me/905459918268?text=${whatsappMessage}`;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="min-h-screen bg-[#030712] text-white">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#030712]/80 backdrop-blur-xl">
@@ -107,15 +132,13 @@ export default function CMSVizeLandingPage() {
             <a href="#neden-biz" className="transition hover:text-white">
               Neden Biz?
             </a>
-            <a href="#iletisim" className="transition hover:text-white">
-              İletişim
+            <a href="#basvuru-formu" className="transition hover:text-white">
+              Başvuru
             </a>
           </nav>
 
           <a
-            href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#basvuru-formu"
             className="hidden rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:scale-[1.02] lg:inline-flex"
           >
             Hızlı Başvuru
@@ -151,9 +174,7 @@ export default function CMSVizeLandingPage() {
 
             <div className="mt-9 flex flex-wrap gap-4">
               <a
-                href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#basvuru-formu"
                 className="inline-flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 text-sm font-bold text-slate-950 shadow-xl shadow-yellow-500/20 transition hover:scale-[1.02]"
               >
                 Hemen Başvuru <ArrowRight className="h-4 w-4" />
@@ -379,60 +400,91 @@ export default function CMSVizeLandingPage() {
           </div>
 
           <div
-            id="iletisim"
+            id="basvuru-formu"
             className="rounded-[32px] border border-yellow-400/15 bg-yellow-400/10 p-8 sm:p-10"
           >
             <div className="text-sm font-bold uppercase tracking-[0.28em] text-yellow-300">
-              İletişim Alanı
+              Başvuru Formu
             </div>
             <h3 className="mt-4 text-3xl font-black sm:text-4xl">
-              Müşteriyi harekete geçiren bölüm
+              Bilgini bırak, sana hızlı dönüş yapalım
             </h3>
             <p className="mt-5 text-base leading-8 text-yellow-100/85">
-              Buraya WhatsApp, telefon, iletişim formu ve reklamdan gelen
-              müşteriyi hızlıca dönüştürecek başvuru alanı eklenebilir.
+              Formu doldur, gönder butonuna bas. Bilgiler hazır mesaj halinde
+              direkt WhatsApp ekranına düşsün.
             </p>
 
-            <div className="mt-8 space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <div className="text-sm text-yellow-100/70">Telefon</div>
-                <div className="mt-2 text-lg font-bold text-white">
-                  +90 545 991 82 68
+            <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <label className="mb-2 flex items-center gap-2 text-sm text-yellow-100/80">
+                    <User className="h-4 w-4" /> Ad Soyad
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={form.fullName}
+                    onChange={handleChange}
+                    placeholder="Ad Soyad"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-yellow-400/40"
+                    required
+                  />
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <label className="mb-2 flex items-center gap-2 text-sm text-yellow-100/80">
+                    <Phone className="h-4 w-4" /> Telefon
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="05XX XXX XX XX"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-yellow-400/40"
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <div className="text-sm text-yellow-100/70">E-posta</div>
-                <div className="mt-2 text-lg font-bold text-white">
-                  info@cmsvize.com
-                </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <label className="mb-2 flex items-center gap-2 text-sm text-yellow-100/80">
+                  <MapPinned className="h-4 w-4" /> Hedef Ülke
+                </label>
+                <select
+                  name="country"
+                  value={form.country}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none focus:border-yellow-400/40"
+                >
+                  <option className="text-black">Almanya</option>
+                  <option className="text-black">Fransa</option>
+                  <option className="text-black">İtalya</option>
+                  <option className="text-black">Diğer</option>
+                </select>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                <div className="text-sm text-yellow-100/70">Hızlı Mesaj</div>
-                <div className="mt-2 text-lg font-bold text-white">
-                  Başvurunuzu şimdi başlatın
-                </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <label className="mb-2 flex items-center gap-2 text-sm text-yellow-100/80">
+                  <MessageSquareText className="h-4 w-4" /> Mesaj
+                </label>
+                <textarea
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  rows="4"
+                  placeholder="Kısa bilgi bırakabilirsiniz"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-yellow-400/40"
+                />
               </div>
-            </div>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <a
-                href="tel:+905459918268"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-black"
+              <button
+                type="submit"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-black"
               >
-                <Phone className="h-4 w-4" /> Hemen Ara
-              </a>
-
-              <a
-                href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-6 py-4 text-sm font-bold text-white transition hover:bg-white/15"
-              >
-                <MessageCircleMore className="h-4 w-4" /> WhatsApp Yaz
-              </a>
-            </div>
+                <Send className="h-4 w-4" /> Formu WhatsApp ile Gönder
+              </button>
+            </form>
           </div>
         </div>
       </section>
@@ -448,13 +500,13 @@ export default function CMSVizeLandingPage() {
             <span>Ana Sayfa</span>
             <span>Hizmetler</span>
             <span>Süreç</span>
-            <span>İletişim</span>
+            <span>Başvuru</span>
           </div>
         </div>
       </footer>
 
       <a
-        href="https://wa.me/905459918268?text=Merhaba,%202%20y%C4%B1ll%C4%B1k%20Litvanya%20oturum%20ve%20KOD%2095%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+        href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp ile iletişime geç"
