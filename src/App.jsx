@@ -18,7 +18,9 @@ import {
   Star,
   Zap,
   Globe,
-  FileText
+  FileText,
+  Package,
+  Factory
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -35,6 +37,7 @@ const App = () => {
     name: '',
     phone: '',
     country: 'Almanya',
+    workField: 'Tır Şoförlüğü (KOD95)',
     message: ''
   });
 
@@ -45,7 +48,7 @@ const App = () => {
 
   const formRef = useRef(null);
 
-  // Logic Preserved
+  // Logic Preserved & Enhanced
   useEffect(() => {
     const vInterval = setInterval(() => {
       setActiveViewers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
@@ -54,13 +57,13 @@ const App = () => {
   }, []);
 
   const popups = [
-    "Ahmet K. – Almanya başvurusu yaptı",
-    "Mehmet T. – KOD95 sürecine başladı",
-    "Caner Y. – Litvanya oturum kartını aldı",
-    "Burak S. – Polonya iş yerleştirmesi tamamlandı",
+    "Ahmet K. – Almanya depo işi başvurusu yaptı",
+    "Mehmet Y. – Tır şoförlüğü için başvurdu",
+    "Hasan A. – A1 transfer sürecine başladı",
+    "Burak S. – Polonya lojistik başvurusu yaptı",
     "Sinan G. – 2 yıllık oturum onaylandı",
-    "Yusuf E. – Fransa tır şoförlüğü başvurusu",
-    "Mert A. – Hollanda için evraklarını teslim etti"
+    "Yusuf E. – Hollanda fabrika işi başvurusu",
+    "Mert A. – Danışman önerisi ile sürece başladı"
   ];
 
   useEffect(() => {
@@ -83,6 +86,8 @@ const App = () => {
 Ad Soyad: ${data.name || '---'}
 Telefon: ${data.phone || '---'}
 Hedef Ülke: ${data.country || 'Genel'}
+İlgilendiğim alan: ${data.workField}
+
 Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   };
@@ -124,8 +129,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </div>
           
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-            <a href="#surec" className="hover:text-[#facc15] transition-colors">GÖRSEL SÜREÇ</a>
-            <a href="#evrak" className="hover:text-[#facc15] transition-colors">EVRAK TAKİBİ</a>
+            <a href="#surec" className="hover:text-[#facc15] transition-colors">SÜREÇ</a>
+            <a href="#hizmetler" className="hover:text-[#facc15] transition-colors">HİZMETLER</a>
             <a href="#guven" className="hover:text-[#facc15] transition-colors">GÜVEN</a>
             <button onClick={scrollToForm} className="bg-[#facc15] text-[#0B0F1A] px-8 py-3 rounded-full font-black hover:scale-105 transition-all shadow-xl glow-y">
               HEMEN BAŞVUR
@@ -143,13 +148,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
           <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
           <a href="#surec" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">SÜREÇ</a>
-          <a href="#evrak" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">EVRAK</a>
+          <a href="#hizmetler" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">HİZMETLER</a>
           <a href="#guven" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">GÜVEN</a>
           <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-2xl font-black text-2xl">BAŞVUR</button>
         </div>
       </div>
 
-      {/* HERO SECTION - RECONSTRUCTED */}
+      {/* HERO SECTION */}
       <section className="relative pt-40 lg:pt-56 pb-24 lg:pb-32 px-6">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10"></div>
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -162,13 +167,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
             
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-8xl font-black leading-[0.95] tracking-tighter italic uppercase">
-                2 Yıllık <br />
-                Litvanya <br />
-                <span className="text-gradient">Oturum Kartı</span>
+              <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tighter italic uppercase">
+                2 Yıllık Litvanya <br />
+                <span className="text-gradient">Oturum Kartı</span> <br />
+                İle Avrupa'da Çalışma
               </h1>
               <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
-                Vasıflı/vasıfsız tüm adaylar için Avrupa'da çalışma fırsatı. A1 Transfer ile tüm Avrupa'da yasal çalışma imkanı.
+                Tır Şoförlüğü (KOD95) • Fabrika & Depo İşleri • A1 Transfer İle Hızlı Giriş. Her profil için uygun Avrupa iş planı hazırlıyoruz.
               </p>
             </div>
 
@@ -187,6 +192,21 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </a>
             </div>
 
+            {/* KAPSAM BAR (The Upgrade) */}
+            <div className="flex flex-wrap gap-4 pt-2">
+              {[
+                { icon: <Truck size={14} />, text: "Tır Şoförlüğü (KOD95)" },
+                { icon: <Zap size={14} />, text: "A1 Transfer İle Giriş" },
+                { icon: <Package size={14} />, text: "Fabrika & Depo İşleri" },
+                { icon: <ShieldCheck size={14} />, text: "2 Yıllık Oturum Garantisi" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#facc15]">
+                  {item.icon}
+                  <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-3 gap-10 pt-10 border-t border-white/5">
               <div>
                 <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">312+</p>
@@ -203,7 +223,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </div>
 
-          {/* RIGHT: Premium Visual */}
+          {/* RIGHT: Visual */}
           <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
             <div className="hero-img-container">
               <img 
@@ -213,14 +233,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
               
-              {/* Floating Badge - Over image but not covering key details */}
               <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-2xl flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
                 <div className="w-12 h-12 bg-[#facc15] rounded-xl flex items-center justify-center shrink-0">
                   <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
                 </div>
                 <div>
-                  <p className="text-sm font-black uppercase italic tracking-tighter">KOD95 + İŞ YERLEŞTİRME</p>
-                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Garantili Süreç</p>
+                  <p className="text-sm font-black uppercase italic tracking-tighter">AVRUPA KAPISI ARALANIYOR</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Tüm İş Kolları Dahil</p>
                 </div>
               </div>
             </div>
@@ -233,127 +252,106 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <div className="flex animate-scroll whitespace-nowrap">
           {[1,2,3,4].map(i => (
             <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
-              <span>Avrupa Tır Şoförlüğü</span> <Star size={24} fill="currentColor" />
-              <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+              <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
               <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
-              <span>Hızlı İşe Yerleştirme</span> <Star size={24} fill="currentColor" />
+              <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
+              <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* SHOWCASE: GÖRSEL GÜVEN ALANI */}
-      <section id="surec" className="py-32 lg:py-48 px-6 bg-white/[0.01]">
+      {/* HİZMETLER (Expanded) */}
+      <section id="hizmetler" className="py-32 lg:py-48 px-6">
         <div className="max-w-7xl mx-auto space-y-20">
           <div className="text-center space-y-6 max-w-3xl mx-auto">
             <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
-              Süreçten <span className="text-[#facc15]">Kesitler</span>
+              Genişletilmiş <br /> <span className="text-[#facc15]">Hizmetlerimiz</span>
             </h2>
             <p className="text-xl text-gray-400 font-medium">
-              Hayallerinize giden yolda her adımımız şeffaf ve kurumsal.
+              Her profil için uygun bir Avrupa iş planı hazırlıyoruz.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {/* Card 1: Oturum Kartı */}
-            <div className="glass p-5 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col h-full">
-              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/5 flex items-center justify-center p-4">
-                <img 
-                  src={OturumKartiImg} 
-                  className="w-full h-full object-contain transform transition-transform duration-700 group-hover:scale-110" 
-                  alt="Litvanya Oturum Kartı" 
-                />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Card 1: A1 Transfer (New) */}
+            <div className="glass p-8 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
+              <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
+                <Globe size={32} />
               </div>
-              <div className="px-3 pb-3 flex-grow">
-                <h3 className="text-2xl font-black italic uppercase mb-2">Oturum Kartı Süreci</h3>
-                <p className="text-gray-400 font-medium leading-relaxed">Litvanya hükümeti onaylı 2 yıllık resmi çalışma ve oturum kartınız.</p>
-              </div>
+              <h3 className="text-2xl font-black italic uppercase mb-4">A1 Transfer İle Giriş</h3>
+              <p className="text-gray-400 font-medium leading-relaxed mb-6">Dil şartı olmadan Avrupa’ya giriş imkanı sağlayan A1 transfer sürecini sizin için uçtan uca yönetiyoruz.</p>
+              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest">
+                <span>Detaylar</span> <ArrowRight size={16} />
+              </button>
             </div>
 
-            {/* Card 2: Tır Şoförlüğü */}
-            <div className="glass p-5 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col h-full">
-              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40 mb-6 border border-white/5">
-                <img 
-                  src={TirImg} 
-                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110" 
-                  alt="European Truck Driving" 
-                />
+            {/* Card 2: Farklı İş Kolları (New) */}
+            <div className="glass p-8 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
+              <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
+                <Factory size={32} />
               </div>
-              <div className="px-3 pb-3 flex-grow">
-                <h3 className="text-2xl font-black italic uppercase mb-2">Avrupa'da Kariyer</h3>
-                <p className="text-gray-400 font-medium leading-relaxed">Lojistik, inşaat ve üretim sektörlerinde Avrupa'nın her yerinde iş imkanları.</p>
-              </div>
+              <h3 className="text-2xl font-black italic uppercase mb-4">Farklı İş Kollarında Çalışma</h3>
+              <p className="text-gray-400 font-medium leading-relaxed mb-6">Tır şoförlüğü dışında depo, üretim ve lojistik alanlarında geniş iş fırsatları ve yerleştirme imkanları sunuyoruz.</p>
+              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest">
+                <span>İş İmkanları</span> <ArrowRight size={16} />
+              </button>
             </div>
 
-            {/* Card 3: Info Card */}
-            <div className="glass p-8 lg:p-10 rounded-[32px] bg-[#facc15]/5 border-[#facc15]/20 shadow-2xl flex flex-col justify-between border-2 border-dashed">
-              <div className="space-y-6">
-                <div className="w-16 h-16 bg-[#facc15] rounded-2xl flex items-center justify-center shadow-lg">
-                  <ShieldCheck size={36} className="text-[#0B0F1A]" />
-                </div>
-                <h3 className="text-3xl font-black italic uppercase leading-tight">KOD95 + <br /> A1 Transfer</h3>
-                <p className="text-gray-300 font-medium">Avrupa standartlarında mesleki yeterlilik belgeleri ve sigorta süreçleriniz eksiksiz yönetilir.</p>
+            {/* Card 3: Oturum Kartı (Existing Refined) */}
+            <div className="glass p-8 rounded-[32px] group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col">
+              <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all">
+                <ShieldCheck size={32} />
               </div>
-              <button onClick={scrollToForm} className="mt-10 flex items-center space-x-3 text-[#facc15] font-black text-xl hover:translate-x-2 transition-all group">
-                <span>DETAYLI BİLGİ AL</span>
-                <ArrowRight />
+              <h3 className="text-2xl font-black italic uppercase mb-4">2 Yıllık Oturum Kartı</h3>
+              <p className="text-gray-400 font-medium leading-relaxed mb-6">Litvanya hükümeti onaylı, tüm Avrupa'da serbest dolaşım ve çalışma hakkı tanıyan oturum kartı süreciniz güvenli ellerde.</p>
+              <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest">
+                <span>Başvuru Yap</span> <ArrowRight size={16} />
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* DOCUMENT SHOWCASE (Güven Alanı) */}
-      <section id="evrak" className="py-32 lg:py-48 px-6 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-blue-600/5 blur-[180px] -z-10"></div>
-        <div className="max-w-7xl mx-auto flex flex-col items-center">
-          
-          <div className="glass p-8 lg:p-12 rounded-[48px] max-w-4xl w-full flex flex-col lg:flex-row items-center gap-12 border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)]">
-            <div className="lg:w-1/2 flex justify-center">
-              <div className="bg-black/40 p-6 rounded-[32px] border border-white/10 aspect-[4/3] flex items-center justify-center max-w-sm w-full">
-                <img 
-                  src={OturumKartiImg} 
-                  alt="Residency Card" 
-                  className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(250,204,21,0.2)]" 
-                />
+      {/* SÜREÇTEN KESİTLER */}
+      <section id="surec" className="py-32 px-6 bg-white/[0.01]">
+        <div className="max-w-7xl mx-auto space-y-20">
+          <div className="text-center space-y-6 max-w-3xl mx-auto">
+            <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
+              Görsel <span className="text-[#facc15]">Sürecimiz</span>
+            </h2>
+            <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="glass p-5 rounded-[32px] shadow-2xl">
+              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40 p-4">
+                <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
               </div>
+              <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Resmi Oturum & Çalışma Kartı</p>
             </div>
-            <div className="lg:w-1/2 space-y-8 text-center lg:text-left">
-              <div className="space-y-4">
-                <h3 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter italic">2 Yıllık Oturum <br /><span className="text-[#facc15]">Karti Süreci</span></h3>
-                <p className="text-lg text-gray-400 font-medium leading-relaxed">
-                  Litvanya Cumhuriyeti tarafından onaylanan resmi oturum ve çalışma izniniz, tüm yasal süreçler sonunda adresinize teslim edilir.
-                </p>
+            <div className="glass p-5 rounded-[32px] shadow-2xl">
+              <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-black/40">
+                <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" />
               </div>
-              <ul className="space-y-4 font-bold text-gray-300">
-                <li className="flex items-center space-x-3 justify-center lg:justify-start">
-                  <CheckCircle2 className="text-[#facc15]" /> <span>%100 Yasal Başvuru</span>
-                </li>
-                <li className="flex items-center space-x-3 justify-center lg:justify-start">
-                  <CheckCircle2 className="text-[#facc15]" /> <span>Aile Birleşimi Hakkı</span>
-                </li>
-                <li className="flex items-center space-x-3 justify-center lg:justify-start">
-                  <CheckCircle2 className="text-[#facc15]" /> <span>AB İçinde Serbest Dolaşım</span>
-                </li>
-              </ul>
+              <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Uluslararası Lojistik Ağı</p>
             </div>
           </div>
-          
         </div>
       </section>
 
-      {/* WHY US (Güven Bloğu) */}
+      {/* GÜVEN BLOĞU */}
       <section id="guven" className="py-32 px-6">
         <div className="max-w-7xl mx-auto text-center space-y-16">
           <div className="space-y-4">
             <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter italic">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
-            <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">Avrupa'da kariyer yapmak isteyen yüzlerce şoförün güvenini kazandık.</p>
+            <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">Her profil için uygun Avrupa iş planı hazırlıyoruz. Şeffaf ve %100 yasal süreç.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-12">
             {[
-              { icon: <ShieldCheck size={48} />, title: "Resmi Süreç", desc: "Tüm süreçlerimiz sözleşmeli ve Litvanya yasalarına tam uyumludur." },
-              { icon: <Users size={48} />, title: "Uzman Ekip", desc: "Yılların tecrübesiyle vize ve evrak işlemlerinizi hatasız yönetiyoruz." },
-              { icon: <Briefcase size={48} />, title: "İş Garantisi", desc: "Oturum kartınızla birlikte Avrupa'nın köklü firmalarında işiniz hazır." }
+              { icon: <ShieldCheck size={48} />, title: "Resmi Süreç", desc: "Tüm süreçlerimiz sözleşmeli ve AB yasalarına tam uyumludur." },
+              { icon: <Users size={48} />, title: "Kişisel Danışmanlık", desc: "Profilinize en uygun iş kolunu ve vize türünü birlikte seçiyoruz." },
+              { icon: <Briefcase size={48} />, title: "İş Garantisi", desc: "Oturum kartınızla birlikte Avrupa'nın köklü firmalarında yeriniz hazır." }
             ].map((item, idx) => (
               <div key={idx} className="space-y-6 p-10 glass rounded-[40px] hover:bg-white/[0.06] transition-all border-none shadow-xl">
                 <div className="text-[#facc15] flex justify-center">{item.icon}</div>
@@ -370,7 +368,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-0 rounded-[48px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5">
             <div className="bg-[#131926] p-10 lg:p-20">
-              <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Şimdi <span className="text-[#facc15]">Başvur</span></h2>
+              <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
               <form onSubmit={handleFormSubmit} className="space-y-8">
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
@@ -387,23 +385,36 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <option className="bg-[#0B0F1A]">Almanya</option>
                       <option className="bg-[#0B0F1A]">Litvanya</option>
                       <option className="bg-[#0B0F1A]">Polonya</option>
+                      <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
                     </select>
                   </div>
                 </div>
+
+                {/* WORK FIELD SELECT (Mini Upgrade) */}
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">MESAJ</label>
-                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold" rows="3" placeholder="Deneyiminizi kısaca yazın..."></textarea>
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
+                  <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 border border-[#facc15]/30 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold text-[#facc15]">
+                    <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
+                    <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
+                    <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
+                    <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
+                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl focus:border-[#facc15] outline-none text-lg font-bold" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
                 </div>
                 <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-2xl font-black text-2xl hover:scale-[1.02] transition-all shadow-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
               </form>
             </div>
             <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
               <div className="space-y-12">
-                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA'DA <br /> YASAL <br /> ÇALIŞMA</h3>
+                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
                 <div className="space-y-6 font-black text-2xl italic tracking-tighter">
-                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€ - 3500€ MAAŞ</span> </p>
+                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>HERKES İÇİN İŞ İMKANI</span> </p>
+                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€+ MAAŞ FIRSATI</span> </p>
                   <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
-                  <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>MODERN FİLOLAR</span> </p>
                 </div>
               </div>
               <div className="space-y-4 pt-10 border-t border-black/10">
@@ -424,7 +435,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
             <span className="text-2xl font-black tracking-tighter uppercase italic">CMS<span className="text-[#facc15]">Vize</span></span>
           </div>
-          <p className="text-gray-500 font-medium">© 2026 CMSVize. Tüm hakları saklıdır.</p>
+          <p className="text-gray-500 font-medium">© 2026 CMSVize. Tüm hakları saklıdır. Avrupa Kariyer & Danışmanlık.</p>
           <div className="flex space-x-8 text-xs font-black tracking-widest text-gray-500 uppercase">
             <a href="#" className="hover:text-[#facc15]">KVKK</a>
             <a href="#" className="hover:text-[#facc15]">Gizlilik</a>
@@ -448,7 +459,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </div>
         <div>
           <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
-          <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Onaylandı</p>
+          <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
         </div>
         <button onClick={() => setShowPopup(false)} className="ml-4 text-gray-500 hover:text-white transition-colors"> <X size={20} /> </button>
       </div>
