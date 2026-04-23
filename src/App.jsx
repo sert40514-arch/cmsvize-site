@@ -61,6 +61,7 @@ const App = () => {
   const [activeViewers, setActiveViewers] = useState(14);
   const [activeFaq, setActiveFaq] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
   
   // Routing State
   const [currentPage, setCurrentPage] = useState('home');
@@ -74,12 +75,20 @@ const App = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const titles = {
-      home: "CMSVize | Avrupa Kariyer ve Vize Danışmanlığı",
+      home: "CMSVize | Profesyonel Vize Danışmanlık Hizmetleri",
       kvkk: "KVKK Aydınlatma Metni | CMSVize",
       privacy: "Gizlilik Politikası | CMSVize",
       terms: "Kullanım Şartları | CMSVize"
     };
-    document.title = titles[currentPage] || "CMSVize";
+    document.title = titles[currentPage] || "CMSVize | Profesyonel Vize Danışmanlık Hizmetleri";
+    
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230a66c2"/><text x="50" y="70" font-size="65" font-family="Arial" font-weight="bold" fill="%23facc15" text-anchor="middle">C</text></svg>';
   }, [currentPage]);
 
   // Stats Counter Logic
@@ -157,6 +166,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     setTimeout(() => {
       window.open(getWhatsAppURL(), '_blank');
       setIsSubmitting(false);
+      setFormSuccess(true);
     }, 800);
   };
 
@@ -481,6 +491,48 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </section>
 
+          {/* MÜŞTERİ GÖRÜŞLERİ */}
+          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A]">
+            <div className="max-w-6xl mx-auto space-y-16">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#0a66c2]">Görüşleri</span></h2>
+                <p className="text-gray-400 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { name: "Caner T.", visa: "Almanya Ulusal Vize", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
+                  { name: "Ayşe K.", visa: "İngiltere Nitelikli Çalışan", time: "1 hafta önce", text: "İngiltere çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde onaylandı. Gerekli evrakların çevirisinden randevu alımına kadar her şey kusursuzdu." },
+                  { name: "Burak E.", visa: "ABD E2 Yatırımcı Vizesi", time: "2 hafta önce", text: "ABD yatırımcı vizesi gibi zorlu bir süreçte bana verdikleri kurumsal ve dürüst destek için teşekkür ederim. Artık işime odaklanabiliyorum." }
+                ].map((ref, idx) => (
+                  <div key={idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300">
+                    <div className="flex justify-between items-start">
+                      <div className="flex space-x-3">
+                        <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl">{ref.name[0]}</div>
+                        <div>
+                          <div className="flex items-center space-x-1">
+                            <h4 className="font-bold text-sm text-white">{ref.name}</h4>
+                            <BadgeCheck size={16} className="text-[#0a66c2] fill-[#0a66c2]/20" />
+                          </div>
+                          <p className="text-[11px] text-gray-400 leading-tight">{ref.visa}</p>
+                          <p className="text-[10px] text-gray-500">{ref.time} • 🌐</p>
+                        </div>
+                      </div>
+                      <MoreHorizontal size={20} className="text-gray-500 cursor-pointer" />
+                    </div>
+                    <div className="text-sm text-gray-200 leading-relaxed font-normal">{ref.text}</div>
+                    <div className="flex items-center space-x-1 pt-2">
+                      <div className="flex -space-x-1">
+                        <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><ThumbsUp size={10} className="text-white fill-white" /></div>
+                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Heart size={10} className="text-white fill-white" /></div>
+                      </div>
+                      <span className="text-[11px] text-gray-400 font-medium ml-1">14 • 3 yorum</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* HİZMETLER */}
           <section id="hizmetler" className="py-32 lg:py-48 px-6">
             <div className="max-w-7xl mx-auto space-y-20">
@@ -501,48 +553,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
                       <span>Detaylar</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* REFERANSLAR */}
-          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A]">
-            <div className="max-w-6xl mx-auto space-y-16">
-              <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Başarı <span className="text-[#facc15]">Hikayeleri</span></h2>
-                <p className="text-gray-400 font-medium text-lg">Müşterilerimizin CMSVize deneyimleri.</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { name: "Ahmet Yılmaz", visa: "Almanya C Tipi Vize", time: "1 hafta önce", text: "CMSVize ekibi sayesinde Almanya vizemi sorunsuz bir şekilde aldım. Başvuru sürecindeki her soruma hızlıca yanıt verdiler." },
-                  { name: "Mehmet Demir", visa: "Litvanya Oturum Kartı", time: "2 hafta önce", text: "2 yıllık oturum kartım elime ulaştı. Şimdi aile birleşimi sürecini başlatıyoruz. CMSVize uzmanlığına güvenebilirsiniz." },
-                  { name: "Selin Kaya", visa: "Polonya Çalışma İzni", time: "1 ay önce", text: "Lojistik alanında Polonya'da işe başladım. Evrak takibi ve iş yerleştirme süreci beklediğimden çok profesyonel ilerledi." }
-                ].map((ref, idx) => (
-                  <div key={idx} className="linkedin-card p-4 space-y-4 shadow-xl">
-                    <div className="flex justify-between items-start">
-                      <div className="flex space-x-3">
-                        <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-white font-black text-xl">{ref.name[0]}</div>
-                        <div>
-                          <div className="flex items-center space-x-1">
-                            <h4 className="font-bold text-sm text-white">{ref.name}</h4>
-                            <BadgeCheck size={16} className="text-blue-500 fill-blue-500/20" />
-                          </div>
-                          <p className="text-[11px] text-gray-400 leading-tight">{ref.visa}</p>
-                          <p className="text-[10px] text-gray-500">{ref.time} • 🌐</p>
-                        </div>
-                      </div>
-                      <MoreHorizontal size={20} className="text-gray-500 cursor-pointer" />
-                    </div>
-                    <div className="text-sm text-gray-200 leading-relaxed font-normal">{ref.text}</div>
-                    <div className="flex items-center space-x-1 pt-2">
-                      <div className="flex -space-x-1">
-                        <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center border border-[#1B1F23]"><ThumbsUp size={8} className="text-white fill-white" /></div>
-                        <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center border border-[#1B1F23]"><Star size={8} className="text-white fill-white" /></div>
-                      </div>
-                      <span className="text-[10px] text-gray-400">12 • 4 yorum</span>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -611,41 +621,52 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">Yönlendiriliyorsunuz...</p>
                   </div>}
                   <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
-                  <form onSubmit={handleFormSubmit} className="space-y-8">
-                    <div className="space-y-2">
-                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
-                      <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
+                  {formSuccess ? (
+                    <div className="flex flex-col items-center justify-center text-center space-y-6 py-16 animate-fade-up">
+                      <div className="w-24 h-24 bg-[#0a66c2]/20 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 size={48} className="text-[#0a66c2]" />
+                      </div>
+                      <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#0a66c2]">Başvurunuz Başarıyla Alındı!</h3>
+                      <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
+                      <button onClick={() => setFormSuccess(false)} className="mt-8 btn-corporate glass border border-white/10 px-8 py-4 text-white hover:border-[#0a66c2]/50 hover:bg-[#0a66c2]/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-6">
+                  ) : (
+                    <form onSubmit={handleFormSubmit} className="space-y-8">
                       <div className="space-y-2">
-                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
-                        <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
+                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
+                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
+                          <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
+                          <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
+                            <option className="bg-[#0B0F1A]">Almanya</option>
+                            <option className="bg-[#0B0F1A]">Litvanya</option>
+                            <option className="bg-[#0B0F1A]">Polonya</option>
+                            <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
+                          </select>
+                        </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
-                        <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
-                          <option className="bg-[#0B0F1A]">Almanya</option>
-                          <option className="bg-[#0B0F1A]">Litvanya</option>
-                          <option className="bg-[#0B0F1A]">Polonya</option>
-                          <option className="bg-[#0B0F1A]">Fransa / Hollanda</option>
+                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
+                        <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
+                          <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
+                          <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
+                          <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
+                          <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
                         </select>
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
-                      <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
-                        <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
-                        <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
-                        <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
-                        <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                      <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
-                    </div>
-                    <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
-                  </form>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
+                        <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                      </div>
+                      <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
+                    </form>
+                  )}
                 </div>
                 <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
                   <div className="space-y-12">
