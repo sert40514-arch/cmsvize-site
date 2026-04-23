@@ -28,7 +28,10 @@ import {
   MessageSquare,
   Share2,
   Send,
-  BadgeCheck
+  BadgeCheck,
+  TrendingUp,
+  Award,
+  Heart
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -55,7 +58,34 @@ const App = () => {
   const [activeViewers, setActiveViewers] = useState(14);
   const [activeFaq, setActiveFaq] = useState(null);
 
+  // Counter State
+  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
+
   const formRef = useRef(null);
+
+  // Stats Counter Logic
+  useEffect(() => {
+    const targetSuccess = 98;
+    const targetClients = 2500;
+    const targetCountries = 15;
+    
+    let currentSuccess = 0;
+    let currentClients = 0;
+    let currentCountries = 0;
+
+    const interval = setInterval(() => {
+      let updated = false;
+      if (currentSuccess < targetSuccess) { currentSuccess += 1; updated = true; }
+      if (currentClients < targetClients) { currentClients += 25; updated = true; }
+      if (currentCountries < targetCountries) { currentCountries += 1; updated = true; }
+      
+      setStats({ success: currentSuccess, clients: currentClients, countries: currentCountries });
+      
+      if (!updated) clearInterval(interval);
+    }, 20);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Logic Preserved
   useEffect(() => {
@@ -113,7 +143,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
   return (
     <div className="min-h-screen text-white font-sans selection:bg-yellow-400 selection:text-black overflow-x-hidden" style={{ backgroundColor: darkBg }}>
-      {/* Visual Layout Surgeon - Premium CSS */}
+      {/* Visual Layout Surgeon - Enhanced CSS */}
       <style>{`
         @keyframes fade-up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -122,30 +152,32 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
         .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(250, 204, 21, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
         
-        /* Modern Button Styles */
+        /* LinkedIn-Style UI Elements */
+        .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
+        .linkedin-faq { background: #1B1F23; border: 1px solid #30363D; }
+
+        /* Smoother Transitions */
         .btn-corporate {
           border-radius: 8px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .btn-corporate:hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
           filter: brightness(1.1);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
-        .btn-corporate:active { transform: translateY(0); }
 
-        /* Modern Input Styles */
+        /* Focus Effects - Corporate Navy Shadow */
         .input-corporate {
           border-radius: 8px;
           border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all 0.2s ease;
+          transition: all 0.3s ease;
         }
         .input-corporate:focus {
-          border-color: #facc15;
-          box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.1);
+          border-color: #0a66c2;
+          box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.2);
           outline: none;
         }
       `}</style>
@@ -165,7 +197,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
             <a href="#hizmetler" className="hover:text-[#facc15] transition-colors">HİZMETLER</a>
             <a href="#referanslar" className="hover:text-[#facc15] transition-colors">REFERANSLAR</a>
-            <a href="#surec" className="hover:text-[#facc15] transition-colors">SÜREÇ</a>
+            <a href="#istatistik" className="hover:text-[#facc15] transition-colors">İSTATİSTİK</a>
             <a href="#sss" className="hover:text-[#facc15] transition-colors">SSS</a>
             <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-3 font-black">
               HEMEN BAŞVUR
@@ -184,7 +216,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
           <a href="#hizmetler" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">HİZMETLER</a>
           <a href="#referanslar" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</a>
-          <a href="#surec" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">SÜREÇ</a>
+          <a href="#istatistik" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">İSTATİSTİK</a>
           <a href="#sss" onClick={() => setMobileMenuOpen(false)} className="text-4xl font-black italic tracking-tighter">SSS</a>
           <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">BAŞVUR</button>
         </div>
@@ -296,6 +328,29 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </div>
       </div>
 
+      {/* VİZE BAŞARI İSTATİSTİKLERİ (Counter) */}
+      <section id="istatistik" className="py-24 bg-white/[0.02]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="text-center space-y-4">
+              <div className="flex justify-center text-[#facc15] mb-2"> <TrendingUp size={48} /> </div>
+              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">%{stats.success}</p>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Vize Başarı Oranı</p>
+            </div>
+            <div className="text-center space-y-4 border-y md:border-y-0 md:border-x border-white/5 py-10 md:py-0">
+              <div className="flex justify-center text-[#facc15] mb-2"> <Users size={48} /> </div>
+              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.clients}+</p>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Mutlu Müşteri</p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="flex justify-center text-[#facc15] mb-2"> <Globe size={48} /> </div>
+              <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.countries}+</p>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Hedef Ülke</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* HİZMETLER */}
       <section id="hizmetler" className="py-32 lg:py-48 px-6">
         <div className="max-w-7xl mx-auto space-y-20">
@@ -391,17 +446,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <span className="text-[10px] text-gray-400">12 • 4 yorum</span>
                 </div>
                 <div className="border-t border-gray-700 pt-2 flex justify-around text-gray-400 font-bold">
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-colors">
+                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
                     <ThumbsUp size={18} />
-                    <span className="text-xs">Beğen</span>
+                    <span className="text-xs text-gray-400">Beğen</span>
                   </div>
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-colors">
+                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
                     <MessageSquare size={18} />
-                    <span className="text-xs">Yorum</span>
+                    <span className="text-xs text-gray-400">Yorum</span>
                   </div>
-                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-colors">
+                  <div className="flex items-center space-x-1.5 hover:bg-white/5 px-2 py-1.5 rounded-sm cursor-pointer transition-all duration-300">
                     <Share2 size={18} />
-                    <span className="text-xs">Paylaş</span>
+                    <span className="text-xs text-gray-400">Paylaş</span>
                   </div>
                 </div>
               </div>
@@ -437,56 +492,33 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </div>
       </section>
 
-      {/* GÜVEN BLOĞU */}
-      <section id="guven" className="py-32 px-6">
-        <div className="max-w-7xl mx-auto text-center space-y-16">
-          <div className="space-y-4">
-            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter italic">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
-            <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">Her profil için uygun Avrupa iş planı hazırlıyoruz. Şeffaf ve %100 yasal süreç.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              { icon: <ShieldCheck size={48} />, title: "Resmi Süreç", desc: "Tüm süreçlerimiz sözleşmeli ve AB yasalarına tam uyumludur." },
-              { icon: <Users size={48} />, title: "Kişisel Danışmanlık", desc: "Profilinize en uygun iş kolunu ve vize türünü birlikte seçiyoruz." },
-              { icon: <Briefcase size={48} />, title: "İş Garantisi", desc: "Oturum kartınızla birlikte Avrupa'nın köklü firmalarında yeriniz hazır." }
-            ].map((item, idx) => (
-              <div key={idx} className="space-y-6 p-10 glass rounded-xl hover:bg-white/[0.06] transition-all border-none shadow-xl">
-                <div className="text-[#facc15] flex justify-center">{item.icon}</div>
-                <h3 className="text-2xl font-black italic uppercase tracking-tighter italic">{item.title}</h3>
-                <p className="text-gray-400 font-medium leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SSS (FAQ) SECTION */}
-      <section id="sss" className="py-32 px-6 bg-white/[0.01]">
-        <div className="max-w-4xl mx-auto space-y-20">
-          <div className="text-center space-y-6">
-            <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">
+      {/* SSS (LinkedIn Aesthetic) */}
+      <section id="sss" className="py-32 px-6 bg-[#0B0F1A]">
+        <div className="max-w-4xl mx-auto space-y-16">
+          <div className="text-center space-y-4">
+            <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">
               Sıkça Sorulan <span className="text-[#facc15]">Sorular</span>
             </h2>
-            <p className="text-xl text-gray-400 font-medium">Süreçlerimiz hakkında merak edilen tüm detaylar.</p>
+            <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve çalışma süreçlerine dair bilmeniz gerekenler.</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
               { q: "Vize randevusu ne kadar sürer?", a: "Vize randevu süreçleri seçilen ülkeye ve dönemsel yoğunluğa bağlı olarak 1-4 hafta arasında değişmektedir. CMSVize olarak en erken randevu için tüm süreci optimize ediyoruz." },
               { q: "Red durumunda ne yapılır?", a: "Vize reddi durumunda uzman ekibimiz ret gerekçelerini titizlikle inceleyerek itiraz sürecini başlatır veya eksikleri gidererek yeni bir başvuru planı hazırlar." },
               { q: "Gerekli evraklar nelerdir?", a: "Temel olarak pasaport, biyometrik fotoğraf, adli sicil kaydı ve ikametgah belgesi gerekmektedir. Mesleki belgeler ve ek evrak listesi seçtiğiniz iş koluna göre size özel olarak iletilmektedir." },
               { q: "Oturum kartı süreci ne kadar sürer?", a: "Litvanya oturum kartı süreci evrakların tesliminden itibaren ortalama 4-6 hafta sürmektedir." }
             ].map((faq, idx) => (
-              <div key={idx} className="glass rounded-lg overflow-hidden transition-all duration-300">
+              <div key={idx} className="linkedin-faq overflow-hidden transition-all duration-300">
                 <button 
                   onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full p-8 flex items-center justify-between text-left hover:bg-white/5 transition-colors group"
+                  className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors group"
                 >
-                  <span className={`text-xl font-black italic uppercase tracking-tighter transition-colors ${activeFaq === idx ? 'text-[#facc15]' : 'text-white'}`}>{faq.q}</span>
-                  <ChevronDown className={`text-[#facc15] transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 scale-125' : ''}`} />
+                  <span className={`text-lg font-bold tracking-tight transition-colors ${activeFaq === idx ? 'text-[#facc15]' : 'text-gray-200'}`}>{faq.q}</span>
+                  <ChevronDown className={`text-gray-500 transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-[#facc15]' : ''}`} />
                 </button>
                 <div className={`transition-all duration-500 overflow-hidden ${activeFaq === idx ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className="p-8 pt-0 text-gray-400 font-medium text-lg leading-relaxed border-t border-white/5">
+                  <div className="p-6 pt-0 text-gray-400 font-normal text-base leading-relaxed border-t border-white/5 bg-white/[0.01]">
                     {faq.a}
                   </div>
                 </div>
@@ -505,16 +537,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <form onSubmit={handleFormSubmit} className="space-y-8">
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
-                  <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15]" placeholder="Ahmet Yılmaz" />
+                  <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
-                    <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15]" placeholder="+90" />
+                    <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
-                    <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15]">
+                    <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
                       <option className="bg-[#0B0F1A]">Almanya</option>
                       <option className="bg-[#0B0F1A]">Litvanya</option>
                       <option className="bg-[#0B0F1A]">Polonya</option>
@@ -525,7 +557,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
-                  <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] text-[#facc15]">
+                  <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
                     <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
                     <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
                     <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
@@ -535,7 +567,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                  <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
                 </div>
                 <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
               </form>
