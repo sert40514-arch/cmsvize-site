@@ -408,7 +408,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="space-y-4 pt-10 border-t border-black/10">
                 <p className="text-3xl font-black tracking-tighter flex items-center space-x-3"> <Phone /> <span>+90 545 991 82 68</span> </p>
-                <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Maslak, İstanbul / Vilnius</span> </p>
+                <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Merkez, Aksaray / Vilnius</span> </p>
               </div>
             </div>
           </div>
