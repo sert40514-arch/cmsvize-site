@@ -160,14 +160,31 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    
+    try {
+      // 1. CRM / Email Integration (Örn: Web3Forms, Formspree veya Kendi Backend'iniz)
+      // Bu bölüm gerçek bir API bağlandığında aktif edilebilir:
+      // await fetch('https://api.web3forms.com/submit', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      //   body: JSON.stringify({ access_key: "YOUR_ACCESS_KEY", ...formData })
+      // });
+      
+      // Şimdilik simüle ediyoruz (API bağlandığında burası çalışacak)
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // 2. WhatsApp Yönlendirmesi (Anında Müşteri İletişimi)
       window.open(getWhatsAppURL(), '_blank');
+      
       setIsSubmitting(false);
       setFormSuccess(true);
-    }, 800);
+    } catch (error) {
+      console.error("Form error:", error);
+      setIsSubmitting(false);
+    }
   };
 
   const scrollToForm = () => {
@@ -771,10 +788,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </div>
       </footer>
 
-      {/* WHATSAPP FLOAT */}
-      <a href={getWhatsAppURL()} target="_blank" className="fixed bottom-10 right-10 z-50 group transition-transform hover:scale-110">
-        <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-150"></div>
-        <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl transition-all duration-500"><MessageCircle size={36} className="text-white" fill="currentColor" /></div>
+      {/* WHATSAPP FLOAT - ENHANCED */}
+      <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-10 right-10 z-50 group flex items-center">
+        <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
+          Size nasıl yardımcı olabiliriz? 
+          <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
+        </div>
+        <div className="relative transition-transform duration-300 group-hover:scale-110">
+          <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-150"></div>
+          <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl"><MessageCircle size={36} className="text-white" fill="currentColor" /></div>
+        </div>
       </a>
 
       {/* FAKE LIVE POPUP */}
