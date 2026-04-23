@@ -167,8 +167,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 Litvanya <br />
                 <span className="text-gradient">Oturum Kartı</span>
               </h1>
-              <p className="text-xl lg:text-2xl text-gray-400 max-w-lg leading-relaxed font-medium">
-                Avrupa'da tır şoförü olarak yüksek maaşla çalışmaya başlayın. Tüm vize ve iş süreci bizden.
+              <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
+                Vasıflı/vasıfsız tüm adaylar için Avrupa'da çalışma fırsatı. A1 Transfer ile tüm Avrupa'da yasal çalışma imkanı.
               </p>
             </div>
 
@@ -280,8 +280,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 />
               </div>
               <div className="px-3 pb-3 flex-grow">
-                <h3 className="text-2xl font-black italic uppercase mb-2">Avrupa'da Şoförlük</h3>
-                <p className="text-gray-400 font-medium leading-relaxed">En yeni tır modelleri ile Avrupa'nın dev lojistik ağlarında kariyer.</p>
+                <h3 className="text-2xl font-black italic uppercase mb-2">Avrupa'da Kariyer</h3>
+                <p className="text-gray-400 font-medium leading-relaxed">Lojistik, inşaat ve üretim sektörlerinde Avrupa'nın her yerinde iş imkanları.</p>
               </div>
             </div>
 
@@ -399,7 +399,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
             <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
               <div className="space-y-12">
-                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">TIR ŞOFÖRÜ <br /> OLARAK <br /> AVRUPA'YA</h3>
+                <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA'DA <br /> YASAL <br /> ÇALIŞMA</h3>
                 <div className="space-y-6 font-black text-2xl italic tracking-tighter">
                   <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€ - 3500€ MAAŞ</span> </p>
                   <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
