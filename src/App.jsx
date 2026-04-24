@@ -79,10 +79,46 @@ const App = () => {
   // Routing State
   const [currentPage, setCurrentPage] = useState('home');
 
-  // Counter State
-  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
+  // Admin States
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+  const [adminUser, setAdminUser] = useState('');
+  const [adminPass, setAdminPass] = useState('');
+  
+  // Centralized Content State
+  const [siteContent, setSiteContent] = useState({
+    stats: {
+      success: 98,
+      clients: 2500,
+      countries: 15
+    },
+    team: [
+      { id: 1, name: "MURAT SERT", title: "Co-Founder / Systems Architect", img: muratImg },
+      { id: 2, name: "HALİL İBRAHİM ÖRKCÜ", title: "Senior Visa Strategist", img: halilImg }
+    ]
+  });
+
+  const [adminTab, setAdminTab] = useState('stats');
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    if (adminUser === 'cms_master_admin' && adminPass === 'CMS_vize_2026_@Admin_!Secure') {
+      setAdminLoggedIn(true);
+      setCurrentPage('admin-dashboard');
+    } else {
+      alert('Güvenlik İhlali: Kimlik doğrulanamadı.');
+      setCurrentPage('home');
+      window.location.pathname = '/';
+    }
+  };
 
   const formRef = useRef(null);
+
+  // Path Detection for Admin
+  useEffect(() => {
+    if (window.location.pathname === '/admin-panel-cms') {
+      setCurrentPage('admin-login');
+    }
+  }, []);
 
   // SEO & Scroll Logic
   useEffect(() => {
@@ -109,9 +145,9 @@ const App = () => {
   // Stats Counter Logic
   useEffect(() => {
     if (currentPage !== 'home') return;
-    const targetSuccess = 98;
-    const targetClients = 2500;
-    const targetCountries = 15;
+    const targetSuccess = siteContent.stats.success;
+    const targetClients = siteContent.stats.clients;
+    const targetCountries = siteContent.stats.countries;
 
     let currentSuccess = 0;
     let currentClients = 0;
@@ -120,16 +156,23 @@ const App = () => {
     const interval = setInterval(() => {
       let updated = false;
       if (currentSuccess < targetSuccess) { currentSuccess += 1; updated = true; }
-      if (currentClients < targetClients) { currentClients += 25; updated = true; }
+      if (currentClients < targetClients) { currentClients += Math.ceil(targetClients / 100); updated = true; }
       if (currentCountries < targetCountries) { currentCountries += 1; updated = true; }
+      
+      // Cap them
+      if (currentSuccess > targetSuccess) currentSuccess = targetSuccess;
+      if (currentClients > targetClients) currentClients = targetClients;
+      if (currentCountries > targetCountries) currentCountries = targetCountries;
 
       setStats({ success: currentSuccess, clients: currentClients, countries: currentCountries });
 
-      if (!updated) clearInterval(interval);
+      if (currentSuccess === targetSuccess && currentClients === targetClients && currentCountries === targetCountries) {
+        clearInterval(interval);
+      }
     }, 20);
 
     return () => clearInterval(interval);
-  }, [currentPage]);
+  }, [currentPage, siteContent.stats]);
 
   // Logic Preserved
   useEffect(() => {
@@ -370,52 +413,56 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       `}</style>
 
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
-        <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
-          <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-            {logoImg ? <img src={logoImg} alt="Logo" className="h-10 w-auto" /> : <span>CMSVize</span>}
-          </div>
-
-          <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
-            <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
-            <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
-            <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
-
-            <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
-                <Search size={16} className="text-[#0a66c2]" />
-                <span>BAŞVURU TAKİP</span>
-              </a>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
-                ÜCRETSİZ BAŞVURU BAŞLAT
-              </button>
+      {!currentPage.startsWith('admin') && (
+        <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
+          <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
+            <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
+              {logoImg ? <img src={logoImg} alt="Logo" className="h-10 w-auto" /> : <span>CMSVize</span>}
             </div>
-          </div>
 
-          <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
-          </button>
-        </div>
-      </nav>
+            <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
+              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+              <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
+
+              <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
+                <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
+                  <Search size={16} className="text-[#0a66c2]" />
+                  <span>BAŞVURU TAKİP</span>
+                </a>
+                <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
+                  ÜCRETSİZ BAŞVURU BAŞLAT
+                </button>
+              </div>
+            </div>
+
+            <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+            </button>
+          </div>
+        </nav>
+      )}
 
       {/* MOBILE MENU */}
-      <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-        <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
-          <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
-          <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
-          <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
-          <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
-          <div className="w-full space-y-4 pt-4 border-t border-white/10">
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
-              <Search size={24} className="text-[#0a66c2]" />
-              <span>BAŞVURU TAKİP</span>
-            </a>
-            <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">ÜCRETSİZ BAŞVURU BAŞLAT</button>
+      {!currentPage.startsWith('admin') && mobileMenuOpen && (
+        <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+          <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
+            <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
+            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+            <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
+            <div className="w-full space-y-4 pt-4 border-t border-white/10">
+              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
+                <Search size={24} className="text-[#0a66c2]" />
+                <span>BAŞVURU TAKİP</span>
+              </a>
+              <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">ÜCRETSİZ BAŞVURU BAŞLAT</button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* RENDER PAGES */}
       {currentPage === 'home' ? (
@@ -737,30 +784,20 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
-                  <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
-                    {muratImg ? (
-                      <img src={muratImg} alt="MURAT SERT" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
-                    ) : (
-                      <div className="w-full h-full bg-gray-800"></div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
+                {siteContent.team.map((member) => (
+                  <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
+                    <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
+                      {member.img ? (
+                        <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                      ) : (
+                        <div className="w-full h-full bg-gray-800"></div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <h3 className="text-2xl font-black italic uppercase tracking-tighter">{member.name}</h3>
+                    <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">{member.title}</p>
                   </div>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">MURAT SERT</h3>
-                  <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">Co-Founder / Systems Architect</p>
-                </div>
-                <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
-                  <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
-                    {halilImg ? (
-                      <img src={halilImg} alt="HALİL İBRAHİM ÖRKCÜ" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
-                    ) : (
-                      <div className="w-full h-full bg-gray-800"></div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
-                  </div>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">HALİL İBRAHİM ÖRKCÜ</h3>
-                  <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">Senior Visa Strategist</p>
-                </div>
+                ))}
               </div>
             </div>
           </section>
@@ -919,6 +956,146 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </div>
         </div>
+      ) : currentPage === 'admin-login' ? (
+        <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
+          <div className="max-w-md w-full glass p-10 rounded-2xl border-t-4 border-[#facc15] shadow-2xl">
+            <div className="flex justify-center mb-8">
+              <ShieldCheck className="text-[#facc15] w-20 h-20" />
+            </div>
+            <h2 className="text-3xl font-black italic uppercase tracking-tighter text-center mb-2">Admin <span className="text-[#facc15]">Panel</span></h2>
+            <p className="text-gray-400 text-center text-sm mb-8">Yetkili personel girişi gereklidir.</p>
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">KULLANICI ADI</label>
+                <input required value={adminUser} onChange={(e) => setAdminUser(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="cms_master_admin" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">GÜVENLİK ANAHTARI</label>
+                <input required type="password" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="••••••••••••" />
+              </div>
+              <button type="submit" className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-lg hover:scale-[1.02] transition-transform mt-4">SİSTEME GİRİŞ YAP</button>
+            </form>
+          </div>
+        </div>
+      ) : currentPage === 'admin-dashboard' && adminLoggedIn ? (
+        <div className="min-h-screen bg-[#080C14] text-white">
+          <div className="flex h-screen">
+            {/* Sidebar */}
+            <div className="w-72 bg-[#0B0F1A] border-r border-white/5 p-8 flex flex-col justify-between">
+              <div className="space-y-10">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-[#facc15] rounded-lg flex items-center justify-center">
+                    <ShieldCheck className="text-[#0B0F1A]" />
+                  </div>
+                  <span className="font-black italic text-xl tracking-tighter">CMS <span className="text-[#facc15]">ADMIN</span></span>
+                </div>
+                <nav className="space-y-2">
+                  <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <Star size={18} /> <span>Dinamik Veriler</span>
+                  </button>
+                  <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <Users size={18} /> <span>Ekip Yönetimi</span>
+                  </button>
+                </nav>
+              </div>
+              <button onClick={() => { setAdminLoggedIn(false); setCurrentPage('home'); window.location.pathname = '/'; }} className="w-full border border-white/10 p-4 rounded-lg font-bold text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all flex items-center justify-center space-x-2">
+                <X size={18} /> <span>Güvenli Çıkış</span>
+              </button>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto p-12">
+              <div className="max-w-4xl space-y-12">
+                <div className="flex justify-between items-end border-b border-white/5 pb-8">
+                  <div>
+                    <h1 className="text-4xl font-black italic uppercase tracking-tighter">Yönetim <span className="text-[#facc15]">Paneli</span></h1>
+                    <p className="text-gray-500 mt-1 font-medium">Sitedeki tüm dinamik alanları buradan yönetin.</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
+                    <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
+                  </div>
+                </div>
+
+                {adminTab === 'stats' && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
+                    <div className="glass p-8 rounded-xl space-y-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Vize Başarı Oranı (%)</p>
+                      <input 
+                        type="number" 
+                        value={siteContent.stats.success} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value)}})}
+                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                      />
+                    </div>
+                    <div className="glass p-8 rounded-xl space-y-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Mutlu Müşteri Sayısı</p>
+                      <input 
+                        type="number" 
+                        value={siteContent.stats.clients} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value)}})}
+                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                      />
+                    </div>
+                    <div className="glass p-8 rounded-xl space-y-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Hedef Ülke Sayısı</p>
+                      <input 
+                        type="number" 
+                        value={siteContent.stats.countries} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value)}})}
+                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {adminTab === 'team' && (
+                  <div className="space-y-6 animate-fade-up">
+                    {siteContent.team.map((member, idx) => (
+                      <div key={member.id} className="glass p-8 rounded-xl flex items-center space-x-8">
+                        <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden shrink-0">
+                          <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 grid grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İSİM SOYİSİM</label>
+                            <input 
+                              value={member.name} 
+                              onChange={(e) => {
+                                const newTeam = [...siteContent.team];
+                                newTeam[idx].name = e.target.value;
+                                setSiteContent({...siteContent, team: newTeam});
+                              }}
+                              className="w-full bg-black/30 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">UNVAN / POZİSYON</label>
+                            <input 
+                              value={member.title} 
+                              onChange={(e) => {
+                                const newTeam = [...siteContent.team];
+                                newTeam[idx].title = e.target.value;
+                                setSiteContent({...siteContent, team: newTeam});
+                              }}
+                              className="w-full bg-black/30 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="pt-8 border-t border-white/5 flex justify-end">
+                  <button onClick={() => { alert('Değişiklikler Canlı Sisteme Uygulandı!'); setCurrentPage('home'); window.location.pathname = '/'; }} className="bg-green-600 hover:bg-green-500 text-white font-black px-12 py-4 rounded-lg transition-all shadow-[0_10px_30px_rgba(22,163,74,0.3)]">
+                    GÜNCELLEMELERİ YAYINLA
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       ) : currentPage === 'portal' ? (
         <div className="pt-40 pb-32 px-6 max-w-xl mx-auto min-h-screen flex flex-col items-center justify-center">
           <div className="glass p-12 rounded-2xl w-full text-center space-y-8 border-t-4 border-[#facc15]">
@@ -978,32 +1155,34 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       )}
 
       {/* FOOTER */}
-      <footer className="py-24 border-t border-white/5 bg-[#0B0F1A]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
-            <div className="space-y-6">
-              <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-                {logoImg ? <img src={logoImg} alt="Logo" className="h-14 w-auto" /> : <span>CMSVize</span>}
+      {!currentPage.startsWith('admin') && (
+        <footer className="py-24 border-t border-white/5 bg-[#0B0F1A]">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
+              <div className="space-y-6">
+                <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
+                  {logoImg ? <img src={logoImg} alt="Logo" className="h-14 w-auto" /> : <span>CMSVize</span>}
+                </div>
+                <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">
+                  Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.
+                </p>
+                <div className="flex space-x-4 pt-4">
+                  <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
+                    <Camera size={18} className="text-[#facc15] group-hover:text-[#0B0F1A]" />
+                  </a>
+                  <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
+                  <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Share2 size={18} /></a>
+                </div>
               </div>
-              <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
-              <div className="flex space-x-4 pt-4">
-                <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
-                  <Camera size={18} className="text-[#facc15] group-hover:text-[#0B0F1A]" />
-                </a>
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Share2 size={18} /></a>
+              <div className="space-y-6">
+                <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Hızlı Bağlantılar</h4>
+                <ul className="space-y-4 font-bold text-sm text-gray-400">
+                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
+                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
+                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
+                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
+                </ul>
               </div>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Hızlı Bağlantılar</h4>
-              <ul className="space-y-4 font-bold text-sm text-gray-400">
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
-                <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
-              </ul>
-            </div>
-            <div className="space-y-6 lg:col-span-2 lg:flex lg:space-y-0 lg:gap-16">
               <div className="space-y-6">
                 <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Yasal</h4>
                 <ul className="space-y-4 font-bold text-sm text-gray-400">
@@ -1011,10 +1190,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <li><button onClick={() => setCurrentPage('privacy')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Gizlilik Politikası</button></li>
                   <li><button onClick={() => setCurrentPage('terms')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Kullanım Şartları</button></li>
                 </ul>
-                <div className="pt-4 border-t border-white/10">
-                  <p className="text-gray-400 font-light text-xs tracking-wide">Mesai: Hafta İçi 09:00 - 18:00</p>
-                  <p className="text-gray-400 font-light text-xs tracking-wide mt-1">bilgi@cmsvize.com</p>
-                </div>
               </div>
               <div className="space-y-6">
                 <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">İletişim</h4>
@@ -1025,96 +1200,102 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </div>
             </div>
+            <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+              <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 CMSVize Danışmanlık. Tüm hakları saklıdır.</p>
+              <div className="flex space-x-6 text-[10px] font-black text-gray-600 uppercase tracking-widest"><span>Designed for Excellence</span></div>
+            </div>
           </div>
-          <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 CMSVize Danışmanlık. Tüm hakları saklıdır.</p>
-            <div className="flex space-x-6 text-[10px] font-black text-gray-600 uppercase tracking-widest"><span>Designed for Excellence</span></div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
       {/* WHATSAPP FLOAT - ENHANCED */}
-      <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-10 right-10 z-50 group flex items-center">
-        <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
-          Size nasıl yardımcı olabiliriz?
-          <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
-        </div>
-        <div className="relative transition-transform duration-300 group-hover:scale-[1.05]">
-          <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-125"></div>
-          <div className="relative bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
-            <MessageCircle size={28} className="text-white" fill="currentColor" />
-            <span className="text-white font-black italic tracking-wide">Danışmana Yaz</span>
+      {!currentPage.startsWith('admin') && (
+        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-10 right-10 z-50 group flex items-center">
+          <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
+            Size nasıl yardımcı olabiliriz?
+            <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
           </div>
-        </div>
-      </a>
+          <div className="relative transition-transform duration-300 group-hover:scale-[1.05]">
+            <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-125"></div>
+            <div className="relative bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
+              <MessageCircle size={28} className="text-white" fill="currentColor" />
+              <span className="text-white font-black italic tracking-wide">Danışmana Yaz</span>
+            </div>
+          </div>
+        </a>
+      )}
 
       {/* FAKE LIVE POPUP */}
-      <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-lg flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
-        <div className="w-12 h-12 bg-[#facc15]/20 rounded-md flex items-center justify-center text-[#facc15]"><Users size={24} /></div>
-        <div>
-          <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
-          <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
+      {!currentPage.startsWith('admin') && (
+        <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-lg flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
+          <div className="w-12 h-12 bg-[#facc15]/20 rounded-md flex items-center justify-center text-[#facc15]"><Users size={24} /></div>
+          <div>
+            <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
+            <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
+          </div>
+          <button onClick={() => setShowPopup(false)} className="ml-4 text-gray-500 hover:text-white transition-colors"> <X size={20} /> </button>
         </div>
-        <button onClick={() => setShowPopup(false)} className="ml-4 text-gray-500 hover:text-white transition-colors"> <X size={20} /> </button>
-      </div>
+      )}
 
       {/* WIZARD MODAL (UYGUNLUK TESTİ) */}
-      <div className={`fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 transition-all duration-500 ${showWizard ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-        <div className={`bg-[#0B0F1A] border border-white/10 p-10 lg:p-16 rounded-2xl w-full max-w-2xl relative shadow-2xl transition-all duration-500 delay-100 ${showWizard ? 'scale-100 translate-y-0' : 'scale-95 translate-y-10'}`}>
-          <X size={32} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white transition-colors" onClick={() => setShowWizard(false)} />
+      {!currentPage.startsWith('admin') && (
+        <div className={`fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 transition-all duration-500 ${showWizard ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+          <div className={`bg-[#0B0F1A] border border-white/10 p-10 lg:p-16 rounded-2xl w-full max-w-2xl relative shadow-2xl transition-all duration-500 delay-100 ${showWizard ? 'scale-100 translate-y-0' : 'scale-95 translate-y-10'}`}>
+            <X size={32} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white transition-colors" onClick={() => setShowWizard(false)} />
 
-          <div className="mb-10">
-            <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#facc15]">Avrupa Uygunluk Testi</h3>
-            <p className="text-gray-400 mt-2 font-medium">Sadece 3 adımda size en uygun vize rotasını çizelim.</p>
-            <div className="flex space-x-2 mt-6">
-              {[1, 2, 3].map(step => (
-                <div key={step} className={`h-2 flex-1 rounded-full transition-all duration-500 ${wizardStep >= step ? 'bg-[#facc15]' : 'bg-white/10'}`}></div>
-              ))}
+            <div className="mb-10">
+              <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#facc15]">Avrupa Uygunluk Testi</h3>
+              <p className="text-gray-400 mt-2 font-medium">Sadece 3 adımda size en uygun vize rotasını çizelim.</p>
+              <div className="flex space-x-2 mt-6">
+                {[1, 2, 3].map(step => (
+                  <div key={step} className={`h-2 flex-1 rounded-full transition-all duration-500 ${wizardStep >= step ? 'bg-[#facc15]' : 'bg-white/10'}`}></div>
+                ))}
+              </div>
             </div>
+
+            {wizardStep === 1 && (
+              <div className="space-y-6 animate-fade-up">
+                <h4 className="text-xl font-bold">1. Mesleğiniz veya uzmanlığınız nedir?</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  {['Tır Şoförü', 'Fabrika / Üretim', 'Depo / Lojistik', 'Diğer (Belirtiniz)'].map(job => (
+                    <button key={job} onClick={() => { setWizardData({ ...wizardData, job }); setWizardStep(2); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{job}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {wizardStep === 2 && (
+              <div className="space-y-6 animate-fade-up">
+                <h4 className="text-xl font-bold">2. Hangi ülkeyi hedefliyorsunuz?</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  {['Almanya', 'Polonya', 'Litvanya', 'Hollanda', 'Fransa'].map(country => (
+                    <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{country}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {wizardStep === 3 && (
+              <div className="space-y-6 animate-fade-up">
+                <h4 className="text-xl font-bold">3. Raporunuz hazırlandı!</h4>
+                <p className="text-gray-400 text-sm leading-relaxed">Size özel ücretsiz değerlendirme sonucunu iletebilmemiz ve uzmanlarımızın incelemesi için lütfen bilgilerinizi girin.</p>
+                <div className="space-y-4">
+                  <input placeholder="Adınız Soyadınız" onChange={(e) => setWizardData({ ...wizardData, name: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
+                  <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
+                  <button onClick={() => {
+                    setShowWizard(false); setWizardStep(1);
+                    const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
+                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                  }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
+                    <span>SONUCU İSTE</span>
+                    <ChevronRight size={24} />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-
-          {wizardStep === 1 && (
-            <div className="space-y-6 animate-fade-up">
-              <h4 className="text-xl font-bold">1. Mesleğiniz veya uzmanlığınız nedir?</h4>
-              <div className="grid grid-cols-2 gap-4">
-                {['Tır Şoförü', 'Fabrika / Üretim', 'Depo / Lojistik', 'Diğer (Belirtiniz)'].map(job => (
-                  <button key={job} onClick={() => { setWizardData({ ...wizardData, job }); setWizardStep(2); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{job}</button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {wizardStep === 2 && (
-            <div className="space-y-6 animate-fade-up">
-              <h4 className="text-xl font-bold">2. Hangi ülkeyi hedefliyorsunuz?</h4>
-              <div className="grid grid-cols-2 gap-4">
-                {['Almanya', 'Polonya', 'Litvanya', 'Hollanda', 'Fransa'].map(country => (
-                  <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{country}</button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {wizardStep === 3 && (
-            <div className="space-y-6 animate-fade-up">
-              <h4 className="text-xl font-bold">3. Raporunuz hazırlandı!</h4>
-              <p className="text-gray-400 text-sm leading-relaxed">Size özel ücretsiz değerlendirme sonucunu iletebilmemiz ve uzmanlarımızın incelemesi için lütfen bilgilerinizi girin.</p>
-              <div className="space-y-4">
-                <input placeholder="Adınız Soyadınız" onChange={(e) => setWizardData({ ...wizardData, name: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
-                <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
-                <button onClick={() => {
-                  setShowWizard(false); setWizardStep(1);
-                  const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
-                  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-                }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
-                  <span>SONUCU İSTE</span>
-                  <ChevronRight size={24} />
-                </button>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       <style>{`
         html { scroll-behavior: smooth; }
