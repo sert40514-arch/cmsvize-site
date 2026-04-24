@@ -36,6 +36,7 @@ import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
 import cansuImg from './assets/cansu.png';
 import heroImg from './assets/hero.png';
+import cmsVideo from './assets/Cms.mp4';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
@@ -469,7 +470,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
                 <div className="hero-img-container">
-                  <img src={TirImg} alt="European Truck CMSVize" className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto" />
+                  <video 
+                    src={cmsVideo} 
+                    className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto" 
+                    controls 
+                    playsInline
+                  >
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
                   <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-lg flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
                     <div className="w-12 h-12 bg-[#facc15] rounded-md flex items-center justify-center shrink-0">
