@@ -303,23 +303,34 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`;
   };
 
+  const playNotificationSound = () => {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01);
+      gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.2);
+    } catch (e) {
+      console.warn("Audio context not supported or blocked");
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // 1. CRM / Email Integration (Örn: Web3Forms, Formspree veya Kendi Backend'iniz)
-      // Bu bölüm gerçek bir API bağlandığında aktif edilebilir:
-      // await fetch('https://api.web3forms.com/submit', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      //   body: JSON.stringify({ access_key: "YOUR_ACCESS_KEY", ...formData })
-      // });
+      // 1. CRM / Email Integration Simulation
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Şimdilik simüle ediyoruz (API bağlandığında burası çalışacak)
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      // 3. Admin Panele Kaydet (isNew: true)
+      // 3. Admin Panele Kaydet (İç Veritabanı)
       const newLead = {
         id: Date.now(),
         name: formData.name,
@@ -332,9 +343,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         isNew: true
       };
       setLeads([newLead, ...leads]);
-
-      // 2. WhatsApp Yönlendirmesi (Anında Müşteri İletişimi)
-      window.open(getWhatsAppURL(), '_blank');
+      
+      // Bildirim Tetikle
+      playNotificationSound();
+      showToast('Yeni Başvuru Kaydedildi!');
 
       setIsSubmitting(false);
       setFormSuccess(true);
@@ -1198,7 +1210,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <div className="glass p-6 rounded-xl border-t-4 border-purple-500 relative overflow-hidden group">
                         <Briefcase className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
                         <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Bekleyen Başvuru</p>
-                        <p className="text-4xl font-black italic mt-2 text-white">{leads.filter(l => l.isNew).length}</p>
+                        <div className="flex items-center space-x-3 mt-2">
+                          <p className="text-4xl font-black italic text-white">{leads.filter(l => l.isNew).length}</p>
+                          {leads.filter(l => l.isNew).length > 0 && (
+                            <span className="bg-[#facc15] text-[#0B0F1A] text-[10px] font-black px-2 py-1 rounded animate-bounce">YENİ BAŞVURU!</span>
+                          )}
+                        </div>
                         <div className="mt-4 flex items-center text-purple-400 text-xs font-bold">
                           {leads.filter(l => l.isNew).length > 0 ? "Yanıt Bekleyenler Var" : "Tümü İncelendi"}
                         </div>
@@ -1318,8 +1335,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <table className="w-full text-left border-collapse">
                         <thead>
                           <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                            <th className="p-4">Müşteri</th>
+                            <th className="p-4">Müşteri / Tel</th>
                             <th className="p-4">Başvuru / Ülke</th>
+                            <th className="p-4">Ek Not</th>
                             <th className="p-4">Durum</th>
                             <th className="p-4">Tarih</th>
                             <th className="p-4 text-right">İşlem</th>
@@ -1331,13 +1349,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               <td className="p-4">
                                 <div className="flex items-center space-x-2">
                                   {lead.isNew && <span className="bg-[#facc15] text-black text-[8px] font-black px-1.5 py-0.5 rounded animate-pulse">YENİ</span>}
-                                  <p className="font-bold text-white">{lead.name}</p>
+                                  <p className="font-bold text-white uppercase tracking-tight">{lead.name}</p>
                                 </div>
-                                <p className="text-xs text-gray-400">{lead.phone}</p>
+                                <p className="text-xs text-gray-400 font-mono">{lead.phone}</p>
                               </td>
                               <td className="p-4">
                                 <p className="text-[#facc15] font-bold text-sm">{lead.service}</p>
-                                <p className="text-xs text-gray-400">{lead.country}</p>
+                                <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{lead.country}</p>
+                              </td>
+                              <td className="p-4">
+                                <div className="max-w-[200px] truncate text-[11px] text-gray-400 italic" title={lead.note}>
+                                  {lead.note || "---"}
+                                </div>
                               </td>
                               <td className="p-4">
                                 <select 
@@ -1677,9 +1700,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       isNew: true
                     };
                     setLeads([newLead, ...leads]);
+                    playNotificationSound();
+                    showToast('Yeni Başvuru (Wizard) Alındı!');
 
-                    const whatsappPhone = siteSettings?.whatsapp || WHATSAPP_NUMBER_SAFE;
-                    window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                    setShowWizard(false); 
+                    setWizardStep(1);
+                    setFormSuccess(true); // Wizard sonrası da başarı ekranına gitsin veya form success göstersin
+                    scrollToForm();
                   }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
                     <span>SONUCU İSTE</span>
                     <ChevronRight size={24} />
