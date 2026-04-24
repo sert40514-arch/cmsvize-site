@@ -1074,7 +1074,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <div className="py-4 flex justify-center">
                         <div 
                           className="cf-turnstile" 
-                          data-sitekey="1x00000000000000000000AA" 
+                          data-sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
                           data-callback="onTurnstileVerify"
                           data-theme="dark"
                         ></div>
