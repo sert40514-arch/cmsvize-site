@@ -153,6 +153,14 @@ const App = () => {
   const [trackingResult, setTrackingResult] = useState(null);
   const [trackingError, setTrackingError] = useState(false);
 
+  // Security & Bot Protection
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  
+  useEffect(() => {
+    window.onTurnstileVerify = () => setIsTurnstileVerified(true);
+    return () => { delete window.onTurnstileVerify; };
+  }, []);
+
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
@@ -293,12 +301,17 @@ const App = () => {
       // Sadece rakam ve + işaretine izin ver
       const cleaned = value.replace(/[^\d+]/g, '');
       setFormData({ ...formData, phone: cleaned });
+    } else if (name === 'name') {
+      // Sadece harf ve boşluklara izin ver (Türkçe karakterler dahil)
+      const cleaned = value.replace(/[^a-zA-Z\sğüşıöçĞÜŞİÖÇ]/g, '');
+      setFormData({ ...formData, name: cleaned });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
   const isPhoneValid = formData.phone.length >= 10 && formData.phone.length <= 15;
+  const isNameValid = formData.name.trim().split(' ').filter(word => word.length >= 2).length >= 2;
 
   const getWhatsAppURL = (customData = null) => {
     const data = customData || formData;
@@ -1001,7 +1014,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <form onSubmit={handleFormSubmit} className="space-y-8">
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
-                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" placeholder="Ahmet Yılmaz" />
+                        <input 
+                          required 
+                          name="name" 
+                          value={formData.name} 
+                          onChange={handleInputChange} 
+                          className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.name && !isNameValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} 
+                          placeholder="Ad Soyad" 
+                        />
+                        {formData.name && !isNameValid && (
+                          <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen en az iki isim giriniz (Sadece harf).</p>
+                        )}
                       </div>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
@@ -1048,10 +1071,19 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
                       </div>
 
+                      <div className="py-4 flex justify-center">
+                        <div 
+                          className="cf-turnstile" 
+                          data-sitekey="1x00000000000000000000AA" 
+                          data-callback="onTurnstileVerify"
+                          data-theme="dark"
+                        ></div>
+                      </div>
+
                       <button 
                         type="submit" 
-                        disabled={!isPhoneValid}
-                        className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
+                        disabled={!isPhoneValid || !isNameValid || !isTurnstileVerified}
+                        className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid && isNameValid && isTurnstileVerified ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
                       >
                         BAŞVURUYU TAMAMLA
                       </button>
