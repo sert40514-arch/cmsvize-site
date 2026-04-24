@@ -65,6 +65,17 @@ const App = () => {
   const [wizardData, setWizardData] = useState({ job: '', country: '', name: '', phone: '' });
 
   const [portalLoggedIn, setPortalLoggedIn] = useState(false);
+  const [portalUser, setPortalUser] = useState('');
+  const [portalPass, setPortalPass] = useState('');
+
+  const handlePortalLogin = (e) => {
+    e.preventDefault();
+    if (portalUser === 'cmsvize' && portalPass === 'cms2026cms681001') {
+      setPortalLoggedIn(true);
+    } else {
+      alert('Hatalı Bilgi');
+    }
+  };
 
   // Routing State
   const [currentPage, setCurrentPage] = useState('home');
@@ -478,16 +489,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   >
                     Tarayıcınız video etiketini desteklemiyor.
                   </video>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60"></div>
-                  <div className="absolute bottom-6 left-6 right-6 glass p-5 rounded-lg flex items-center space-x-4 border border-white/20 shadow-2xl animate-pulse-soft">
-                    <div className="w-12 h-12 bg-[#facc15] rounded-md flex items-center justify-center shrink-0">
-                      <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-black uppercase italic tracking-tighter">KOD95 + İŞ HAZIR</p>
-                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Tüm İş Kolları Dahil</p>
-                    </div>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
                 </div>
               </div>
             </div>
@@ -939,10 +941,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <p className="text-gray-400 mt-2 text-sm">Vize başvuru sürecinizi adım adım takip edin.</p>
             </div>
             {!portalLoggedIn ? (
-              <form onSubmit={(e) => { e.preventDefault(); setPortalLoggedIn(true); }} className="space-y-4">
-                <input required placeholder="T.C. Kimlik / Pasaport No" className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" />
-                <input required type="password" placeholder="Şifre" className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" />
-                <button className="w-full bg-[#facc15] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
+              <form onSubmit={handlePortalLogin} className="space-y-4">
+                <input 
+                  required 
+                  placeholder="T.C. Kimlik / Pasaport No" 
+                  value={portalUser}
+                  onChange={(e) => setPortalUser(e.target.value)}
+                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" 
+                />
+                <input 
+                  required 
+                  type="password" 
+                  placeholder="Şifre" 
+                  value={portalPass}
+                  onChange={(e) => setPortalPass(e.target.value)}
+                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" 
+                />
+                <button type="submit" className="w-full bg-[#facc15] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
               </form>
             ) : (
               <div className="space-y-8 text-left bg-black/40 p-6 rounded-xl border border-white/5">
