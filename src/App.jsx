@@ -45,6 +45,9 @@ import heroImg from './assets/hero.png';
 import cmsVideo from './assets/Cms.mp4';
 
 // --- CONFIG ---
+const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
+  ? import.meta.env.VITE_WHATSAPP_NUMBER 
+  : "905459918268";
 const darkBg = "#0B0F1A";
 
 const App = () => {
@@ -262,7 +265,7 @@ Hedef Ülke: ${data.country || 'Genel'}
 İlgilendiğim alan: ${data.workField}
 
 Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
-    const whatsappPhone = siteSettings?.whatsapp || "905459918268";
+    const whatsappPhone = siteSettings?.whatsapp || WHATSAPP_NUMBER_SAFE;
     return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -1479,7 +1482,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <button onClick={() => {
                     setShowWizard(false); setWizardStep(1);
                     const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
-                    const whatsappPhone = siteSettings?.whatsapp || "905459918268";
+                    const whatsappPhone = siteSettings?.whatsapp || WHATSAPP_NUMBER_SAFE;
                   window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                   }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
                     <span>SONUCU İSTE</span>
