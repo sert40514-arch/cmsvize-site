@@ -76,7 +76,8 @@ const App = () => {
     phone: '',
     country: 'Almanya',
     workField: 'Tır Şoförlüğü (KOD95)',
-    message: ''
+    message: '',
+    hp: '' // Honeypot
   });
 
   const [showPopup, setShowPopup] = useState(false);
@@ -315,13 +316,10 @@ const App = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
     if (name === 'phone') {
-      // Sadece rakam ve + işaretine izin ver
       const cleaned = value.replace(/[^\d+]/g, '');
       setFormData({ ...formData, phone: cleaned });
     } else if (name === 'name') {
-      // Sadece harf ve boşluklara izin ver (Türkçe karakterler dahil)
       const cleaned = value.replace(/[^a-zA-Z\sğüşıöçĞÜŞİÖÇ]/g, '');
       setFormData({ ...formData, name: cleaned });
     } else {
@@ -329,8 +327,55 @@ const App = () => {
     }
   };
 
-  const isPhoneValid = formData.phone.length >= 10 && formData.phone.length <= 15;
-  const isNameValid = formData.name.trim().split(' ').filter(word => word.length >= 2).length >= 2;
+  const isSpammy = (text) => {
+    if (!text) return false;
+    const spamPatterns = ['asdasd', 'qweqwe', 'testtest', 'adminadmin', 'deneme', 'aaabbb', 'qwerty', '123123'];
+    const cleaned = text.toLowerCase().replace(/\s/g, '');
+    if (spamPatterns.some(p => cleaned.includes(p))) return true;
+    if (/(.)\1{4,}/.test(cleaned)) return true; // 5+ repeats
+    return false;
+  };
+
+  const validateName = (name) => {
+    const trimmed = name.trim();
+    const parts = trimmed.split(/\s+/);
+    if (parts.length < 2) return false;
+    if (parts.some(p => p.length < 2)) return false;
+    if (isSpammy(trimmed)) return false;
+    return true;
+  };
+
+  const validatePhone = (phone) => {
+    const cleaned = phone.replace(/[^\d]/g, '');
+    if (cleaned.length < 10 || cleaned.length > 15) return false;
+    const fakePatterns = ['123456', '111111', '000000', '987654', '123123'];
+    if (fakePatterns.some(p => cleaned.includes(p))) return false;
+    if (/(.)\1{4,}/.test(cleaned)) return false;
+    return true;
+  };
+
+  const validateMessage = (msg) => {
+    if (!msg) return true; // Optional
+    if (msg.length < 10) return false;
+    if (isSpammy(msg)) return false;
+    return true;
+  };
+
+  const checkRateLimit = () => {
+    const now = Date.now();
+    const history = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
+    const fiveMins = 5 * 60 * 1000;
+    const recent = history.filter(t => now - t < fiveMins);
+    
+    if (recent.length >= 2) return { ok: false, msg: "Çok kısa sürede fazla başvuru yaptınız. Lütfen biraz sonra tekrar deneyin." };
+    const last = recent[recent.length - 1];
+    if (last && now - last < 10000) return { ok: false, msg: "İşleminiz devam ediyor, lütfen bekleyin." };
+    
+    return { ok: true };
+  };
+
+  const isPhoneValid = validatePhone(formData.phone);
+  const isNameValid = validateName(formData.name);
 
   const getWhatsAppURL = (customData = null) => {
     const data = customData || formData;
@@ -367,16 +412,38 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
+    if (formData.hp) return; // Honeypot trap
+
+    if (!isNameValid) {
+      showToast("Lütfen gerçek ad ve soyadınızı yazın.");
+      return;
+    }
+
+    if (!isPhoneValid) {
+      showToast("Lütfen geçerli bir telefon numarası girin.");
+      return;
+    }
+
+    if (!validateMessage(formData.message)) {
+      showToast("Lütfen daha açıklayıcı bir not yazın.");
+      return;
+    }
+
+    const rate = checkRateLimit();
+    if (!rate.ok) {
+      showToast(rate.msg);
+      return;
+    }
+
     if (!turnstileToken) {
       showToast("Lütfen güvenlik doğrulamasını tamamlayın.");
       return;
     }
 
     setIsSubmitting(true);
+    setTimeout(() => setIsSubmitting(false), 10000); // 10s disable
 
     try {
-      // 1. Server-side Turnstile Doğrulaması
-      // Production için token server tarafında Cloudflare siteverify endpoint’i ile doğrulanmalı.
       const verifyRes = await fetch('/api/verify-turnstile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -391,10 +458,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         return;
       }
 
-      // 2. CRM / Email Integration Simulation
       await new Promise(resolve => setTimeout(resolve, 800));
 
-      // 3. Admin Panele Kaydet (İç Veritabanı)
       const newLead = {
         id: Date.now(),
         name: formData.name,
@@ -408,7 +473,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       };
       setLeads([newLead, ...leads]);
       
-      // Bildirim Tetikle
+      // Update rate limit history
+      const history = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
+      history.push(Date.now());
+      localStorage.setItem('cms_sub_history', JSON.stringify(history.slice(-10)));
+
       playNotificationSound();
       showToast('Başvurunuz Alındı!');
 
@@ -427,7 +496,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       phone: '',
       country: 'Almanya',
       workField: 'Tır Şoförlüğü (KOD95)',
-      message: ''
+      message: '',
+      hp: ''
     });
     setFormSuccess(false);
     setIsTurnstileVerified(false);
@@ -1087,9 +1157,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                           placeholder="Ad Soyad" 
                         />
                         {formData.name && !isNameValid && (
-                          <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen en az iki isim giriniz (Sadece harf).</p>
+                          <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen gerçek ad ve soyadınızı yazın.</p>
                         )}
                       </div>
+                      <input type="text" name="hp" value={formData.hp} onChange={handleInputChange} style={{ display: 'none' }} tabIndex="-1" autoComplete="off" />
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
@@ -1102,7 +1173,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                             placeholder="+90 5xx..." 
                           />
                           {formData.phone && !isPhoneValid && (
-                            <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen geçerli bir telefon numarası giriniz (10-15 karakter).</p>
+                            <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen geçerli bir telefon numarası girin.</p>
                           )}
                         </div>
                         <div className="space-y-2">
@@ -1127,7 +1198,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                        <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                        <textarea name="message" value={formData.message} onChange={handleInputChange} className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.message && !validateMessage(formData.message) ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                        {formData.message && !validateMessage(formData.message) && (
+                          <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen daha açıklayıcı bir not yazın (Min 10 karakter).</p>
+                        )}
                       </div>
 
                       <div className="flex items-start space-x-3 pt-2 pb-2">
