@@ -731,13 +731,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
                   <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
                     {cansuImg ? (
-                      <img src={cansuImg} alt="Cansu Sert" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                      <img src={cansuImg} alt="Cansu Avcı Sert" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
                     ) : (
                       <div className="w-full h-full bg-gray-800"></div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
                   </div>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">CANSU SERT</h3>
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">CANSU AVCI SERT</h3>
                   <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">CEO</p>
                 </div>
                 <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
