@@ -156,6 +156,7 @@ const App = () => {
 
   // Security & Bot Protection
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
   
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -343,11 +344,33 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      showToast("Lütfen güvenlik doğrulamasını tamamlayın.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // 1. CRM / Email Integration Simulation
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // 1. Server-side Turnstile Doğrulaması
+      // Production için token server tarafında Cloudflare siteverify endpoint’i ile doğrulanmalı.
+      const verifyRes = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken })
+      });
+      
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success) {
+        setIsSubmitting(false);
+        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+        return;
+      }
+
+      // 2. CRM / Email Integration Simulation
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       // 3. Admin Panele Kaydet (İç Veritabanı)
       const newLead = {
@@ -365,13 +388,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       
       // Bildirim Tetikle
       playNotificationSound();
-      showToast('Yeni Başvuru Kaydedildi!');
+      showToast('Başvurunuz Alındı!');
+
+      // 4. WhatsApp Yönlendirmesi (Doğrulama Başarılıysa)
+      window.open(getWhatsAppURL(), '_blank');
 
       setIsSubmitting(false);
       setFormSuccess(true);
     } catch (error) {
       console.error("Form error:", error);
       setIsSubmitting(false);
+      showToast("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
 
@@ -1070,8 +1097,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <div className="py-4 flex justify-center min-h-[65px]">
                         {typeof Turnstile !== 'undefined' ? (
                           <Turnstile 
-                            sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
-                            onVerify={() => setIsTurnstileVerified(true)} 
+                            sitekey="0x4AAAAAADCs4Dto3zUFJEGb" 
+                            onVerify={(token) => {
+                              setTurnstileToken(token);
+                              setIsTurnstileVerified(true);
+                            }} 
                             theme="dark"
                           />
                         ) : (
