@@ -113,10 +113,15 @@ const App = () => {
 
   const formRef = useRef(null);
 
-  // Path Detection for Admin
+  // Path Detection for Direct Navigation
   useEffect(() => {
-    if (window.location.pathname === '/admin-panel-cms') {
+    const path = window.location.pathname;
+    if (path === '/admin-panel-cms') {
       setCurrentPage('admin-login');
+    } else if (path === '/portal') {
+      setCurrentPage('portal');
+    } else if (path === '/blog') {
+      setCurrentPage('blog');
     }
   }, []);
 
