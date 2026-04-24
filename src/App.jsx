@@ -26,10 +26,10 @@ import {
 import TirImg from './assets/tır.png';
 import OturumKartiImg from './assets/oturum kartı.png';
 import SupportingImg from './assets/1.png';
-import Insta1 from './assets/insta1.png';
-import Insta2 from './assets/insta2.png';
-import Insta3 from './assets/insta3.png';
-import Insta4 from './assets/insta4.png';
+import insta1Img from './assets/insta1.png';
+import insta2Img from './assets/insta2.png';
+import insta3Img from './assets/insta3.png';
+import insta4Img from './assets/insta4.png';
 import logoImg from './assets/logo.png';
 
 // --- CONFIG ---
@@ -629,28 +629,28 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
                 {[
                   {
-                    img: Insta1,
+                    img: insta1Img,
                     type: 'REEL',
                     typeIcon: 'reel',
                     tag: '@CMSPrime',
                     label: 'Almanya Vizesi Onaylandı!',
                   },
                   {
-                    img: Insta2,
+                    img: insta2Img,
                     type: 'CAROUSEL',
                     typeIcon: 'carousel',
                     tag: '@CMSPrime',
                     label: 'Uzman Danışmanlık & %98 Başarı',
                   },
                   {
-                    img: Insta3,
+                    img: insta3Img,
                     type: 'POST',
                     typeIcon: 'post',
                     tag: '@CMSPrime',
                     label: 'Polonya Oturum İzni ✅',
                   },
                   {
-                    img: Insta4,
+                    img: insta4Img,
                     type: 'REEL',
                     typeIcon: 'reel',
                     tag: '@CMSPrime',
@@ -664,11 +664,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     rel="noreferrer"
                     className="aspect-square rounded-xl overflow-hidden relative group block border border-white/10 shadow-xl"
                   >
-                    {/* Placeholder Background */}
-                    <div className="absolute inset-0 bg-gray-800 transition-transform duration-700 group-hover:scale-110"></div>
+                    {/* Background Image with Safe Render */}
+                    {post.img ? (
+                      <img src={post.img} alt={post.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    ) : (
+                      <div className="absolute inset-0 bg-gray-800"></div>
+                    )}
 
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10"></div>
+                    {/* Dark gradient overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:via-black/20 transition-all duration-300"></div>
 
                     {/* Type Badge - top right */}
                     <div className="absolute top-3 right-3 z-10">
