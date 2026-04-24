@@ -50,7 +50,7 @@ import Insta1 from './assets/insta1.png';
 import Insta2 from './assets/insta2.png';
 import Insta3 from './assets/insta3.png';
 import Insta4 from './assets/insta4.png';
-import Logo from './assets/logo.png';
+import logoImg from './assets/logo.png';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
@@ -377,7 +377,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
           <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-            {Logo && <img src={Logo} alt="CMSVize Logo" className="h-10 w-auto object-contain transition-all group-hover:scale-105" />}
+            {logoImg ? (
+              <img src={logoImg} alt="CMSVize" className="h-10 w-auto object-contain transition-all group-hover:scale-105" />
+            ) : (
+              <span className="text-[#facc15] font-black italic text-2xl tracking-tighter uppercase">CMSVize</span>
+            )}
           </div>
 
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -936,7 +940,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
             <div className="space-y-6">
               <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-                {Logo && <img src={Logo} alt="CMSVize Logo" className="h-14 w-auto object-contain transition-all group-hover:scale-105" />}
+                {logoImg ? (
+                  <img src={logoImg} alt="CMSVize" className="h-14 w-auto object-contain transition-all group-hover:scale-105" />
+                ) : (
+                  <span className="text-[#facc15] font-black italic text-2xl tracking-tighter uppercase">CMSVize</span>
+                )}
               </div>
               <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
               <div className="flex space-x-4 pt-4">
