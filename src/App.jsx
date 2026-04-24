@@ -390,9 +390,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       playNotificationSound();
       showToast('Başvurunuz Alındı!');
 
-      // 4. WhatsApp Yönlendirmesi (Doğrulama Başarılıysa)
-      window.open(getWhatsAppURL(), '_blank');
-
       setIsSubmitting(false);
       setFormSuccess(true);
     } catch (error) {
@@ -1043,7 +1040,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <div className="bg-[#131926] p-10 lg:p-20 relative">
                   {isSubmitting && <div className="absolute inset-0 bg-[#131926]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center space-y-4">
                     <div className="w-12 h-12 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">Yönlendiriliyorsunuz...</p>
+                    <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">İşleminiz Yapılıyor...</p>
                   </div>}
                   <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
                   {formSuccess ? (
