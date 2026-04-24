@@ -19,7 +19,8 @@ import {
   User,
   ChevronDown,
   MapPin,
-  Share2
+  Share2,
+  Lock
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
