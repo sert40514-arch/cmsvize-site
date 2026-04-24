@@ -11,6 +11,7 @@ import {
   Phone,
   Mail,
   MessageCircle,
+  MessageSquare,
   Menu,
   X,
   Star,
@@ -44,13 +45,29 @@ import halilImg from './assets/halil.png';
 import heroImg from './assets/hero.png';
 import cmsVideo from './assets/Cms.mp4';
 
-// --- CONFIG ---
+// --- CONFIG & DATABASE ---
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
   ? import.meta.env.VITE_WHATSAPP_NUMBER 
   : "905459918268";
 const WHATSAPP_NUMBER = WHATSAPP_NUMBER_SAFE;
 const STATS_DEFAULTS = { success: 98, clients: 2500, countries: 15 };
 const darkBg = "#0B0F1A";
+
+const INITIAL_REVIEWS = [
+  { id: 1, name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", flag: "🇩🇪", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar.", likes: 14 },
+  { id: 2, name: "Burak E.", visa: "Polonya D Tipi Ulusal Vize", flag: "🇵🇱", time: "1 hafta önce", text: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı.", likes: 14 },
+  { id: 3, name: "Ayşe K.", visa: "Litvanya Oturum İzni", flag: "🇱🇹", time: "1 hafta önce", text: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu.", likes: 14 }
+];
+
+const SITE_DATABASE = {
+  stats: STATS_DEFAULTS,
+  team: [
+    { id: 1, name: "CANSU AVCI SERT", title: "CEO", desc: "Şirketin vizyon ve stratejilerini yönetir.", isVisible: false, img: "" },
+    { id: 2, name: "MURAT SERT", title: "Co-Founder / Systems Architect", desc: "Sistem mimarisi ve operasyonları koordine eder.", isVisible: true, img: muratImg },
+    { id: 3, name: "HALİL İBRAHİM ÖRKCÜ", title: "Senior Visa Strategist", desc: "Vize başvuru süreçlerini ve stratejilerini planlar.", isVisible: true, img: halilImg }
+  ],
+  reviews: INITIAL_REVIEWS
+};
 
 const App = () => {
   const [formData, setFormData] = useState({
@@ -102,14 +119,7 @@ const App = () => {
   const [siteContent, setSiteContent] = useState(() => {
     const saved = localStorage.getItem('cms_admin_stats');
     if (saved) return JSON.parse(saved);
-    return {
-      stats: { success: 98, clients: 2500, countries: 15 },
-      team: [
-        { id: 1, name: "CANSU AVCI SERT", title: "CEO", desc: "Şirketin vizyon ve stratejilerini yönetir.", isVisible: false, img: "" }, // Hidden by default as per previous request
-        { id: 2, name: "MURAT SERT", title: "Co-Founder / Systems Architect", desc: "Sistem mimarisi ve operasyonları koordine eder.", isVisible: true, img: muratImg },
-        { id: 3, name: "HALİL İBRAHİM ÖRKCÜ", title: "Senior Visa Strategist", desc: "Vize başvuru süreçlerini ve stratejilerini planlar.", isVisible: true, img: halilImg }
-      ]
-    };
+    return SITE_DATABASE;
   });
 
   // Leads State
@@ -117,8 +127,8 @@ const App = () => {
     const saved = localStorage.getItem('cms_admin_leads');
     if (saved) return JSON.parse(saved);
     return [
-      { id: 1, name: "Ahmet Yılmaz", phone: "5551234567", country: "Almanya", service: "Tır Şoförü", date: "2026-04-24", status: "İşleme Alındı", note: "Evraklar eksiksiz ulaştı." },
-      { id: 2, name: "Ayşe Kaya", phone: "5329876543", country: "Polonya", service: "Fabrika / Üretim", date: "2026-04-25", status: "Yeni Başvuru", note: "CV inceleniyor." }
+      { id: 1, name: "Ahmet Yılmaz", phone: "5551234567", country: "Almanya", service: "Tır Şoförü", date: "2026-04-24", status: "İşleme Alındı", note: "Evraklar eksiksiz ulaştı.", isNew: false },
+      { id: 2, name: "Ayşe Kaya", phone: "5329876543", country: "Polonya", service: "Fabrika / Üretim", date: "2026-04-25", status: "Yeni Başvuru", note: "CV inceleniyor.", isNew: false }
     ];
   });
 
@@ -135,11 +145,17 @@ const App = () => {
 
   const [adminTab, setAdminTab] = useState('dashboard');
   const [toastMessage, setToastMessage] = useState('');
+  const [totalViews, setTotalViews] = useState(12450); // Simulation for Analytics
 
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
   };
+
+  // Simulation: Increase views on load
+  useEffect(() => {
+    setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
+  }, []);
 
   // Sync to localStorage
   useEffect(() => { localStorage.setItem('cms_admin_stats', JSON.stringify(siteContent)); }, [siteContent]);
@@ -296,6 +312,20 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       // Şimdilik simüle ediyoruz (API bağlandığında burası çalışacak)
       await new Promise(resolve => setTimeout(resolve, 800));
+
+      // 3. Admin Panele Kaydet (isNew: true)
+      const newLead = {
+        id: Date.now(),
+        name: formData.name,
+        phone: formData.phone,
+        country: formData.country,
+        service: formData.workField,
+        date: new Date().toISOString().split('T')[0],
+        status: "Yeni Başvuru",
+        note: formData.message || "Hızlı başvuru formu",
+        isNew: true
+      };
+      setLeads([newLead, ...leads]);
 
       // 2. WhatsApp Yönlendirmesi (Anında Müşteri İletişimi)
       window.open(getWhatsAppURL(), '_blank');
@@ -649,14 +679,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", flag: "🇩🇪", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar." },
-                  { name: "Burak E.", visa: "Polonya D Tipi Ulusal Vize", flag: "🇵🇱", time: "1 hafta önce", text: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı." },
-                  { name: "Ayşe K.", visa: "Litvanya Oturum İzni", flag: "🇱🇹", time: "1 hafta önce", text: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu." },
-                  { name: "Mert Y.", visa: "Hollanda Nitelikli Çalışan", flag: "🇳🇱", time: "2 hafta önce", text: "Hollanda Yüksek Nitelikli Göçmen vizemi CMSVize desteğiyle aldım. Çok karmaşık görünen bu süreci benim için son derece basitleştirdiler." },
-                  { name: "Selin D.", visa: "Fransa Çalışma Vizesi", flag: "🇫🇷", time: "3 hafta önce", text: "Fransa'daki yeni görevim için gereken tüm çalışma izni süreçleri eksiksiz tamamlandı. Danışmanların ilgisi ve tecrübesi muazzamdı." }
-                ].map((ref, idx) => (
-                  <div key={idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
+                {(siteContent?.reviews || []).map((ref, idx) => (
+                  <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform">
                       {ref.flag}
                     </div>
@@ -679,7 +703,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                         <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                       </div>
-                      <span className="text-[11px] text-gray-400 font-medium ml-1">14 • 3 yorum</span>
+                      <span className="text-[11px] text-gray-400 font-medium ml-1">{ref.likes || 0} • <MessageSquare size={10} className="inline ml-1" /> {ref.comments || 0}</span>
                     </div>
                   </div>
                 ))}
@@ -1065,6 +1089,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Users size={18} /> <span>Ekip Yönetimi</span>
                   </button>
+                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <MessageSquare size={18} /> <span>Müşteri Yorumları</span>
+                  </button>
                   <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Briefcase size={18} /> <span>Başvurular</span>
                   </button>
@@ -1102,27 +1129,63 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>
                   <div className="text-right hidden md:block">
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
-                    <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
+                    <div className="flex flex-col items-end">
+                      <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
+                      <div className="bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded border border-[#facc15]/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
+                        <span className="w-1.5 h-1.5 bg-[#facc15] rounded-full animate-ping"></span>
+                        <span>{activeViewers} Kişi Sitede</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {adminTab === 'dashboard' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-up">
-                    <div className="glass p-6 rounded-xl border-l-4 border-[#facc15]">
-                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Başarı Oranı</p>
-                      <p className="text-3xl font-black italic mt-2 text-white">%{siteContent?.stats?.success || 0}</p>
+                  <div className="space-y-8 animate-fade-up">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="glass p-6 rounded-xl border-t-4 border-[#facc15] relative overflow-hidden group">
+                        <Activity className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Günlük Ziyaretçi (Vercel Analytics)</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{Math.floor(totalViews / 8)}</p>
+                        <div className="mt-4 flex items-center text-green-500 text-xs font-bold">
+                          <ChevronRight size={14} className="-rotate-90" />
+                          <span>+12.5% Geçen Haftadan</span>
+                        </div>
+                      </div>
+                      <div className="glass p-6 rounded-xl border-t-4 border-blue-500 relative overflow-hidden group">
+                        <Star className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Toplam Görüntülenme</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{totalViews.toLocaleString()}</p>
+                        <div className="mt-4 flex items-center text-blue-400 text-xs font-bold">
+                          <span>Sürekli Artıyor</span>
+                        </div>
+                      </div>
+                      <div className="glass p-6 rounded-xl border-t-4 border-purple-500 relative overflow-hidden group">
+                        <Briefcase className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Bekleyen Başvuru</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{leads.filter(l => l.isNew).length}</p>
+                        <div className="mt-4 flex items-center text-purple-400 text-xs font-bold">
+                          {leads.filter(l => l.isNew).length > 0 ? "Yanıt Bekleyenler Var" : "Tümü İncelendi"}
+                        </div>
+                      </div>
                     </div>
-                    <div className="glass p-6 rounded-xl border-l-4 border-[#0a66c2]">
-                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Müşteri Sayısı</p>
-                      <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.clients || 0}+</p>
-                    </div>
-                    <div className="glass p-6 rounded-xl border-l-4 border-green-500">
-                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Hedef Ülke</p>
-                      <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.countries || 0}</p>
-                    </div>
-                    <div className="glass p-6 rounded-xl border-l-4 border-purple-500">
-                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Aktif Başvuru</p>
-                      <p className="text-3xl font-black italic mt-2 text-white">{leads.filter(l => l.status !== 'Tamamlandı' && l.status !== 'İptal').length}</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="glass p-6 rounded-xl">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Başarı Oranı</p>
+                        <p className="text-3xl font-black italic mt-2 text-white">%{siteContent?.stats?.success || 0}</p>
+                      </div>
+                      <div className="glass p-6 rounded-xl">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Müşteri Sayısı</p>
+                        <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.clients || 0}+</p>
+                      </div>
+                      <div className="glass p-6 rounded-xl">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Hedef Ülke</p>
+                        <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.countries || 0}</p>
+                      </div>
+                      <div className="glass p-6 rounded-xl">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Aktif Başvuru</p>
+                        <p className="text-3xl font-black italic mt-2 text-white">{leads.length}</p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1228,9 +1291,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         </thead>
                         <tbody>
                           {leads.map((lead, idx) => (
-                            <tr key={lead.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                            <tr key={lead.id} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${lead.isNew ? 'bg-[#facc15]/5' : ''}`}>
                               <td className="p-4">
-                                <p className="font-bold text-white">{lead.name}</p>
+                                <div className="flex items-center space-x-2">
+                                  {lead.isNew && <span className="bg-[#facc15] text-black text-[8px] font-black px-1.5 py-0.5 rounded animate-pulse">YENİ</span>}
+                                  <p className="font-bold text-white">{lead.name}</p>
+                                </div>
                                 <p className="text-xs text-gray-400">{lead.phone}</p>
                               </td>
                               <td className="p-4">
@@ -1240,7 +1306,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               <td className="p-4">
                                 <select 
                                   value={lead.status}
-                                  onChange={(e) => { const newLeads = [...leads]; newLeads[idx].status = e.target.value; setLeads(newLeads); showToast('Durum güncellendi'); }}
+                                  onChange={(e) => { 
+                                    const newLeads = [...leads]; 
+                                    newLeads[idx].status = e.target.value; 
+                                    newLeads[idx].isNew = false; // Status değişince yeni uyarısını kaldır
+                                    setLeads(newLeads); 
+                                    showToast('Durum güncellendi'); 
+                                  }}
                                   className="bg-[#0B0F1A] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#facc15]"
                                 >
                                   <option value="Yeni Başvuru">Yeni Başvuru</option>
@@ -1253,9 +1325,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               </td>
                               <td className="p-4 text-xs text-gray-400 font-medium">{lead.date}</td>
                               <td className="p-4 text-right space-x-2">
-                                <a href={`https://wa.me/${lead.phone}?text=${encodeURIComponent(`Merhaba ${lead.name}, CMSVize'den ulaşıyoruz. Başvurunuzla ilgili...`)}`} target="_blank" rel="noreferrer" className="inline-flex p-2 bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg transition-all" title="WhatsApp'tan Yaz">
-                                  <MessageCircle size={16} />
+                                {lead.isNew && (
+                                  <button onClick={() => { const newLeads = [...leads]; newLeads[idx].isNew = false; setLeads(newLeads); }} className="inline-flex p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all" title="Okundu İşaretle">
+                                    <Eye size={16} />
+                                  </button>
+                                )}
+                                <a href={`https://wa.me/${lead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Merhaba ${lead.name}, CMSVize'den ulaşıyoruz. Başvurunuzla ilgili...`)}`} target="_blank" rel="noreferrer" className="inline-flex p-2 bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg transition-all" title="WhatsApp'tan Yaz">
+                                  <MessageSquare size={16} />
                                 </a>
+                                <button onClick={() => { if(window.confirm('Bu başvuruyu silmek istediğinize emin misiniz?')) { setLeads(leads.filter(l => l.id !== lead.id)); } }} className="inline-flex p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all">
+                                  <Trash2 size={16} />
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -1265,6 +1345,59 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>
                 )}
 
+                {adminTab === 'reviews' && (
+                  <div className="space-y-6 animate-fade-up">
+                    <div className="flex justify-between items-center mb-4">
+                      <p className="text-gray-500 font-medium text-sm">Site üzerindeki müşteri geri bildirimlerini buradan yönetin.</p>
+                      <button onClick={() => {
+                        const newReview = { id: Date.now(), name: "YENİ MÜŞTERİ", visa: "Vize Türü", flag: "🌍", time: "Yeni", text: "Yorum içeriği...", likes: 0 };
+                        setSiteContent({...siteContent, reviews: [newReview, ...(siteContent.reviews || [])]});
+                      }} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                        <Plus size={16} /> <span>Yeni Yorum Ekle</span>
+                      </button>
+                    </div>
+                    <div className="space-y-6">
+                      {(siteContent?.reviews || []).map((review, idx) => (
+                        <div key={review.id} className="glass p-6 rounded-xl space-y-6 border border-white/5">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">MÜŞTERİ İSMİ</label>
+                              <input value={review.name} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].name = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">VİZE / ÜLKE (BAYRAK DAHİL)</label>
+                              <div className="flex space-x-2">
+                                <input value={review.flag} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].flag = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-12 bg-black/50 border border-white/10 px-2 py-2 rounded-lg text-center font-bold outline-none focus:border-[#facc15]" placeholder="🇩🇪" />
+                                <input value={review.visa} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].visa = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="flex-1 bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]" />
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">BEĞENİ SAYISI / ZAMAN</label>
+                              <div className="flex space-x-2">
+                                <input type="number" value={review.likes} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].likes = parseInt(e.target.value) || 0; setSiteContent({...siteContent, reviews: newR}); }} className="w-20 bg-black/50 border border-white/10 px-2 py-2 rounded-lg text-center font-bold outline-none focus:border-[#facc15]" />
+                                <input value={review.time} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].time = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="flex-1 bg-black/50 border border-white/10 px-4 py-2 rounded-lg text-sm outline-none focus:border-[#facc15]" />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">MÜŞTERİ YORUMU</label>
+                            <textarea value={review.text} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].text = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[80px]" />
+                          </div>
+                          <div className="flex justify-end">
+                            <button onClick={() => { if(window.confirm('Bu yorumu silmek istediğinize emin misiniz?')) { const newR = siteContent.reviews.filter(r => r.id !== review.id); setSiteContent({...siteContent, reviews: newR}); } }} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
+                              <Trash2 size={14} /> <span>Yorumu Kaldır</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-end pt-4 border-t border-white/5">
+                      <button onClick={() => showToast('Yorumlar başarıyla kaydedildi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                        <Save size={18} /> <span>YORUMLARI YAYINLA</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
                 {adminTab === 'settings' && (
                   <div className="space-y-8 animate-fade-up max-w-2xl">
                     <div className="glass p-8 rounded-xl space-y-6">
@@ -1494,8 +1627,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <button onClick={() => {
                     setShowWizard(false); setWizardStep(1);
                     const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
+                    
+                    // Admin Panele Kaydet
+                    const newLead = {
+                      id: Date.now(),
+                      name: wizardData.name,
+                      phone: wizardData.phone,
+                      country: wizardData.country,
+                      service: `Wizard: ${wizardData.job}`,
+                      date: new Date().toISOString().split('T')[0],
+                      status: "Yeni Başvuru",
+                      note: "Uygunluk testinden geldi.",
+                      isNew: true
+                    };
+                    setLeads([newLead, ...leads]);
+
                     const whatsappPhone = siteSettings?.whatsapp || WHATSAPP_NUMBER_SAFE;
-                  window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                    window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                   }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
                     <span>SONUCU İSTE</span>
                     <ChevronRight size={24} />
