@@ -32,6 +32,8 @@ import insta2Img from './assets/insta2.png';
 import insta3Img from './assets/insta3.png';
 import insta4Img from './assets/insta4.png';
 import logoImg from './assets/logo.png';
+import muratImg from './assets/murat.png';
+import halilImg from './assets/halil.png';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
@@ -712,6 +714,42 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </div>
                   </a>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          {/* EKİBİMİZ */}
+          <section id="ekip" className="py-32 px-6">
+            <div className="max-w-6xl mx-auto space-y-16">
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">CMSPRİME <span className="text-[#facc15]">EKİBİ</span></h2>
+                <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
+                    {muratImg ? (
+                      <img src={muratImg} alt="Murat Sert" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-800"></div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
+                  </div>
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Murat Sert</h3>
+                  <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">Co-Founder / Systems Architect</p>
+                </div>
+                <div className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
+                  <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
+                    {halilImg ? (
+                      <img src={halilImg} alt="Halil İbrahim Örkcü" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-800"></div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
+                  </div>
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Halil İbrahim Örkcü</h3>
+                  <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">Senior Visa Strategist</p>
+                </div>
               </div>
             </div>
           </section>
