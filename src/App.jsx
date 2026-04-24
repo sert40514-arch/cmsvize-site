@@ -20,10 +20,17 @@ import {
   ChevronDown,
   MapPin,
   Share2,
-  Lock
-} from 'lucide-react';
-
-// Assets - Using the actual filenames from disk
+  Lock,
+  Settings,
+  Briefcase,
+  Trash2,
+  Plus,
+  Eye,
+  EyeOff,
+  Save,
+  Activity,
+  Edit
+} from 'lucide-react';// Assets - Using the actual filenames from disk
 import TirImg from './assets/tır.png';
 import OturumKartiImg from './assets/oturum kartı.png';
 import SupportingImg from './assets/1.png';
@@ -38,7 +45,6 @@ import heroImg from './assets/hero.png';
 import cmsVideo from './assets/Cms.mp4';
 
 // --- CONFIG ---
-const WHATSAPP_NUMBER = "905459918268";
 const darkBg = "#0B0F1A";
 
 const App = () => {
@@ -88,19 +94,52 @@ const App = () => {
   const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
   
   // Centralized Content State
-  const [siteContent, setSiteContent] = useState({
-    stats: {
-      success: 98,
-      clients: 2500,
-      countries: 15
-    },
-    team: [
-      { id: 1, name: "MURAT SERT", title: "Co-Founder / Systems Architect", img: muratImg },
-      { id: 2, name: "HALİL İBRAHİM ÖRKCÜ", title: "Senior Visa Strategist", img: halilImg }
-    ]
+  const [siteContent, setSiteContent] = useState(() => {
+    const saved = localStorage.getItem('cms_admin_stats');
+    if (saved) return JSON.parse(saved);
+    return {
+      stats: { success: 98, clients: 2500, countries: 15 },
+      team: [
+        { id: 1, name: "CANSU AVCI SERT", title: "CEO", desc: "Şirketin vizyon ve stratejilerini yönetir.", isVisible: false, img: "" }, // Hidden by default as per previous request
+        { id: 2, name: "MURAT SERT", title: "Co-Founder / Systems Architect", desc: "Sistem mimarisi ve operasyonları koordine eder.", isVisible: true, img: muratImg },
+        { id: 3, name: "HALİL İBRAHİM ÖRKCÜ", title: "Senior Visa Strategist", desc: "Vize başvuru süreçlerini ve stratejilerini planlar.", isVisible: true, img: halilImg }
+      ]
+    };
   });
 
-  const [adminTab, setAdminTab] = useState('stats');
+  // Leads State
+  const [leads, setLeads] = useState(() => {
+    const saved = localStorage.getItem('cms_admin_leads');
+    if (saved) return JSON.parse(saved);
+    return [
+      { id: 1, name: "Ahmet Yılmaz", phone: "5551234567", country: "Almanya", service: "Tır Şoförü", date: "2026-04-24", status: "İşleme Alındı", note: "Evraklar eksiksiz ulaştı." },
+      { id: 2, name: "Ayşe Kaya", phone: "5329876543", country: "Polonya", service: "Fabrika / Üretim", date: "2026-04-25", status: "Yeni Başvuru", note: "CV inceleniyor." }
+    ];
+  });
+
+  // Settings State
+  const [siteSettings, setSiteSettings] = useState(() => {
+    const saved = localStorage.getItem('cms_admin_settings');
+    if (saved) return JSON.parse(saved);
+    return {
+      whatsapp: "905459918268",
+      instagram: "cmsprime",
+      desc: "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."
+    };
+  });
+
+  const [adminTab, setAdminTab] = useState('dashboard');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  // Sync to localStorage
+  useEffect(() => { localStorage.setItem('cms_admin_stats', JSON.stringify(siteContent)); }, [siteContent]);
+  useEffect(() => { localStorage.setItem('cms_admin_leads', JSON.stringify(leads)); }, [leads]);
+  useEffect(() => { localStorage.setItem('cms_admin_settings', JSON.stringify(siteSettings)); }, [siteSettings]);
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
@@ -223,7 +262,8 @@ Hedef Ülke: ${data.country || 'Genel'}
 İlgilendiğim alan: ${data.workField}
 
 Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    const whatsappPhone = siteSettings?.whatsapp || "905459918268";
+    return `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`;
   };
 
   const handleFormSubmit = async (e) => {
@@ -792,18 +832,21 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                {siteContent?.team?.map((member) => (
+                {siteContent?.team?.filter(m => m.isVisible !== false).map((member) => (
                   <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
                     <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
                       {member.img ? (
                         <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
                       ) : (
-                        <div className="w-full h-full bg-gray-800"></div>
+                        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                          <User size={48} className="text-gray-500" />
+                        </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
                     </div>
                     <h3 className="text-2xl font-black italic uppercase tracking-tighter">{member.name}</h3>
                     <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">{member.title}</p>
+                    {member.desc && <p className="text-gray-400 mt-4 text-sm font-medium leading-relaxed">{member.desc}</p>}
                   </div>
                 ))}
               </div>
@@ -998,11 +1041,20 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <span className="font-black italic text-xl tracking-tighter">CMS <span className="text-[#facc15]">ADMIN</span></span>
                 </div>
                 <nav className="space-y-2">
+                  <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <Activity size={18} /> <span>Dashboard</span>
+                  </button>
                   <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Star size={18} /> <span>Dinamik Veriler</span>
                   </button>
                   <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Users size={18} /> <span>Ekip Yönetimi</span>
+                  </button>
+                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <Briefcase size={18} /> <span>Başvurular</span>
+                  </button>
+                  <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <Settings size={18} /> <span>Site Ayarları</span>
                   </button>
                 </nav>
               </div>
@@ -1012,94 +1064,228 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-12">
-              <div className="max-w-4xl space-y-12">
+            <div className="flex-1 overflow-y-auto p-6 lg:p-12 relative">
+              {toastMessage && (
+                <div className="absolute top-6 right-6 bg-green-500 text-white font-bold px-6 py-3 rounded-lg shadow-2xl flex items-center space-x-2 animate-fade-up z-50">
+                  <CheckCircle2 size={20} />
+                  <span>{toastMessage}</span>
+                </div>
+              )}
+              
+              <div className="max-w-5xl space-y-12">
                 <div className="flex justify-between items-end border-b border-white/5 pb-8">
                   <div>
-                    <h1 className="text-4xl font-black italic uppercase tracking-tighter">Yönetim <span className="text-[#facc15]">Paneli</span></h1>
-                    <p className="text-gray-500 mt-1 font-medium">Sitedeki tüm dinamik alanları buradan yönetin.</p>
+                    <h1 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter">
+                      {adminTab === 'dashboard' && 'Genel Durum'}
+                      {adminTab === 'stats' && 'Dinamik Veriler'}
+                      {adminTab === 'team' && 'Ekip Yönetimi'}
+                      {adminTab === 'leads' && 'Başvuru Yönetimi'}
+                      {adminTab === 'settings' && 'Site Ayarları'}
+                      <span className="text-[#facc15] ml-2">Paneli</span>
+                    </h1>
+                    <p className="text-gray-500 mt-1 font-medium">Sistemdeki tüm verileri güvenle yönetin.</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right hidden md:block">
                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
                     <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
                   </div>
                 </div>
 
+                {adminTab === 'dashboard' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-up">
+                    <div className="glass p-6 rounded-xl border-l-4 border-[#facc15]">
+                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Başarı Oranı</p>
+                      <p className="text-3xl font-black italic mt-2 text-white">%{siteContent?.stats?.success || 0}</p>
+                    </div>
+                    <div className="glass p-6 rounded-xl border-l-4 border-[#0a66c2]">
+                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Müşteri Sayısı</p>
+                      <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.clients || 0}+</p>
+                    </div>
+                    <div className="glass p-6 rounded-xl border-l-4 border-green-500">
+                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Hedef Ülke</p>
+                      <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.countries || 0}</p>
+                    </div>
+                    <div className="glass p-6 rounded-xl border-l-4 border-purple-500">
+                      <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Aktif Başvuru</p>
+                      <p className="text-3xl font-black italic mt-2 text-white">{leads.filter(l => l.status !== 'Tamamlandı' && l.status !== 'İptal').length}</p>
+                    </div>
+                  </div>
+                )}
+
                 {adminTab === 'stats' && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
-                    <div className="glass p-8 rounded-xl space-y-4">
-                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Vize Başarı Oranı (%)</p>
-                      <input 
-                        type="number" 
-                        value={siteContent?.stats?.success || 0} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value) || 0}})}
-                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
-                      />
+                  <div className="space-y-8 animate-fade-up">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="glass p-8 rounded-xl space-y-4">
+                        <p className="text-xs font-black uppercase tracking-widest text-gray-500">Vize Başarı Oranı (%)</p>
+                        <input 
+                          type="number" 
+                          value={siteContent?.stats?.success || 0} 
+                          onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value) || 0}})}
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                        />
+                      </div>
+                      <div className="glass p-8 rounded-xl space-y-4">
+                        <p className="text-xs font-black uppercase tracking-widest text-gray-500">Mutlu Müşteri Sayısı</p>
+                        <input 
+                          type="number" 
+                          value={siteContent?.stats?.clients || 0} 
+                          onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value) || 0}})}
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                        />
+                      </div>
+                      <div className="glass p-8 rounded-xl space-y-4">
+                        <p className="text-xs font-black uppercase tracking-widest text-gray-500">Hedef Ülke Sayısı</p>
+                        <input 
+                          type="number" 
+                          value={siteContent?.stats?.countries || 0} 
+                          onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value) || 0}})}
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                        />
+                      </div>
                     </div>
-                    <div className="glass p-8 rounded-xl space-y-4">
-                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Mutlu Müşteri Sayısı</p>
-                      <input 
-                        type="number" 
-                        value={siteContent?.stats?.clients || 0} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value) || 0}})}
-                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
-                      />
-                    </div>
-                    <div className="glass p-8 rounded-xl space-y-4">
-                      <p className="text-xs font-black uppercase tracking-widest text-gray-500">Hedef Ülke Sayısı</p>
-                      <input 
-                        type="number" 
-                        value={siteContent?.stats?.countries || 0} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value) || 0}})}
-                        className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
-                      />
+                    <div className="flex justify-end pt-4 border-t border-white/5">
+                      <button onClick={() => showToast('İstatistik verileri başarıyla güncellendi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                        <Save size={18} /> <span>DEĞİŞİKLİKLERİ KAYDET</span>
+                      </button>
                     </div>
                   </div>
                 )}
 
                 {adminTab === 'team' && (
                   <div className="space-y-6 animate-fade-up">
+                    <div className="flex justify-end mb-4">
+                      <button onClick={() => {
+                        const newMember = { id: Date.now(), name: "YENİ ÜYE", title: "Unvan", desc: "", isVisible: true, img: "" };
+                        setSiteContent({...siteContent, team: [...siteContent.team, newMember]});
+                      }} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                        <Plus size={16} /> <span>Yeni Üye Ekle</span>
+                      </button>
+                    </div>
                     {siteContent?.team?.map((member, idx) => (
-                      <div key={member.id} className="glass p-8 rounded-xl flex items-center space-x-8">
-                        <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden shrink-0">
-                          <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
+                      <div key={member.id} className={`glass p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-8 border ${member.isVisible ? 'border-white/10' : 'border-red-500/30 opacity-75'}`}>
+                        <div className="w-24 h-24 bg-gray-800 rounded-lg overflow-hidden shrink-0 relative group">
+                          {member.img ? <img src={member.img} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-gray-500"><User size={30} /></div>}
                         </div>
-                        <div className="flex-1 grid grid-cols-2 gap-4">
+                        <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İSİM SOYİSİM</label>
-                            <input 
-                              value={member.name} 
-                              onChange={(e) => {
-                                const newTeam = [...siteContent.team];
-                                newTeam[idx].name = e.target.value;
-                                setSiteContent({...siteContent, team: newTeam});
-                              }}
-                              className="w-full bg-black/30 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]"
-                            />
+                            <input value={member.name} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].name = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">UNVAN / POZİSYON</label>
-                            <input 
-                              value={member.title} 
-                              onChange={(e) => {
-                                const newTeam = [...siteContent.team];
-                                newTeam[idx].title = e.target.value;
-                                setSiteContent({...siteContent, team: newTeam});
-                              }}
-                              className="w-full bg-black/30 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]"
-                            />
+                            <input value={member.title} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].title = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]" />
                           </div>
+                          <div className="space-y-1 md:col-span-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">KISA AÇIKLAMA (OPSİYONEL)</label>
+                            <input value={member.desc || ''} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].desc = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15]" placeholder="Kişi hakkında kısa bilgi..." />
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2 shrink-0 pt-4 md:pt-0 w-full md:w-auto justify-end">
+                          <button onClick={() => { const newTeam = [...siteContent.team]; newTeam[idx].isVisible = !newTeam[idx].isVisible; setSiteContent({...siteContent, team: newTeam}); }} className={`p-3 rounded-lg flex items-center justify-center transition-all ${member.isVisible ? 'bg-green-500/20 text-green-400 hover:bg-green-500/40' : 'bg-red-500/20 text-red-400 hover:bg-red-500/40'}`} title="Sitede Göster / Gizle">
+                            {member.isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+                          </button>
+                          <button onClick={() => { if(window.confirm('Bu personeli silmek istediğinize emin misiniz?')) { const newTeam = siteContent.team.filter(m => m.id !== member.id); setSiteContent({...siteContent, team: newTeam}); } }} className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all">
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       </div>
                     ))}
+                    <div className="flex justify-end pt-4 border-t border-white/5">
+                      <button onClick={() => showToast('Ekip bilgileri güncellendi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                        <Save size={18} /> <span>DEĞİŞİKLİKLERİ KAYDET</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
-                <div className="pt-8 border-t border-white/5 flex justify-end">
-                  <button onClick={() => { alert('Değişiklikler Canlı Sisteme Uygulandı!'); setCurrentPage('home'); window.location.pathname = '/'; }} className="bg-green-600 hover:bg-green-500 text-white font-black px-12 py-4 rounded-lg transition-all shadow-[0_10px_30px_rgba(22,163,74,0.3)]">
-                    GÜNCELLEMELERİ YAYINLA
-                  </button>
-                </div>
+                {adminTab === 'leads' && (
+                  <div className="space-y-6 animate-fade-up">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                            <th className="p-4">Müşteri</th>
+                            <th className="p-4">Başvuru / Ülke</th>
+                            <th className="p-4">Durum</th>
+                            <th className="p-4">Tarih</th>
+                            <th className="p-4 text-right">İşlem</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {leads.map((lead, idx) => (
+                            <tr key={lead.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                              <td className="p-4">
+                                <p className="font-bold text-white">{lead.name}</p>
+                                <p className="text-xs text-gray-400">{lead.phone}</p>
+                              </td>
+                              <td className="p-4">
+                                <p className="text-[#facc15] font-bold text-sm">{lead.service}</p>
+                                <p className="text-xs text-gray-400">{lead.country}</p>
+                              </td>
+                              <td className="p-4">
+                                <select 
+                                  value={lead.status}
+                                  onChange={(e) => { const newLeads = [...leads]; newLeads[idx].status = e.target.value; setLeads(newLeads); showToast('Durum güncellendi'); }}
+                                  className="bg-[#0B0F1A] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#facc15]"
+                                >
+                                  <option value="Yeni Başvuru">Yeni Başvuru</option>
+                                  <option value="Arandı">Arandı</option>
+                                  <option value="Evrak Bekleniyor">Evrak Bekleniyor</option>
+                                  <option value="İşleme Alındı">İşleme Alındı</option>
+                                  <option value="Tamamlandı">Tamamlandı</option>
+                                  <option value="İptal">İptal</option>
+                                </select>
+                              </td>
+                              <td className="p-4 text-xs text-gray-400 font-medium">{lead.date}</td>
+                              <td className="p-4 text-right space-x-2">
+                                <a href={`https://wa.me/${lead.phone}?text=${encodeURIComponent(`Merhaba ${lead.name}, CMSVize'den ulaşıyoruz. Başvurunuzla ilgili...`)}`} target="_blank" rel="noreferrer" className="inline-flex p-2 bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg transition-all" title="WhatsApp'tan Yaz">
+                                  <MessageCircle size={16} />
+                                </a>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {adminTab === 'settings' && (
+                  <div className="space-y-8 animate-fade-up max-w-2xl">
+                    <div className="glass p-8 rounded-xl space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">WhatsApp Numarası (Uluslararası Format)</label>
+                        <input 
+                          value={siteSettings?.whatsapp || ''} 
+                          onChange={(e) => setSiteSettings({...siteSettings, whatsapp: e.target.value})}
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Instagram Kullanıcı Adı</label>
+                        <input 
+                          value={siteSettings?.instagram || ''} 
+                          onChange={(e) => setSiteSettings({...siteSettings, instagram: e.target.value})}
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Site Kısa Açıklaması (Footer SEO)</label>
+                        <textarea 
+                          value={siteSettings?.desc || ''} 
+                          onChange={(e) => setSiteSettings({...siteSettings, desc: e.target.value})}
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[100px]"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end pt-4 border-t border-white/5">
+                      <button onClick={() => showToast('Site ayarları kaydedildi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                        <Save size={18} /> <span>AYARLARI KAYDET</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
@@ -1172,10 +1358,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   {logoImg ? <img src={logoImg} alt="Logo" className="h-14 w-auto" /> : <span>CMSVize</span>}
                 </div>
                 <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">
-                  Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.
+                  {siteSettings?.desc || "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."}
                 </p>
                 <div className="flex space-x-4 pt-4">
-                  <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
+                  <a href={`https://www.instagram.com/${siteSettings?.instagram || "cmsprime"}/`} target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
                     <Camera size={18} className="text-[#facc15] group-hover:text-[#0B0F1A]" />
                   </a>
                   <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
@@ -1293,7 +1479,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <button onClick={() => {
                     setShowWizard(false); setWizardStep(1);
                     const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
-                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                    const whatsappPhone = siteSettings?.whatsapp || "905459918268";
+                  window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                   }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
                     <span>SONUCU İSTE</span>
                     <ChevronRight size={24} />
