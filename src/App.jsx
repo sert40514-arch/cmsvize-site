@@ -287,8 +287,18 @@ const App = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    if (name === 'phone') {
+      // Sadece rakam ve + işaretine izin ver
+      const cleaned = value.replace(/[^\d+]/g, '');
+      setFormData({ ...formData, phone: cleaned });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
+
+  const isPhoneValid = formData.phone.length >= 10 && formData.phone.length <= 15;
 
   const getWhatsAppURL = (customData = null) => {
     const data = customData || formData;
@@ -996,7 +1006,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
-                          <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" placeholder="+90" />
+                          <input 
+                            required 
+                            name="phone" 
+                            value={formData.phone} 
+                            onChange={handleInputChange} 
+                            className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.phone && !isPhoneValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} 
+                            placeholder="+90 5xx..." 
+                          />
+                          {formData.phone && !isPhoneValid && (
+                            <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen geçerli bir telefon numarası giriniz (10-15 karakter).</p>
+                          )}
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
@@ -1028,7 +1048,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
                       </div>
 
-                      <button type="submit" className="w-full bg-[#facc15] text-[#0B0F1A] py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter">BAŞVURUYU TAMAMLA</button>
+                      <button 
+                        type="submit" 
+                        disabled={!isPhoneValid}
+                        className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
+                      >
+                        BAŞVURUYU TAMAMLA
+                      </button>
                     </form>
                   )}
                 </div>
