@@ -34,6 +34,7 @@ import insta4Img from './assets/insta4.png';
 import logoImg from './assets/logo.png';
 import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
+import heroImg from './assets/hero.png';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
@@ -653,11 +654,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     label: 'Polonya Oturum İzni ✅',
                   },
                   {
-                    img: insta4Img,
-                    type: 'REEL',
-                    typeIcon: 'reel',
-                    tag: '@CMSPrime',
-                    label: 'CMSPrime Ekibi',
+                    img: heroImg,
+                    type: 'POST',
+                    typeIcon: 'post',
+                    tag: '7/24 Kesintisiz Destek',
+                    label: 'AVRUPA GENELİNDE HİZMET',
                   }
                 ].map((post, i) => (
                   <a
