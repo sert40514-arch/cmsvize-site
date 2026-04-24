@@ -38,7 +38,8 @@ import {
   BookOpen,
   User,
   Lock,
-  ChevronRight
+  ChevronRight,
+  Instagram
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -635,6 +636,34 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </section>
 
+          {/* INSTAGRAM VİTRİNİ */}
+          <section className="py-24 px-6 bg-white/[0.02] border-y border-white/5">
+            <div className="max-w-7xl mx-auto space-y-12">
+              <div className="flex flex-col items-center justify-center text-center space-y-4">
+                <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center mb-2 border border-[#facc15]/20">
+                  <Instagram size={32} className="text-[#facc15]" />
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Bizi Instagram'da <span className="text-[#facc15]">Takip Edin</span></h2>
+                <p className="text-gray-400 font-medium text-lg">Güncel vize başarılarımız, duyurular ve yurtdışı yaşam ipuçları için profilimizi ziyaret edin.</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+                {[1, 2, 3, 4].map(i => (
+                  <a key={i} href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="aspect-square glass rounded-xl overflow-hidden relative group block border border-white/10 shadow-xl">
+                    <div className="absolute inset-0 bg-[#0B0F1A] flex flex-col items-center justify-center space-y-3 group-hover:scale-110 transition-transform duration-700">
+                       <Instagram size={40} strokeWidth={1} className="text-white/10 group-hover:text-[#facc15]/20 transition-colors duration-300" />
+                    </div>
+                    <div className="absolute inset-0 bg-[#facc15]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center backdrop-blur-sm border-2 border-[#facc15] rounded-xl">
+                      <div className="flex flex-col items-center space-y-2 text-[#facc15] font-black uppercase tracking-widest text-xs translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <Instagram size={24} />
+                        <span>İncele</span>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* SSS */}
           <section id="sss" className="py-32 px-6 bg-[#0B0F1A]">
             <div className="max-w-4xl mx-auto space-y-16">
@@ -845,9 +874,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
               <div className="flex space-x-4 pt-4">
+                <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
+                  <Instagram size={18} className="text-[#facc15] group-hover:text-[#0B0F1A]" />
+                </a>
                 <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
                 <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Share2 size={18} /></a>
-                <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><ExternalLink size={18} /></a>
               </div>
             </div>
             <div className="space-y-6">
