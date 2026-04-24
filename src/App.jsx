@@ -84,6 +84,9 @@ const App = () => {
   const [adminUser, setAdminUser] = useState('');
   const [adminPass, setAdminPass] = useState('');
   
+  // Counter State (for animated numbers on Home)
+  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
+  
   // Centralized Content State
   const [siteContent, setSiteContent] = useState({
     stats: {
@@ -789,7 +792,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                {siteContent.team.map((member) => (
+                {siteContent?.team?.map((member) => (
                   <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
                     <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
                       {member.img ? (
@@ -1028,8 +1031,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <p className="text-xs font-black uppercase tracking-widest text-gray-500">Vize Başarı Oranı (%)</p>
                       <input 
                         type="number" 
-                        value={siteContent.stats.success} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value)}})}
+                        value={siteContent?.stats?.success || 0} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value) || 0}})}
                         className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
                       />
                     </div>
@@ -1037,8 +1040,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <p className="text-xs font-black uppercase tracking-widest text-gray-500">Mutlu Müşteri Sayısı</p>
                       <input 
                         type="number" 
-                        value={siteContent.stats.clients} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value)}})}
+                        value={siteContent?.stats?.clients || 0} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value) || 0}})}
                         className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
                       />
                     </div>
@@ -1046,8 +1049,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <p className="text-xs font-black uppercase tracking-widest text-gray-500">Hedef Ülke Sayısı</p>
                       <input 
                         type="number" 
-                        value={siteContent.stats.countries} 
-                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value)}})}
+                        value={siteContent?.stats?.countries || 0} 
+                        onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value) || 0}})}
                         className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
                       />
                     </div>
@@ -1056,7 +1059,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                 {adminTab === 'team' && (
                   <div className="space-y-6 animate-fade-up">
-                    {siteContent.team.map((member, idx) => (
+                    {siteContent?.team?.map((member, idx) => (
                       <div key={member.id} className="glass p-8 rounded-xl flex items-center space-x-8">
                         <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden shrink-0">
                           <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
