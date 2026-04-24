@@ -17,7 +17,9 @@ import {
   Search,
   BookOpen,
   User,
-  ChevronDown
+  ChevronDown,
+  MapPin,
+  Share2
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
