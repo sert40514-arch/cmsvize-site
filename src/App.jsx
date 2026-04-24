@@ -146,6 +146,12 @@ const App = () => {
   const [adminTab, setAdminTab] = useState('dashboard');
   const [toastMessage, setToastMessage] = useState('');
   const [totalViews, setTotalViews] = useState(12450); // Simulation for Analytics
+  
+  // Tracking Module States
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [trackingCode, setTrackingCode] = useState('');
+  const [trackingResult, setTrackingResult] = useState(null);
+  const [trackingError, setTrackingError] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -350,6 +356,36 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     setMobileMenuOpen(false);
   };
 
+  const handleTrack = (e) => {
+    e.preventDefault();
+    setTrackingError(false);
+    setTrackingResult(null);
+    
+    const found = leads.find(l => 
+      l.phone?.includes(trackingCode) || 
+      l.id.toString() === trackingCode || 
+      l.name?.toLowerCase().includes(trackingCode.toLowerCase())
+    );
+
+    if (found) {
+      setTrackingResult(found);
+    } else {
+      setTrackingError(true);
+    }
+  };
+
+  const getStatusProgress = (status) => {
+    const steps = {
+      "Yeni Başvuru": 20,
+      "Arandı": 40,
+      "Evrak Bekleniyor": 60,
+      "İşleme Alındı": 80,
+      "Tamamlandı": 100,
+      "İptal": 0
+    };
+    return steps[status] || 0;
+  };
+
   // --- LEGAL PAGE COMPONENT ---
   const LegalPage = ({ title, content }) => (
     <div className="min-h-screen bg-[#0B0F1A] pt-32 pb-24 px-6 animate-fade-up">
@@ -520,10 +556,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
-                <a href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
+                <button onClick={() => setShowTrackingModal(true)} className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
                   <Search size={16} className="text-[#0a66c2]" />
                   <span>BAŞVURU TAKİP</span>
-                </a>
+                </button>
                 <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
                   ÜCRETSİZ BAŞVURU BAŞLAT
                 </button>
@@ -547,10 +583,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
             <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
             <div className="w-full space-y-4 pt-4 border-t border-white/10">
-              <a href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
+              <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
                 <Search size={24} className="text-[#0a66c2]" />
                 <span>BAŞVURU TAKİP</span>
-              </a>
+              </button>
               <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">ÜCRETSİZ BAŞVURU BAŞLAT</button>
             </div>
           </div>
@@ -1660,6 +1696,99 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-scroll { display: flex; width: fit-content; animation: scroll 30s linear infinite; }
       `}</style>
+
+      {/* TRACKING MODAL */}
+      {showTrackingModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0B0F1A]/90 backdrop-blur-xl animate-fade-in">
+          <div className="glass max-w-lg w-full p-8 lg:p-12 rounded-3xl border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] relative animate-fade-up">
+            <button 
+              onClick={() => { setShowTrackingModal(false); setTrackingResult(null); setTrackingError(false); setTrackingCode(''); }}
+              className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors"
+            >
+              <X size={32} />
+            </button>
+
+            <div className="space-y-8">
+              <div className="text-center space-y-2">
+                <Search className="w-12 h-12 text-[#facc15] mx-auto mb-4" />
+                <h3 className="text-3xl font-black italic uppercase tracking-tighter">Başvuru <span className="text-[#facc15]">Sorgulama</span></h3>
+                <p className="text-gray-400 text-sm">Pasaport numaranız veya takip kodunuzu girin.</p>
+              </div>
+
+              {!trackingResult && !trackingError ? (
+                <form onSubmit={handleTrack} className="space-y-4">
+                  <input 
+                    autoFocus
+                    placeholder="Örn: 545... veya Takip No" 
+                    value={trackingCode}
+                    onChange={(e) => setTrackingCode(e.target.value)}
+                    className="w-full bg-black/50 border-2 border-white/10 px-6 py-5 rounded-xl font-bold text-xl focus:border-[#facc15] outline-none transition-all placeholder:text-gray-700"
+                  />
+                  <button type="submit" className="w-full bg-[#facc15] text-black font-black py-5 rounded-xl text-lg hover:scale-[1.02] transition-transform">SORGULA</button>
+                </form>
+              ) : trackingResult ? (
+                <div className="space-y-8 animate-fade-up">
+                  <div className="bg-black/40 p-6 rounded-2xl border border-white/5 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Müşteri</span>
+                      <span className="text-[#facc15] font-black text-xs uppercase italic">{trackingResult.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Güncel Durum</span>
+                      <span className={`font-black text-sm uppercase ${trackingResult.status === 'İptal' ? 'text-red-500' : 'text-green-500'}`}>{trackingResult.status}</span>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="pt-4 space-y-3">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        <span>Süreç İlerlemesi</span>
+                        <span>%{getStatusProgress(trackingResult.status)}</span>
+                      </div>
+                      <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                        <div 
+                          className="h-full bg-gradient-to-r from-[#facc15] to-yellow-600 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(250,204,21,0.5)]"
+                          style={{ width: `${getStatusProgress(trackingResult.status)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <button onClick={() => { setTrackingResult(null); setTrackingCode(''); }} className="glass py-4 rounded-xl font-bold text-sm hover:bg-white/5 transition-all">YENİ SORGULAMA</button>
+                    <a 
+                      href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent(`Merhaba, Başvurumun durumu (${trackingResult.status}) hakkında detaylı bilgi almak istiyorum. İsim: ${trackingResult.name}`)}`}
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="bg-[#25D366] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:scale-[1.02] transition-transform"
+                    >
+                      <MessageCircle size={18} />
+                      <span>DESTEK AL</span>
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center space-y-6 animate-fade-up">
+                  <div className="bg-red-500/10 p-8 rounded-2xl border border-red-500/20">
+                    <p className="text-red-500 font-bold">Kayıt bulunamadı, lütfen danışmanınızla iletişime geçin.</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button onClick={() => setTrackingError(false)} className="glass py-4 rounded-xl font-bold text-sm">TEKRAR DENE</button>
+                    <a 
+                      href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent(`Merhaba, Başvurumu sorguladım ancak kayıt bulunamadı. Yardımcı olur musunuz? Sorgulanan Kod: ${trackingCode}`)}`}
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="bg-[#25D366] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2"
+                    >
+                      <MessageCircle size={18} />
+                      <span>WHATSAPP DESTEK</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
