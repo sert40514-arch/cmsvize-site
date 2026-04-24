@@ -1,45 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ClipboardCheck,
-  CreditCard,
-  Briefcase,
+  ChevronRight,
+  Camera,
+  ArrowLeft,
   ShieldCheck,
-  MapPin,
-  Phone,
-  MessageCircle,
-  CheckCircle2,
-  ArrowRight,
-  Clock,
+  Globe,
   Users,
-  AlertCircle,
+  Clock,
+  CheckCircle2,
+  Phone,
+  Mail,
+  MessageCircle,
   Menu,
   X,
   Star,
-  Zap,
-  Globe,
-  FileText,
-  Package,
-  Factory,
-  ChevronDown,
-  Quote,
-  MoreHorizontal,
-  ThumbsUp,
-  MessageSquare,
-  Share2,
-  Send,
-  BadgeCheck,
-  TrendingUp,
-  Award,
-  Heart,
-  Mail,
-  ExternalLink,
   Search,
   BookOpen,
   User,
-  Lock,
-  ChevronRight,
-  Camera,
-  ArrowLeft
+  ChevronDown
 } from 'lucide-react';
 
 // Assets - Using the actual filenames from disk
@@ -377,11 +355,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
           <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-            {logoImg ? (
-              <img src={logoImg} alt="CMSVize" className="h-10 w-auto object-contain transition-all group-hover:scale-105" />
-            ) : (
-              <span className="text-[#facc15] font-black italic text-2xl tracking-tighter uppercase">CMSVize</span>
-            )}
+            {logoImg ? <img src={logoImg} alt="Logo" className="h-10 w-auto" /> : <span>CMSVize</span>}
           </div>
 
           <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -434,7 +408,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
               <div className="space-y-10 animate-fade-up">
                 <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-lg text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
-                  <Zap size={16} fill="currentColor" />
+                  <Star size={16} fill="currentColor" />
                   <span>Sınırlı Kontenjan • Bugün sadece 12 kişi kabul ediliyor</span>
                 </div>
                 <div className="space-y-6">
@@ -450,7 +424,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <div className="flex flex-col sm:flex-row gap-5">
                   <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 group">
                     <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
-                    <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                    <ChevronRight className="group-hover:translate-x-2 transition-transform" />
                   </button>
                   <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
@@ -460,9 +434,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
                 <div className="flex flex-wrap gap-4 pt-2">
                   {[
-                    { icon: <Truck size={14} />, text: "Tır Şoförlüğü (KOD95)" },
-                    { icon: <Zap size={14} />, text: "A1 Transfer İle Giriş" },
-                    { icon: <Package size={14} />, text: "Fabrika & Depo İşleri" },
+                    { icon: <Camera size={14} />, text: "Tır Şoförlüğü (KOD95)" },
+                    { icon: <Star size={14} />, text: "A1 Transfer İle Giriş" },
+                    { icon: <Camera size={14} />, text: "Fabrika & Depo İşleri" },
                     { icon: <ShieldCheck size={14} />, text: "2 Yıllık Oturum Garantisi" }
                   ].map((item, i) => (
                     <div key={i} className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest text-[#facc15]">
@@ -523,7 +497,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="text-center space-y-4">
-                  <div className="flex justify-center text-[#facc15] mb-2"> <TrendingUp size={48} /> </div>
+                  <div className="flex justify-center text-[#facc15] mb-2"> <Star size={48} /> </div>
                   <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">%{stats.success}</p>
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Vize Başarı Oranı</p>
                 </div>
@@ -566,7 +540,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <div className="z-10 pr-6">
                           <div className="flex items-center space-x-1">
                             <h4 className="font-bold text-sm text-white">{ref.name}</h4>
-                            <BadgeCheck size={16} className="text-[#0a66c2] fill-[#0a66c2]/20" />
+                            <CheckCircle2 size={16} className="text-[#0a66c2]" />
                           </div>
                           <p className="text-[11px] text-[#facc15] font-bold leading-tight mt-0.5">{ref.visa}</p>
                           <p className="text-[10px] text-gray-500 mt-0.5">{ref.time} • 🌐</p>
@@ -576,8 +550,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <div className="text-sm text-gray-200 leading-relaxed font-normal relative z-10">{ref.text}</div>
                     <div className="flex items-center space-x-1 pt-2 relative z-10">
                       <div className="flex -space-x-1">
-                        <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><ThumbsUp size={10} className="text-white fill-white" /></div>
-                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Heart size={10} className="text-white fill-white" /></div>
+                        <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
+                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                       </div>
                       <span className="text-[11px] text-gray-400 font-medium ml-1">14 • 3 yorum</span>
                     </div>
@@ -608,7 +582,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
                     <p className="text-gray-400 font-medium leading-relaxed mb-6">{item.desc}</p>
                     <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
-                      <span>Detaylar</span> <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      <span>Detaylar</span> <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
                 ))}
@@ -688,8 +662,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     rel="noreferrer"
                     className="aspect-square rounded-xl overflow-hidden relative group block border border-white/10 shadow-xl"
                   >
-                    {/* Background Image */}
-                    <img src={post.img} alt={post.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    {/* Placeholder Background */}
+                    <div className="absolute inset-0 bg-gray-800 transition-transform duration-700 group-hover:scale-110"></div>
 
                     {/* Dark gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10"></div>
@@ -940,11 +914,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
             <div className="space-y-6">
               <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-                {logoImg ? (
-                  <img src={logoImg} alt="CMSVize" className="h-14 w-auto object-contain transition-all group-hover:scale-105" />
-                ) : (
-                  <span className="text-[#facc15] font-black italic text-2xl tracking-tighter uppercase">CMSVize</span>
-                )}
+                {logoImg ? <img src={logoImg} alt="Logo" className="h-14 w-auto" /> : <span>CMSVize</span>}
               </div>
               <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz.</p>
               <div className="flex space-x-4 pt-4">
