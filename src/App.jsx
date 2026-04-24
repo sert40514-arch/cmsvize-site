@@ -46,6 +46,10 @@ import {
 import TirImg from './assets/tır.png';
 import OturumKartiImg from './assets/oturum kartı.png';
 import SupportingImg from './assets/1.png';
+import Insta1 from './assets/insta1.png';
+import Insta2 from './assets/insta2.png';
+import Insta3 from './assets/insta3.png';
+import Insta4 from './assets/insta4.png';
 
 // --- CONFIG ---
 const WHATSAPP_NUMBER = "905459918268";
@@ -647,15 +651,82 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg">Güncel vize başarılarımız, duyurular ve yurtdışı yaşam ipuçları için profilimizi ziyaret edin.</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-                {[1, 2, 3, 4].map(i => (
-                  <a key={i} href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="aspect-square glass rounded-xl overflow-hidden relative group block border border-white/10 shadow-xl">
-                    <div className="absolute inset-0 bg-[#0B0F1A] flex flex-col items-center justify-center space-y-3 group-hover:scale-110 transition-transform duration-700">
-                       <Camera size={40} strokeWidth={1} className="text-white/10 group-hover:text-[#facc15]/20 transition-colors duration-300" />
+                {[
+                  {
+                    img: Insta1,
+                    type: 'REEL',
+                    typeIcon: 'reel',
+                    tag: '@CMSPrime',
+                    label: 'Almanya Vizesi Onaylandı!',
+                  },
+                  {
+                    img: Insta2,
+                    type: 'CAROUSEL',
+                    typeIcon: 'carousel',
+                    tag: '@CMSPrime',
+                    label: 'Uzman Danışmanlık & %98 Başarı',
+                  },
+                  {
+                    img: Insta3,
+                    type: 'POST',
+                    typeIcon: 'post',
+                    tag: '@CMSPrime',
+                    label: 'Polonya Oturum İzni ✅',
+                  },
+                  {
+                    img: Insta4,
+                    type: 'REEL',
+                    typeIcon: 'reel',
+                    tag: '@CMSPrime',
+                    label: 'CMSPrime Ekibi',
+                  }
+                ].map((post, i) => (
+                  <a
+                    key={i}
+                    href="https://www.instagram.com/cmsprime/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="aspect-square rounded-xl overflow-hidden relative group block border border-white/10 shadow-xl"
+                  >
+                    {/* Background Image */}
+                    <img src={post.img} alt={post.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10"></div>
+
+                    {/* Type Badge - top right */}
+                    <div className="absolute top-3 right-3 z-10">
+                      {post.typeIcon === 'reel' && (
+                        <div className="bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-md flex items-center space-x-1">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.53V6.77a4.85 4.85 0 0 1-1.01-.08z"/></svg>
+                          <span className="text-white text-[9px] font-black uppercase">Reel</span>
+                        </div>
+                      )}
+                      {post.typeIcon === 'carousel' && (
+                        <div className="bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-md flex items-center space-x-1">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><rect x="2" y="7" width="10" height="10" rx="1"/><path d="M14 9h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><path d="M18 10h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1"/></svg>
+                          <span className="text-white text-[9px] font-black uppercase">Carousel</span>
+                        </div>
+                      )}
+                      {post.typeIcon === 'post' && (
+                        <div className="bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-md flex items-center space-x-1">
+                          <Camera size={10} className="text-white" />
+                          <span className="text-white text-[9px] font-black uppercase">Post</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="absolute inset-0 bg-[#facc15]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center backdrop-blur-sm border-2 border-[#facc15] rounded-xl">
-                      <div className="flex flex-col items-center space-y-2 text-[#facc15] font-black uppercase tracking-widest text-xs translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <Camera size={24} />
-                        <span>İncele</span>
+
+                    {/* Bottom content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+                      <p className="text-[#facc15] text-[11px] font-black uppercase leading-tight drop-shadow-lg line-clamp-2">{post.label}</p>
+                      <p className="text-white/70 text-[9px] font-bold mt-0.5 tracking-widest">{post.tag}</p>
+                    </div>
+
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-[#facc15]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center border-2 border-[#facc15] rounded-xl">
+                      <div className="bg-black/70 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center space-x-2 scale-75 group-hover:scale-100 transition-transform duration-300">
+                        <Camera size={16} className="text-[#facc15]" />
+                        <span className="text-[#facc15] font-black text-xs uppercase">Profili Gör</span>
                       </div>
                     </div>
                   </a>
