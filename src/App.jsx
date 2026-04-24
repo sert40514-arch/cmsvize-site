@@ -155,10 +155,30 @@ const App = () => {
 
   // Security & Bot Protection
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  const turnstileRef = useRef(null);
   
   useEffect(() => {
-    window.onTurnstileVerify = () => setIsTurnstileVerified(true);
-    return () => { delete window.onTurnstileVerify; };
+    // Explicit render for React stability
+    const renderTurnstile = () => {
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: '0x4AAAAAAADCs4Dto3zUFJEGb',
+          theme: 'dark',
+          callback: () => setIsTurnstileVerified(true),
+          'error-callback': () => setIsTurnstileVerified(false),
+          'expired-callback': () => setIsTurnstileVerified(false),
+        });
+      }
+    };
+
+    const interval = setInterval(() => {
+      if (window.turnstile) {
+        renderTurnstile();
+        clearInterval(interval);
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
   }, []);
 
   const showToast = (msg) => {
@@ -1071,13 +1091,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
                       </div>
 
-                      <div className="py-4 flex justify-center">
-                        <div 
-                          className="cf-turnstile" 
-                          data-sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
-                          data-callback="onTurnstileVerify"
-                          data-theme="dark"
-                        ></div>
+                      <div className="py-4 flex justify-center min-h-[65px]">
+                        <div ref={turnstileRef}></div>
                       </div>
 
                       <button 
