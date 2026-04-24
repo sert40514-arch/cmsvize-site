@@ -402,6 +402,28 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      phone: '',
+      country: 'Almanya',
+      workField: 'Tır Şoförlüğü (KOD95)',
+      message: ''
+    });
+    setFormSuccess(false);
+    setIsTurnstileVerified(false);
+    setTurnstileToken(null);
+    
+    // Turnstile reset
+    if (window.turnstile) {
+      try {
+        window.turnstile.reset();
+      } catch (e) {
+        console.warn("Turnstile reset error:", e);
+      }
+    }
+  };
+
   const scrollToForm = () => {
     if (currentPage !== 'home') {
       setCurrentPage('home');
@@ -1031,7 +1053,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
                       <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#0a66c2]">Başvurunuz Başarıyla Alındı!</h3>
                       <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
-                      <button onClick={() => setFormSuccess(false)} className="mt-8 btn-corporate glass border border-white/10 px-8 py-4 text-white hover:border-[#0a66c2]/50 hover:bg-[#0a66c2]/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
+                      <button onClick={resetForm} className="mt-8 btn-corporate glass border border-white/10 px-8 py-4 text-white hover:border-[#0a66c2]/50 hover:bg-[#0a66c2]/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
                     </div>
                   ) : (
                     <form onSubmit={handleFormSubmit} className="space-y-8">
