@@ -354,9 +354,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
         .linkedin-faq { background: #1B1F23; border: 1px solid #30363D; }
         .btn-corporate { border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .btn-corporate:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .input-corporate { border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
-        .input-corporate:focus { border-color: #0a66c2; box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.2); outline: none; }
+        .btn-corporate:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 0 20px rgba(250, 204, 21, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        .input-corporate { border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        .input-corporate:focus { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2); outline: none; }
+        .text-gray-400 { color: #cbd5e1 !important; }
         
         .shimmer {
           background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
@@ -390,7 +391,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <span>BAŞVURU TAKİP</span>
               </a>
               <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
-                HEMEN BAŞVUR
+                ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
           </div>
@@ -414,7 +415,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <Search size={24} className="text-[#0a66c2]" />
               <span>BAŞVURU TAKİP</span>
             </a>
-            <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">BAŞVUR</button>
+            <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">ÜCRETSİZ BAŞVURU BAŞLAT</button>
           </div>
         </div>
       </div>
@@ -429,7 +430,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="space-y-10 animate-fade-up">
                 <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-lg text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
                   <Zap size={16} fill="currentColor" />
-                  <span>Sınırlı Kontenjan • Son Başvurular</span>
+                  <span>Sınırlı Kontenjan • Bugün sadece 12 kişi kabul ediliyor</span>
                 </div>
                 <div className="space-y-6">
                   <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tighter italic uppercase">
@@ -438,12 +439,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     İle Avrupa'da Çalışma
                   </h1>
                   <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
-                    Tır Şoförlüğü (KOD95) • Fabrika & Depo İşleri • A1 Transfer İle Hızlı Giriş. Her profil için uygun Avrupa iş planı hazırlıyoruz.
+                    Dil bilmeden Avrupa’da çalışma fırsatı.<br className="hidden lg:block" /> Tüm süreci biz yönetiyoruz, sen sadece yola çık.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-5">
                   <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 group">
-                    <span>HEMEN BAŞVUR</span>
+                    <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
                     <ArrowRight className="group-hover:translate-x-2 transition-transform" />
                   </button>
                   <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
@@ -489,7 +490,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <Star size={24} className="text-[#0B0F1A]" fill="currentColor" />
                     </div>
                     <div>
-                      <p className="text-sm font-black uppercase italic tracking-tighter">AVRUPA KAPISI ARALANIYOR</p>
+                      <p className="text-sm font-black uppercase italic tracking-tighter">KOD95 + İŞ HAZIR</p>
                       <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Tüm İş Kolları Dahil</p>
                     </div>
                   </div>
@@ -685,16 +686,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <form onSubmit={handleFormSubmit} className="space-y-8">
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
-                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="Ahmet Yılmaz" />
+                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" placeholder="Ahmet Yılmaz" />
                       </div>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">TELEFON</label>
-                          <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" placeholder="+90" />
+                          <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" placeholder="+90" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
-                          <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]">
+                          <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors">
                             <option className="bg-[#0B0F1A]">Almanya</option>
                             <option className="bg-[#0B0F1A]">Polonya</option>
                             <option className="bg-[#0B0F1A]">Litvanya</option>
@@ -705,7 +706,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
-                        <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2] text-[#facc15]">
+                        <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] text-[#facc15] transition-colors">
                           <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
                           <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
                           <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
@@ -714,7 +715,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                        <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#0a66c2]" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                        <textarea name="message" value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors" rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
                       </div>
 
                       <div className="flex items-start space-x-3 pt-2 pb-2">
@@ -890,9 +891,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           Size nasıl yardımcı olabiliriz?
           <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
         </div>
-        <div className="relative transition-transform duration-300 group-hover:scale-110">
-          <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-150"></div>
-          <div className="relative bg-[#25D366] p-5 rounded-full shadow-2xl"><MessageCircle size={36} className="text-white" fill="currentColor" /></div>
+        <div className="relative transition-transform duration-300 group-hover:scale-[1.05]">
+          <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-125"></div>
+          <div className="relative bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
+            <MessageCircle size={28} className="text-white" fill="currentColor" />
+            <span className="text-white font-black italic tracking-wide">Danışmana Yaz</span>
+          </div>
         </div>
       </a>
 
