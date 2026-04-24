@@ -109,7 +109,23 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
 
   // Admin States
-  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(() => {
+    try {
+      const auth = localStorage.getItem('cms_admin_auth');
+      if (auth) {
+        const { authenticated, loginTime } = JSON.parse(auth);
+        const hours24 = 24 * 60 * 60 * 1000;
+        if (authenticated && (Date.now() - loginTime < hours24)) {
+          return true;
+        } else {
+          localStorage.removeItem('cms_admin_auth');
+        }
+      }
+    } catch (e) {
+      console.error("Auth parse error:", e);
+    }
+    return false;
+  });
   const [adminUser, setAdminUser] = useState('');
   const [adminPass, setAdminPass] = useState('');
   
@@ -186,6 +202,8 @@ const App = () => {
   const handleAdminLogin = (e) => {
     e.preventDefault();
     if (adminUser === 'cms_master_admin' && adminPass === 'CMS_vize_2026_@Admin_!Secure') {
+      const authData = { authenticated: true, loginTime: Date.now() };
+      localStorage.setItem('cms_admin_auth', JSON.stringify(authData));
       setAdminLoggedIn(true);
       setCurrentPage('admin-dashboard');
     } else {
@@ -201,7 +219,11 @@ const App = () => {
   useEffect(() => {
     const path = window.location.pathname;
     if (path === '/admin-panel-cms') {
-      setCurrentPage('admin-login');
+      if (adminLoggedIn) {
+        setCurrentPage('admin-dashboard');
+      } else {
+        setCurrentPage('admin-login');
+      }
     } else if (path === '/portal') {
       setCurrentPage('portal');
     } else if (path === '/blog') {
@@ -1254,7 +1276,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </button>
                 </nav>
               </div>
-              <button onClick={() => { setAdminLoggedIn(false); setCurrentPage('home'); window.location.pathname = '/'; }} className="w-full border border-white/10 p-4 rounded-lg font-bold text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all flex items-center justify-center space-x-2">
+              <button onClick={() => { 
+                localStorage.removeItem('cms_admin_auth');
+                setAdminLoggedIn(false); 
+                setCurrentPage('home'); 
+                window.location.pathname = '/'; 
+              }} className="w-full border border-white/10 p-4 rounded-lg font-bold text-gray-500 hover:bg-red-500/10 hover:text-red-500 transition-all flex items-center justify-center space-x-2">
                 <X size={18} /> <span>Güvenli Çıkış</span>
               </button>
             </div>
