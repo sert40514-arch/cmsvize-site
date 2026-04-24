@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Turnstile from "react-turnstile";
 import {
   ChevronRight,
   Camera,
@@ -155,32 +156,7 @@ const App = () => {
 
   // Security & Bot Protection
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
-  const turnstileRef = useRef(null);
   
-  useEffect(() => {
-    // Explicit render for React stability
-    const renderTurnstile = () => {
-      if (window.turnstile && turnstileRef.current) {
-        window.turnstile.render(turnstileRef.current, {
-          sitekey: '0x4AAAAAAADCs4Dto3zUFJEGb',
-          theme: 'dark',
-          callback: () => setIsTurnstileVerified(true),
-          'error-callback': () => setIsTurnstileVerified(false),
-          'expired-callback': () => setIsTurnstileVerified(false),
-        });
-      }
-    };
-
-    const interval = setInterval(() => {
-      if (window.turnstile) {
-        renderTurnstile();
-        clearInterval(interval);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
@@ -1092,7 +1068,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
 
                       <div className="py-4 flex justify-center min-h-[65px]">
-                        <div ref={turnstileRef}></div>
+                        <Turnstile 
+                          sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
+                          onVerify={() => setIsTurnstileVerified(true)} 
+                          theme="dark"
+                        />
                       </div>
 
                       <button 
