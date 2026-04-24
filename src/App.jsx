@@ -48,6 +48,8 @@ import cmsVideo from './assets/Cms.mp4';
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
   ? import.meta.env.VITE_WHATSAPP_NUMBER 
   : "905459918268";
+const WHATSAPP_NUMBER = WHATSAPP_NUMBER_SAFE;
+const STATS_DEFAULTS = { success: 98, clients: 2500, countries: 15 };
 const darkBg = "#0B0F1A";
 
 const App = () => {
@@ -143,6 +145,16 @@ const App = () => {
   useEffect(() => { localStorage.setItem('cms_admin_stats', JSON.stringify(siteContent)); }, [siteContent]);
   useEffect(() => { localStorage.setItem('cms_admin_leads', JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem('cms_admin_settings', JSON.stringify(siteSettings)); }, [siteSettings]);
+
+  // Data Integrity Guard
+  useEffect(() => {
+    if (!siteContent?.stats) {
+      setSiteContent(prev => ({
+        ...prev,
+        stats: STATS_DEFAULTS
+      }));
+    }
+  }, [siteContent]);
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
@@ -478,7 +490,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
-                <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
+                <a href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
                   <Search size={16} className="text-[#0a66c2]" />
                   <span>BAŞVURU TAKİP</span>
                 </a>
@@ -505,7 +517,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
             <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
             <div className="w-full space-y-4 pt-4 border-t border-white/10">
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
+              <a href={`https://wa.me/${WHATSAPP_NUMBER_SAFE}?text=${encodeURIComponent("Başvurum hakkında bilgi almak istiyorum")}`} target="_blank" rel="noreferrer" className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
                 <Search size={24} className="text-[#0a66c2]" />
                 <span>BAŞVURU TAKİP</span>
               </a>
