@@ -101,7 +101,7 @@ const App = () => {
       link.rel = 'icon';
       document.getElementsByTagName('head')[0].appendChild(link);
     }
-    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%230B0F1A"/><path d="M50 20 L80 35 L80 60 C80 80 50 95 50 95 C50 95 20 80 20 60 L20 35 Z" fill="%23facc15"/></svg>';
+    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="%23facc15"/><g fill="none" stroke="%230B0F1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11h1"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></g></svg>';
   }, [currentPage]);
 
   // Stats Counter Logic
@@ -644,10 +644,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
               <div className="space-y-3">
                 {[
-                  { q: "Vize randevusu ne kadar sürer?", a: "Vize randevu süreçleri seçilen ülkeye ve yoğunluğa göre 1-4 hafta sürer." },
-                  { q: "Red durumunda ne yapılır?", a: "Red durumunda uzman ekibimiz gerekçeleri inceleyip itiraz veya yeni başvuru sürecini başlatır." },
-                  { q: "Gerekli evraklar nelerdir?", a: "Pasaport, biyometrik fotoğraf, adli sicil kaydı temel evraklardır. Detaylı liste seçilen işe göre iletilir." },
-                  { q: "Oturum kartı süreci ne kadar sürer?", a: "Litvanya oturum kartı süreci ortalama 4-6 hafta sürmektedir." }
+                  { q: "Almanya randevu durumu ve bekleme süresi nedir?", a: "Almanya randevu atamaları iDATA üzerinden konsolosluk yoğunluğuna göre değişmektedir. Ortalama 2-6 hafta arası sürebilir." },
+                  { q: "Polonya D Tipi vize süresi ne kadardır?", a: "Polonya D Tipi ulusal vize (çalışma vizesi) başvuruları genellikle evrak tesliminden sonra 15 gün içinde sonuçlanmaktadır." },
+                  { q: "Litvanya çalışma izni ve A1 süreci nasıl işler?", a: "Litvanya'da resmi çalışma izni ve A1 transferi işlemleri dil şartı aranmaksızın yaklaşık 4-6 hafta süren bir dosya onay sürecidir." },
+                  { q: "Vize reddi durumunda nasıl bir yol izlenir?", a: "Red durumunda uzman ekibimiz ret gerekçelerini inceleyerek resmi itiraz (Remonstrasyon) veya eksiksiz yeni bir başvuru sürecini hızlıca başlatır." }
                 ].map((faq, idx) => (
                   <div key={idx} className="linkedin-faq overflow-hidden transition-all duration-300 rounded-lg">
                     <button onClick={() => setActiveFaq(activeFaq === idx ? null : idx)} className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02]">
@@ -867,6 +867,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <li><button onClick={() => setCurrentPage('privacy')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Gizlilik Politikası</button></li>
                   <li><button onClick={() => setCurrentPage('terms')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Kullanım Şartları</button></li>
                 </ul>
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-gray-400 font-light text-xs tracking-wide">Mesai: Hafta İçi 09:00 - 18:00</p>
+                  <p className="text-gray-400 font-light text-xs tracking-wide mt-1">bilgi@cmsvize.com</p>
+                </div>
               </div>
               <div className="space-y-6">
                 <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">İletişim</h4>
@@ -940,7 +944,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="space-y-6 animate-fade-up">
               <h4 className="text-xl font-bold">2. Hangi ülkeyi hedefliyorsunuz?</h4>
               <div className="grid grid-cols-2 gap-4">
-                {['Almanya', 'Polonya', 'Litvanya', 'Fark Etmez / Öneri'].map(country => (
+                {['Almanya', 'Polonya', 'Litvanya', 'Hollanda', 'Fransa'].map(country => (
                   <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{country}</button>
                 ))}
               </div>
