@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Turnstile from "react-turnstile";
+import { Turnstile } from "react-turnstile";
 import {
   ChevronRight,
   Camera,
@@ -1068,11 +1068,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
 
                       <div className="py-4 flex justify-center min-h-[65px]">
-                        <Turnstile 
-                          sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
-                          onVerify={() => setIsTurnstileVerified(true)} 
-                          theme="dark"
-                        />
+                        {typeof Turnstile !== 'undefined' ? (
+                          <Turnstile 
+                            sitekey="0x4AAAAAAADCs4Dto3zUFJEGb" 
+                            onVerify={() => setIsTurnstileVerified(true)} 
+                            theme="dark"
+                          />
+                        ) : (
+                          <div className="text-[10px] text-gray-500 italic uppercase font-black animate-pulse">Bot Doğrulaması Yükleniyor...</div>
+                        )}
                       </div>
 
                       <button 
