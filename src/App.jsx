@@ -113,23 +113,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
 
   // Admin States
-  const [adminLoggedIn, setAdminLoggedIn] = useState(() => {
-    try {
-      const auth = localStorage.getItem('cms_admin_auth');
-      if (auth) {
-        const { authenticated, loginTime } = JSON.parse(auth);
-        const hours24 = 24 * 60 * 60 * 1000;
-        if (authenticated && (Date.now() - loginTime < hours24)) {
-          return true;
-        } else {
-          localStorage.removeItem('cms_admin_auth');
-        }
-      }
-    } catch (e) {
-      console.error("Auth parse error:", e);
-    }
-    return false;
-  });
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
   const [adminUser, setAdminUser] = useState('');
   const [adminPass, setAdminPass] = useState('');
   
@@ -137,11 +121,7 @@ const App = () => {
   const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
   
   // Centralized Content State
-  const [siteContent, setSiteContent] = useState(() => {
-    const saved = localStorage.getItem('cms_admin_stats');
-    if (saved) return JSON.parse(saved);
-    return SITE_DATABASE;
-  });
+  const [siteContent, setSiteContent] = useState(SITE_DATABASE);
 
   // Leads State - Centralized via Supabase
   const [leads, setLeads] = useState([]);
@@ -152,7 +132,7 @@ const App = () => {
     setIsLoadingLeads(true);
     try {
       const { data, error } = await supabase
-        .from('basvurular')
+        .from('applications')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -161,15 +141,16 @@ const App = () => {
       const formattedLeads = (data || []).map(item => ({
         id: item.id,
         trackingId: item.tracking_code || `CMS-${item.id}`,
-        name: item.ad_soyad || '---',
-        phone: item.telefon || '---',
-        country: item.hedef_ulke || '---',
-        service: item.calisma_alani || '---',
+        name: item.full_name || '---',
+        phone: item.phone || '---',
+        country: item.target_country || '---',
+        service: item.service_type || '---',
         date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
         time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
         status: item.status || 'Yeni Başvuru',
-        note: item.ek_not || '---',
-        source: item.source || "Site",
+        note: item.note || '---',
+        source: item.source || "Site Formu",
+        lead_quality: item.lead_quality || "Yeni",
         isNew: false
       }));
       
@@ -186,14 +167,10 @@ const App = () => {
   }, []);
 
   // Settings State
-  const [siteSettings, setSiteSettings] = useState(() => {
-    const saved = localStorage.getItem('cms_admin_settings');
-    if (saved) return JSON.parse(saved);
-    return {
-      whatsapp: "905459918268",
-      instagram: "cmsprime",
-      desc: "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."
-    };
+  const [siteSettings, setSiteSettings] = useState({
+    whatsapp: "905459918268",
+    instagram: "cmsprime",
+    desc: "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."
   });
 
   const [adminTab, setAdminTab] = useState('dashboard');
@@ -221,10 +198,6 @@ const App = () => {
     setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
   }, []);
 
-  // Sync to localStorage
-  useEffect(() => { localStorage.setItem('cms_admin_stats', JSON.stringify(siteContent)); }, [siteContent]);
-  useEffect(() => { localStorage.setItem('cms_admin_settings', JSON.stringify(siteSettings)); }, [siteSettings]);
-
   // Data Integrity Guard
   useEffect(() => {
     if (!siteContent?.stats) {
@@ -238,8 +211,6 @@ const App = () => {
   const handleAdminLogin = (e) => {
     e.preventDefault();
     if (adminUser === 'cms_master_admin' && adminPass === 'CMS_vize_2026_@Admin_!Secure') {
-      const authData = { authenticated: true, loginTime: Date.now() };
-      localStorage.setItem('cms_admin_auth', JSON.stringify(authData));
       setAdminLoggedIn(true);
       setCurrentPage('admin-dashboard');
     } else {
@@ -390,14 +361,12 @@ const App = () => {
 
   const checkRateLimit = () => {
     const now = Date.now();
-    const history = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
-    const fiveMins = 5 * 60 * 1000;
-    const recent = history.filter(t => now - t < fiveMins);
-    
-    if (recent.length >= 2) return { ok: false, msg: "Çok kısa sürede fazla başvuru yaptınız. Lütfen biraz sonra tekrar deneyin." };
-    const last = recent[recent.length - 1];
-    if (last && now - last < 10000) return { ok: false, msg: "İşleminiz devam ediyor, lütfen bekleyin." };
-    
+    // Memory-only rate limiting for this session
+    if (!window.cms_sub_history) window.cms_sub_history = [];
+    const recent = window.cms_sub_history.filter(t => now - t < 600000);
+    if (recent.length >= 5) {
+      return { ok: false, msg: "Çok fazla başvuru denemesi. Lütfen 10 dakika sonra tekrar deneyin." };
+    }
     return { ok: true };
   };
 
@@ -533,18 +502,22 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       setSubmittedTrackingId(trackingId);
 
       const supabasePayload = {
-        ad_soyad: formData.name,
-        telefon: formData.phone,
-        hedef_ulke: formData.country,
-        calisma_alani: formData.workField,
-        ek_not: formData.message || "Hızlı başvuru"
+        tracking_code: trackingId,
+        full_name: formData.name,
+        phone: formData.phone,
+        target_country: formData.country,
+        service_type: formData.workField,
+        note: formData.message || "Hızlı başvuru",
+        status: "Yeni Başvuru",
+        lead_quality: "Yeni",
+        source: "Site Formu"
       };
 
       console.log("Supabase insert started", supabasePayload);
 
       // 3. Insert into Supabase
       const { data, error } = await supabase
-        .from('basvurular')
+        .from('applications')
         .insert([supabasePayload])
         .select();
 
@@ -562,9 +535,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       // 4. Update local state and finish
       await fetchLeads(); // Refresh leads
       
-      const subHistory = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
-      subHistory.push(Date.now());
-      localStorage.setItem('cms_sub_history', JSON.stringify(subHistory.slice(-10)));
+      if (!window.cms_sub_history) window.cms_sub_history = [];
+      window.cms_sub_history.push(Date.now());
+      window.cms_sub_history = window.cms_sub_history.slice(-10);
 
       playNotificationSound();
       showToast('Başvurunuz başarıyla alındı, sizinle iletişime geçeceğiz!');
@@ -1500,7 +1473,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </nav>
               </div>
               <button onClick={() => { 
-                localStorage.removeItem('cms_admin_auth');
                 setAdminLoggedIn(false); 
                 setCurrentPage('home'); 
                 window.location.pathname = '/'; 
@@ -1774,7 +1746,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                     const newStatus = e.target.value;
                                     try {
                                       const { error } = await supabase
-                                        .from('basvurular')
+                                        .from('applications')
                                         .update({ status: newStatus })
                                         .eq('id', lead.id);
                                       
@@ -1815,7 +1787,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                   if(window.confirm('Bu başvuruyu silmek istediğinize emin misiniz?')) { 
                                     try {
                                       const { error } = await supabase
-                                        .from('basvurular')
+                                        .from('applications')
                                         .delete()
                                         .eq('id', lead.id);
                                       
