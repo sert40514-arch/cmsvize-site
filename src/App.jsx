@@ -1209,7 +1209,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <button onClick={resetForm} className="mt-8 btn-corporate bg-white/5 border border-white/10 px-8 py-4 text-white hover:bg-white/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
                     </div>
                   ) : (
-                    <form onSubmit={handleFormSubmit} className="space-y-8">
+                    <div className="space-y-8">
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
                         <input 
@@ -1298,13 +1298,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
 
                       <button 
-                        type="submit" 
+                        type="button" 
+                        onClick={handleFormSubmit}
                         disabled={!isPhoneValid || !isNameValid || !isTurnstileVerified}
                         className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid && isNameValid && isTurnstileVerified ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
                       >
                         BAŞVURUYU TAMAMLA
                       </button>
-                    </form>
+                    </div>
                   )}
                 </div>
                 <div className="bg-[#facc15] p-8 md:p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group w-full min-h-[400px]">
