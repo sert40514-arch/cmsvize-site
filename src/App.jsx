@@ -451,6 +451,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
+    console.log("SUBMIT STARTED");
+    console.log("FORM DATA", formData);
+    console.log("TURNSTILE TOKEN", turnstileToken);
+    console.log("SUPABASE URL", import.meta.env.VITE_SUPABASE_URL);
+    console.log("SUPABASE KEY EXISTS", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+
     if (formData.hp) return; // Honeypot trap
 
     if (!isNameValid) {
@@ -479,38 +485,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       return;
     }
 
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      showToast("Supabase ortam değişkenleri eksik.");
+      return;
+    }
+
     setIsSubmitting(true);
-    console.log("FORM SUBMIT TRIGGERED - Supabase Mode");
 
     try {
-      // 1. Verify Turnstile
-      const verifyRes = await fetch('/api/verify-turnstile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: turnstileToken })
-      });
-      
-      const verifyData = await verifyRes.json();
-      if (!verifyData.success) {
-        setIsSubmitting(false);
-        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
-        return;
-      }
-
-      // 2. Prepare Data
       const trackingId = `CMS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
       setSubmittedTrackingId(trackingId);
 
-      console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
-      console.log("SUPABASE KEY EXISTS:", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-
-      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-        setIsSubmitting(false);
-        showToast("Veritabanı bağlantısı eksik. Lütfen sistem yöneticisiyle iletişime geçin.");
-        return;
-      }
-
-      const supabasePayload = {
+      const applicationData = {
         tracking_code: trackingId,
         full_name: formData.name,
         phone: formData.phone,
@@ -522,21 +508,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         source: "Site Formu"
       };
 
-      console.log("Supabase insert started");
-
       const { data, error } = await supabase
         .from("applications")
-        .insert([supabasePayload])
+        .insert([applicationData])
         .select();
 
-      console.log("Supabase insert response:", { data, error });
+      console.log("SUPABASE INSERT RESPONSE", { data, error });
 
       if (error) {
-        console.error("Supabase error:", error);
         throw error;
       }
-
-      console.log("Supabase insert successful:", data);
 
       // 4. Update local state and finish
       await fetchLeads(); // Refresh leads
@@ -551,14 +532,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       setIsSubmitting(false);
       setFormSuccess(true);
     } catch (error) {
-      console.error("Supabase Submission Error:", error);
+      console.error("SUPABASE INSERT ERROR:", error);
       setIsSubmitting(false);
-      
-      if (error.message === 'Failed to fetch') {
-        showToast("Veritabanı bağlantısı kurulamadı. Lütfen tekrar deneyin.");
-      } else {
-        showToast("Başvuru gönderilemedi, lütfen tekrar deneyin.");
-      }
+      showToast("Başvuru kaydedilemedi. Lütfen tekrar deneyin.");
     }
   };
 
