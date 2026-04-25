@@ -176,6 +176,7 @@ const App = () => {
   // Security & Bot Protection
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
+  const [submittedTrackingId, setSubmittedTrackingId] = useState('');
   
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -398,12 +399,16 @@ const App = () => {
   };
 
   const getLeadQuality = (lead) => {
-    if (!lead.name || !lead.phone) return { label: "Şüpheli", color: "text-red-500 bg-red-500/10" };
+    if (!lead.name || !lead.phone || lead.name.length < 5) return { label: "Şüpheli Lead", color: "text-red-500 bg-red-500/10" };
     const nameParts = lead.name.trim().split(/\s+/);
-    if (nameParts.length < 2 || nameParts.some(p => p.length < 2)) return { label: "Şüpheli", color: "text-red-500 bg-red-500/10" };
+    if (nameParts.length < 2 || nameParts.some(p => p.length < 2)) return { label: "Şüpheli Lead", color: "text-red-500 bg-red-500/10" };
     if (isSpammy(lead.name) || (lead.note && isSpammy(lead.note))) return { label: "Spam!", color: "text-red-600 bg-red-600/20 animate-pulse" };
-    if (lead.note && lead.note.length > 25) return { label: "Sıcak Lead", color: "text-green-400 bg-green-400/10" };
-    return { label: "Normal", color: "text-blue-400 bg-blue-400/10" };
+    
+    // Warm lead criteria: Proper name + Proper phone + Valid country + Note detail
+    if (lead.name.length > 8 && lead.phone.length >= 10 && lead.country && lead.note && lead.note.length > 25) {
+      return { label: "Sıcak Lead", color: "text-green-400 bg-green-400/10" };
+    }
+    return { label: "Normal Lead", color: "text-blue-400 bg-blue-400/10" };
   };
 
   // Lead Filtering States
@@ -500,13 +505,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       await new Promise(resolve => setTimeout(resolve, 800));
 
+      const trackingId = `CMS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      setSubmittedTrackingId(trackingId);
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toISOString().split('T')[0];
+
       const newLead = {
         id: Date.now(),
+        trackingId: trackingId,
         name: formData.name,
         phone: formData.phone,
         country: formData.country,
         service: formData.workField,
-        date: new Date().toISOString().split('T')[0],
+        date: dateStr,
+        time: timeStr,
+        source: "Site Formu",
         status: "Yeni Başvuru",
         note: formData.message || "Hızlı başvuru formu",
         isNew: true
@@ -514,9 +529,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       setLeads([newLead, ...leads]);
       
       // Update rate limit history
-      const history = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
-      history.push(Date.now());
-      localStorage.setItem('cms_sub_history', JSON.stringify(history.slice(-10)));
+      const subHistory = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
+      subHistory.push(Date.now());
+      localStorage.setItem('cms_sub_history', JSON.stringify(subHistory.slice(-10)));
 
       playNotificationSound();
       showToast('Başvurunuz Alındı!');
@@ -542,6 +557,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     setFormSuccess(false);
     setIsTurnstileVerified(false);
     setTurnstileToken(null);
+    setSubmittedTrackingId('');
     
     // Turnstile reset
     if (window.turnstile) {
@@ -1177,12 +1193,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
                   {formSuccess ? (
                     <div className="flex flex-col items-center justify-center text-center space-y-6 py-16 animate-fade-up">
-                      <div className="w-24 h-24 bg-[#0a66c2]/20 rounded-full flex items-center justify-center mb-4">
-                        <CheckCircle2 size={48} className="text-[#0a66c2]" />
+                      <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 size={48} className="text-green-500" />
                       </div>
-                      <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#0a66c2]">Başvurunuz Başarıyla Alındı!</h3>
-                      <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
-                      <button onClick={resetForm} className="mt-8 btn-corporate glass border border-white/10 px-8 py-4 text-white hover:border-[#0a66c2]/50 hover:bg-[#0a66c2]/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
+                      <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">BAŞVURUNUZ BAŞARIYLA ALINDI!</h3>
+                      <div className="space-y-4">
+                        <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
+                        <div className="bg-white/5 border border-white/10 p-6 rounded-xl space-y-3">
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Takip Numaranız</p>
+                            <p className="text-2xl font-black italic text-[#facc15] tracking-tighter">{submittedTrackingId}</p>
+                          </div>
+                          <div className="pt-3 border-t border-white/5">
+                            <p className="text-[11px] font-bold text-gray-300">Ortalama dönüş süresi: 15–30 dakika</p>
+                          </div>
+                        </div>
+                      </div>
+                      <button onClick={resetForm} className="mt-8 btn-corporate bg-white/5 border border-white/10 px-8 py-4 text-white hover:bg-white/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
                     </div>
                   ) : (
                     <form onSubmit={handleFormSubmit} className="space-y-8">
@@ -1249,7 +1276,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
                       </div>
 
-                      <div className="py-4 flex justify-center min-h-[65px]">
+                      <div className="py-2 flex flex-col items-center space-y-4 min-h-[100px]">
                         {typeof Turnstile !== 'undefined' ? (
                           <Turnstile 
                             sitekey="0x4AAAAAADCs4Dto3zUFJEGb" 
@@ -1262,6 +1289,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         ) : (
                           <div className="text-[10px] text-gray-500 italic uppercase font-black animate-pulse">Bot Doğrulaması Yükleniyor...</div>
                         )}
+                        <div className="text-center space-y-1">
+                          <p className="text-[10px] text-gray-500 font-medium italic">“Bilgileriniz yalnızca danışmanlık ön değerlendirmesi için kullanılır.”</p>
+                          <p className="text-[10px] text-gray-500 font-medium italic">“Otomatik WhatsApp yönlendirmesi yapılmaz.”</p>
+                          <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Uzman ekibimiz başvurunuzu inceleyerek sizinle iletişime geçer.</p>
+                        </div>
                       </div>
 
                       <button 
@@ -1274,17 +1306,34 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </form>
                   )}
                 </div>
-                <div className="bg-[#facc15] p-12 lg:p-20 text-[#0B0F1A] flex flex-col justify-between">
-                  <div className="space-y-12">
-                    <h3 className="text-4xl lg:text-6xl font-black italic uppercase leading-[0.9] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
-                    <div className="space-y-6 font-black text-2xl italic tracking-tighter">
-                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>HERKES İÇİN İŞ İMKANI</span> </p>
-                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>2500€+ MAAŞ FIRSATI</span> </p>
-                      <p className="flex items-center space-x-4"> <Star fill="currentColor" /> <span>AİLE BİRLEŞİMİ</span> </p>
+                <div className="bg-[#facc15] p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-black/5 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
+                  <div className="space-y-10 relative z-10">
+                    <h3 className="text-5xl lg:text-7xl font-black italic uppercase leading-[0.85] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
+                    
+                    <div className="space-y-4">
+                      {[
+                        { title: "2 Yıllık Oturum Fırsatı", desc: "Litvanya üzerinden tüm AB'de geçerli kart." },
+                        { title: "Schengen Bölgesi Serbestlik", desc: "27 ülkede vizesiz hareket ve çalışma imkanı." },
+                        { title: "İş & Kariyer Planlaması", desc: "Profilinize uygun garantili iş yerleşimi." }
+                      ].map((item, idx) => (
+                        <div key={idx} className="bg-black/5 border border-black/10 p-5 rounded-xl space-y-1 hover:bg-black/10 transition-all cursor-default">
+                          <div className="flex items-center space-x-2">
+                            <CheckCircle2 size={18} fill="currentColor" className="text-black" />
+                            <p className="font-black text-lg uppercase italic tracking-tighter">{item.title}</p>
+                          </div>
+                          <p className="text-xs font-bold opacity-70 ml-7 leading-tight">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="bg-black text-[#facc15] py-3 px-6 rounded-lg text-center transform -rotate-1 shadow-xl">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">Ücretsiz Ön Değerlendirme • Hızlı Dönüş • Profesyonel Süreç</p>
                     </div>
                   </div>
-                  <div className="space-y-4 pt-10 border-t border-black/10">
-                    <p className="text-3xl font-black tracking-tighter flex items-center space-x-3"> <Phone /> <span>+90 545 991 82 68</span> </p>
+
+                  <div className="space-y-4 pt-10 border-t border-black/10 mt-10 relative z-10">
+                    <a href="tel:+905459918268" className="text-3xl font-black tracking-tighter flex items-center space-x-3 hover:translate-x-2 transition-transform"> <Phone /> <span>+90 545 991 82 68</span> </a>
                     <p className="text-sm font-black uppercase tracking-widest flex items-center space-x-3"> <MapPin /> <span>Merkez, Aksaray / Vilnius</span> </p>
                   </div>
                 </div>
@@ -1316,6 +1365,27 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          {/* SEO / GÜVEN İÇERİĞİ */}
+          <section className="py-24 px-6 border-t border-white/5 bg-white/[0.01]">
+            <div className="max-w-4xl mx-auto space-y-10">
+              <div className="space-y-6 text-center">
+                <h2 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter text-white">Avrupa Vize ve Oturum Danışmanlığında <br className="hidden md:block" /> <span className="text-[#facc15]">Profesyonel Süreç Yönetimi</span></h2>
+                <div className="w-20 h-1 bg-[#facc15] mx-auto"></div>
+              </div>
+              <div className="space-y-6">
+                <p className="text-gray-300 text-lg leading-relaxed font-medium">
+                  CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa’da iş, oturum, aile birleşimi ve danışmanlık süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar. Aksaray merkezli yapımız ve Avrupa odaklı danışmanlık modelimizle, süreci daha anlaşılır, planlı ve güvenilir hale getiriyoruz.
+                </p>
+                <div className="glass p-6 rounded-xl border-l-4 border-[#facc15]">
+                  <p className="text-xs text-gray-500 font-bold leading-relaxed italic">
+                    <span className="text-[#facc15] uppercase tracking-widest block mb-2 font-black">Yasal Uyarı & Bilgilendirme:</span>
+                    CMSVize danışmanlık hizmeti sunar. Nihai karar yetkisi ilgili konsolosluklara, resmi kurumlara ve yetkili mercilere aittir. Başvuru süreci boyunca sunulan her türlü bilgi, ilgili ülkelerin güncel göç yasaları ve resmi prosedürleri çerçevesinde değerlendirilir.
+                  </p>
+                </div>
               </div>
             </div>
           </section>
@@ -1631,7 +1701,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                   {lead.isNew && <span className="bg-[#facc15] text-black text-[8px] font-black px-1.5 py-0.5 rounded animate-pulse">YENİ</span>}
                                   <p className="font-bold text-white uppercase tracking-tight">{lead.name}</p>
                                 </div>
-                                <p className="text-xs text-gray-400 font-mono">{lead.phone}</p>
+                                <div className="flex items-center space-x-2 mt-1">
+                                  <p className="text-[10px] text-gray-500 font-mono tracking-tighter">{lead.trackingId || 'ID YOK'}</p>
+                                  <span className="text-gray-700">•</span>
+                                  <p className="text-[10px] text-gray-400 font-mono">{lead.phone}</p>
+                                </div>
                               </td>
                               <td className="p-4">
                                 <p className="text-[#facc15] font-bold text-sm">{lead.service}</p>
@@ -1660,7 +1734,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                   <option value="İptal">İptal</option>
                                 </select>
                               </td>
-                              <td className="p-4 text-xs text-gray-400 font-medium">{lead.date}</td>
+                              <td className="p-4 text-[11px] text-gray-400 font-medium">
+                                <div className="flex flex-col">
+                                  <span>{lead.date}</span>
+                                  <span className="text-[9px] text-gray-600 font-mono uppercase tracking-widest mt-0.5">{lead.time || '--:--'}</span>
+                                </div>
+                              </td>
                               <td className="p-4 text-right space-x-2">
                                 <button onClick={() => setSelectedLead(lead)} className="inline-flex p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all" title="Detaylar">
                                   <Eye size={16} />
@@ -1922,7 +2001,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${getLeadQuality(selectedLead).color}`}>
                     {getLeadQuality(selectedLead).label}
                   </span>
-                  <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">ID: #{selectedLead.id}</span>
+                  <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">ID: {selectedLead.trackingId || `#${selectedLead.id}`}</span>
+                  <span className="bg-white/5 text-gray-400 text-[9px] px-2 py-1 rounded uppercase tracking-widest font-black">{selectedLead.source || 'BİLİNMİYOR'}</span>
                 </div>
                 <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">{selectedLead.name}</h3>
                 <p className="text-[#facc15] font-bold text-lg">{selectedLead.service} - {selectedLead.country}</p>
