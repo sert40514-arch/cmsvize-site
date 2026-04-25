@@ -110,7 +110,10 @@ const App = () => {
   };
 
   // Routing State
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (window.location.pathname === '/admin-panel-cms') return 'admin-login';
+    return 'home';
+  });
 
   // Admin States
   const [adminLoggedIn, setAdminLoggedIn] = useState(false);
@@ -879,11 +882,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
                 <div className="hero-img-container">
                   <video 
-                    src={cmsVideo} 
                     className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto" 
                     controls 
                     playsInline
                   >
+                    <source src={cmsVideo} type="video/mp4" />
                     Tarayıcınız video etiketini desteklemiyor.
                   </video>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
@@ -1416,7 +1419,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
             <h2 className="text-3xl font-black italic uppercase tracking-tighter text-center mb-2">Admin <span className="text-[#facc15]">Panel</span></h2>
             <p className="text-gray-400 text-center text-sm mb-8">Yetkili personel girişi gereklidir.</p>
-            <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">KULLANICI ADI</label>
                 <input required value={adminUser} onChange={(e) => setAdminUser(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="cms_master_admin" />
@@ -1425,8 +1428,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">GÜVENLİK ANAHTARI</label>
                 <input required type="password" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="••••••••••••" />
               </div>
-              <button type="submit" className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-lg hover:scale-[1.02] transition-transform mt-4">SİSTEME GİRİŞ YAP</button>
-            </form>
+              <button type="button" onClick={handleAdminLogin} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-lg hover:scale-[1.02] transition-transform mt-4">SİSTEME GİRİŞ YAP</button>
+            </div>
           </div>
         </div>
       ) : currentPage === 'admin-dashboard' && adminLoggedIn ? (
