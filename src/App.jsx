@@ -168,7 +168,7 @@ const App = () => {
         date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
         time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
         status: item.status,
-        note: item.notlar,
+        note: item.ek_not,
         source: item.source || "Site",
         isNew: false
       }));
@@ -538,7 +538,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         telefon: formData.phone,
         hedef_ulke: formData.country,
         calisma_alani: formData.workField,
-        notlar: formData.message || "Hızlı başvuru formu",
+        ek_not: formData.message || "Hızlı başvuru formu",
         status: "Yeni Başvuru",
         source: "Merkezi Veritabanı"
       };
