@@ -513,7 +513,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         source: "Site Formu"
       };
 
-      console.log("Supabase insert started", supabasePayload);
+      console.log("Supabase URL", import.meta.env.VITE_SUPABASE_URL);
+      console.log("Supabase key exists", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      console.log("Supabase insert started");
 
       // 3. Insert into Supabase
       const { data, error } = await supabase
@@ -524,7 +526,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       if (error) {
         console.error('Supabase Hatası:', error);
         const errorMsg = error.message === 'Failed to fetch' 
-          ? 'Veritabanına bağlanılamadı. Lütfen reklam engelleyicinizi (Ad-Blocker) veya VPN\'i kapatıp tekrar deneyin.'
+          ? 'Veritabanı bağlantısı kurulamadı. Lütfen tekrar deneyin.'
           : 'Veritabanı Hatası: ' + error.message;
         alert(errorMsg);
         throw new Error(error.message);
