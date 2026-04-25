@@ -1389,22 +1389,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
             </div>
           </section>
-
-          {/* FOOTER */}
-          <footer className="py-16 px-6 bg-[#080C14] border-t border-white/5">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
-              <div className="flex flex-col items-center md:items-start space-y-4">
-                <img src={logoImg} alt="CMSVize Logo" className="h-[28px] w-auto object-contain opacity-80 hover:opacity-100 transition-opacity" />
-                <p className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">© 2026 CMSVize Danışmanlık. Tüm Hakları Saklıdır.</p>
-              </div>
-              <div className="flex items-center space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                <button onClick={() => setCurrentPage('home')} className="hover:text-[#facc15] transition-colors">Ana Sayfa</button>
-                <button onClick={() => setCurrentPage('blog')} className="hover:text-[#facc15] transition-colors">Vize Rehberi</button>
-                <button onClick={() => setCurrentPage('portal')} className="hover:text-[#facc15] transition-colors">Başvuru Sorgula</button>
-                <button onClick={() => setCurrentPage('admin-login')} className="hover:text-white transition-colors opacity-30">Yönetim</button>
-              </div>
-            </div>
-          </footer>
         </>
       ) : currentPage === 'blog' ? (
         <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
@@ -1940,7 +1924,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
               <div className="space-y-6">
                 <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-                  {logoImg ? <img src={logoImg} alt="Logo" className="h-14 w-auto" /> : <span>CMSVize</span>}
+                  {logoImg ? <img src={logoImg} alt="Logo" className="h-[42px] w-auto object-contain" /> : <span>CMSVize</span>}
                 </div>
                 <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">
                   {siteSettings?.desc || "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."}
