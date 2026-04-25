@@ -771,7 +771,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-              {logoImg ? <img src={logoImg} alt="Logo" className="h-10 w-auto" /> : <span>CMSVize</span>}
+              <img src={logoImg} alt="CMSVize Logo" className="h-[40px] w-auto object-contain transition-transform group-hover:scale-105" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -1389,6 +1389,22 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </div>
             </div>
           </section>
+
+          {/* FOOTER */}
+          <footer className="py-16 px-6 bg-[#080C14] border-t border-white/5">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
+              <div className="flex flex-col items-center md:items-start space-y-4">
+                <img src={logoImg} alt="CMSVize Logo" className="h-[28px] w-auto object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                <p className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em]">© 2026 CMSVize Danışmanlık. Tüm Hakları Saklıdır.</p>
+              </div>
+              <div className="flex items-center space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <button onClick={() => setCurrentPage('home')} className="hover:text-[#facc15] transition-colors">Ana Sayfa</button>
+                <button onClick={() => setCurrentPage('blog')} className="hover:text-[#facc15] transition-colors">Vize Rehberi</button>
+                <button onClick={() => setCurrentPage('portal')} className="hover:text-[#facc15] transition-colors">Başvuru Sorgula</button>
+                <button onClick={() => setCurrentPage('admin-login')} className="hover:text-white transition-colors opacity-30">Yönetim</button>
+              </div>
+            </div>
+          </footer>
         </>
       ) : currentPage === 'blog' ? (
         <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
@@ -1409,8 +1425,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       ) : currentPage === 'admin-login' ? (
         <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
           <div className="max-w-md w-full glass p-10 rounded-2xl border-t-4 border-[#facc15] shadow-2xl">
-            <div className="flex justify-center mb-8">
-              <ShieldCheck className="text-[#facc15] w-20 h-20" />
+            <div className="flex justify-center mb-10">
+              <img src={logoImg} alt="CMSVize Logo" className="h-20 w-auto object-contain brightness-125" />
             </div>
             <h2 className="text-3xl font-black italic uppercase tracking-tighter text-center mb-2">Admin <span className="text-[#facc15]">Panel</span></h2>
             <p className="text-gray-400 text-center text-sm mb-8">Yetkili personel girişi gereklidir.</p>
@@ -1433,11 +1449,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             {/* Sidebar */}
             <div className="w-72 bg-[#0B0F1A] border-r border-white/5 p-8 flex flex-col justify-between">
               <div className="space-y-10">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-[#facc15] rounded-lg flex items-center justify-center">
-                    <ShieldCheck className="text-[#0B0F1A]" />
-                  </div>
-                  <span className="font-black italic text-xl tracking-tighter">CMS <span className="text-[#facc15]">ADMIN</span></span>
+                <div className="flex items-center space-x-2 px-2">
+                  <img src={logoImg} alt="CMSVize Logo" className="h-[32px] w-auto object-contain" />
+                  <span className="font-black italic text-xl tracking-tighter text-white opacity-80">ADMIN</span>
                 </div>
                 <nav className="space-y-2">
                   <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
