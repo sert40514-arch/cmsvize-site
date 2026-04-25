@@ -144,6 +144,21 @@ const App = () => {
     time_ago: '3 gün önce',
     is_active: true
   });
+
+  // Blog States
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [isBlogLoading, setIsBlogLoading] = useState(true);
+  const [showNewBlogForm, setShowNewBlogForm] = useState(false);
+  const [newBlogData, setNewBlogData] = useState({
+    title: '',
+    slug: '',
+    summary: '',
+    content: '',
+    category: 'Vize Rehberi',
+    image_url: '',
+    is_published: true
+  });
+  const [selectedBlogSlug, setSelectedBlogSlug] = useState(null);
   
   const [siteSettings, setSiteSettings] = useState({
     title: "CMSVize | Avrupa Kapısı Açılıyor",
@@ -197,6 +212,15 @@ const App = () => {
         ]);
       }
 
+      const { data: blogData, error: blogError } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('id', { ascending: false });
+        
+      if (!blogError && blogData) {
+        setBlogPosts(blogData);
+      }
+
       const { data: settingsData, error: settingsError } = await supabase
         .from('site_settings')
         .select('*')
@@ -216,6 +240,7 @@ const App = () => {
     } finally {
       setIsLoadingLeads(false);
       setIsTestimonialsLoading(false);
+      setIsBlogLoading(false);
     }
   };
 
@@ -292,6 +317,9 @@ const App = () => {
       setCurrentPage('portal');
     } else if (path === '/blog') {
       setCurrentPage('blog');
+    } else if (path.startsWith('/blog/')) {
+      setCurrentPage('blog_detail');
+      setSelectedBlogSlug(path.replace('/blog/', ''));
     }
   }, []);
 
@@ -827,7 +855,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
               <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
               <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
-              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
               <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
@@ -859,7 +887,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
-            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
+            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
             <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
             <div className="w-full space-y-4 pt-4 border-t border-white/10">
               <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
@@ -1449,20 +1477,59 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </section>
         </>
+      ) : currentPage === 'blog_detail' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto min-h-screen">
+          {(() => {
+            const post = blogPosts.find(b => b.slug === selectedBlogSlug);
+            if (!post) return <div className="text-white text-center py-20 animate-pulse">Blog yazısı yükleniyor...</div>;
+            
+            // SEO update
+            document.title = `${post.title} | CMSVize`;
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+              metaDesc.content = post.summary;
+            }
+            
+            return (
+              <div className="animate-fade-up">
+                <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-gray-400 hover:text-[#facc15] mb-8 transition-colors">
+                  <ArrowLeft size={16} /><span>Blog'a Dön</span>
+                </button>
+                {post.image_url && <img src={post.image_url} alt={post.title} className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8 border border-white/10 shadow-2xl" />}
+                <div className="flex items-center space-x-3 mb-6">
+                  <span className="text-xs font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
+                  <span className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-8 text-white">{post.title}</h1>
+                <div className="text-gray-300 text-lg leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+              </div>
+            );
+          })()}
+        </div>
       ) : currentPage === 'blog' ? (
         <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
-          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">Vize <span className="text-[#facc15]">Rehberi</span></h2>
+          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">CMSVize <span className="text-[#facc15]">Blog</span></h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="glass p-8 rounded-xl hover:border-[#0a66c2]/50 transition-all cursor-pointer">
-              <span className="text-xs font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">Güncel 2026</span>
-              <h3 className="text-2xl font-black italic mt-4 mb-3">Avrupa'da Tır Şoförü Olmak: KOD95 Nedir?</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Sürücülerin Avrupa standartlarında çalışabilmesi için alması gereken eğitimler ve A1 transferi detayları.</p>
-            </div>
-            <div className="glass p-8 rounded-xl hover:border-[#0a66c2]/50 transition-all cursor-pointer">
-              <span className="text-xs font-black text-[#0a66c2] bg-[#0a66c2]/20 px-3 py-1 rounded-md uppercase tracking-widest">Oturum İzni</span>
-              <h3 className="text-2xl font-black italic mt-4 mb-3">Litvanya 2 Yıllık Oturum Kartı Avantajları</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Schengen bölgesinde serbest dolaşım ve çalışma hakkı tanıyan bu özel izne nasıl başvurulur?</p>
-            </div>
+            {blogPosts.filter(b => b.is_published).map(post => (
+              <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="glass p-6 rounded-xl hover:border-[#facc15]/50 transition-all cursor-pointer group flex flex-col h-full border border-white/5">
+                {post.image_url && <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover rounded-lg mb-4 group-hover:scale-[1.02] transition-transform duration-300 shadow-xl" />}
+                <div className="flex-1">
+                  <span className="text-[10px] font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
+                  <h3 className="text-xl font-black italic mt-3 mb-2 group-hover:text-[#facc15] transition-colors text-white">{post.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{post.summary}</p>
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                  <span className="text-xs text-gray-500">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                  <span className="text-xs font-bold text-[#facc15] flex items-center space-x-1"><span>Devamını Oku</span> <ChevronRight size={14} /></span>
+                </div>
+              </div>
+            ))}
+            {blogPosts.filter(b => b.is_published).length === 0 && !isBlogLoading && (
+              <div className="col-span-full text-center text-gray-500 py-12">Henüz blog yazısı bulunmamaktadır.</div>
+            )}
+            {isBlogLoading && (
+              <div className="col-span-full text-center text-gray-500 py-12 animate-pulse">Yazılar Yükleniyor...</div>
+            )}
           </div>
         </div>
       ) : currentPage === 'admin-login' ? (
@@ -1506,10 +1573,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Users size={18} /> <span>Ekip Yönetimi</span>
                   </button>
-                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
                     <MessageSquare size={18} /> <span>Müşteri Yorumları</span>
                   </button>
-                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('blog')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'blog' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
+                    <BookOpen size={18} /> <span>Blog Yazıları</span>
+                  </button>
+                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
                     <Briefcase size={18} /> <span>Başvurular</span>
                   </button>
                   <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
@@ -1544,6 +1614,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       {adminTab === 'stats' && 'Dinamik Veriler'}
                       {adminTab === 'team' && 'Ekip Yönetimi'}
                       {adminTab === 'leads' && 'Başvuru Yönetimi'}
+                      {adminTab === 'reviews' && 'Müşteri Yorumları'}
+                      {adminTab === 'blog' && 'Blog Yönetimi'}
                       {adminTab === 'settings' && 'Site Ayarları'}
                       <span className="text-[#facc15] ml-2">Paneli</span>
                     </h1>
@@ -1987,6 +2059,125 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </div>
                   </div>
                 )}
+
+                {adminTab === 'blog' && (
+                  <div className="space-y-6 animate-fade-up">
+                    <div className="flex justify-between items-center mb-4">
+                      <p className="text-gray-500 font-medium text-sm">Blog içeriklerinizi buradan yönetin.</p>
+                      <button onClick={() => setShowNewBlogForm(!showNewBlogForm)} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                        <Plus size={16} /> <span>{showNewBlogForm ? 'Formu Kapat' : 'Yeni Yazı Ekle'}</span>
+                      </button>
+                    </div>
+
+                    {showNewBlogForm && (
+                      <div className="glass p-6 rounded-xl space-y-6 border border-[#facc15]/30 mb-8">
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#facc15]">Yeni Yazı</h3>
+                        <div className="grid grid-cols-1 gap-6">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Başlık</label>
+                            <input value={newBlogData.title} onChange={(e) => setNewBlogData({...newBlogData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                          </div>
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Slug (URL)</label>
+                              <input value={newBlogData.slug} onChange={(e) => setNewBlogData({...newBlogData, slug: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-gray-400" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</label>
+                              <input value={newBlogData.category} onChange={(e) => setNewBlogData({...newBlogData, category: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kapak Görseli URL</label>
+                            <input value={newBlogData.image_url} onChange={(e) => setNewBlogData({...newBlogData, image_url: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="https://..." />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Özet</label>
+                            <textarea value={newBlogData.summary} onChange={(e) => setNewBlogData({...newBlogData, summary: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[60px]" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İçerik</label>
+                            <textarea value={newBlogData.content} onChange={(e) => setNewBlogData({...newBlogData, content: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[200px]" />
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <input type="checkbox" id="is_pub" checked={newBlogData.is_published} onChange={(e) => setNewBlogData({...newBlogData, is_published: e.target.checked})} className="w-4 h-4 accent-[#facc15]" />
+                            <label htmlFor="is_pub" className="text-sm font-bold text-white cursor-pointer">Yayınla (Aktif)</label>
+                          </div>
+                        </div>
+                        <div className="flex justify-end pt-4 border-t border-white/5">
+                          <button onClick={async () => {
+                            try {
+                              const { error } = await supabase.from('blog_posts').insert([newBlogData]);
+                              if (error) throw error;
+                              showToast('Blog yazısı başarıyla eklendi!');
+                              setShowNewBlogForm(false);
+                              setNewBlogData({ title: '', slug: '', summary: '', content: '', category: 'Vize Rehberi', image_url: '', is_published: true });
+                              fetchAllData();
+                            } catch (err) {
+                              console.error(err);
+                              showToast('Blog eklenirken hata oluştu.');
+                            }
+                          }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                            <Save size={18} /> <span>YAZIYI KAYDET</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-6">
+                      {isBlogLoading ? (
+                        <div className="text-center text-gray-500 animate-pulse py-10">Yazılar Yükleniyor...</div>
+                      ) : (
+                        blogPosts.map((post) => (
+                          <div key={post.id} className="glass p-6 rounded-xl space-y-4 border border-white/5">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="text-lg font-black text-white">{post.title}</h4>
+                                <p className="text-xs text-[#facc15] font-bold">/{post.slug}</p>
+                              </div>
+                              <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${post.is_published ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
+                                {post.is_published ? 'Yayında' : 'Taslak'}
+                              </span>
+                            </div>
+                            <p className="text-gray-300 text-sm leading-relaxed">{post.summary}</p>
+                            <div className="flex justify-end space-x-3 pt-4 border-t border-white/5">
+                              <button onClick={async () => {
+                                const newStatus = !post.is_published;
+                                try {
+                                  const { error } = await supabase.from('blog_posts').update({ is_published: newStatus }).eq('id', post.id);
+                                  if (error) throw error;
+                                  showToast(newStatus ? 'Yazı yayına alındı!' : 'Yazı taslağa çekildi.');
+                                  fetchAllData();
+                                } catch (err) {
+                                  console.error(err);
+                                  showToast('Durum güncellenemedi.');
+                                }
+                              }} className="bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
+                                <Edit size={14} /> <span>{post.is_published ? 'Gizle' : 'Yayınla'}</span>
+                              </button>
+                              <button onClick={async () => {
+                                if(window.confirm('Bu yazıyı silmek istediğinize emin misiniz?')) {
+                                  try {
+                                    const { error } = await supabase.from('blog_posts').delete().eq('id', post.id);
+                                    if (error) throw error;
+                                    showToast('Yazı silindi!');
+                                    fetchAllData();
+                                  } catch (err) {
+                                    console.error(err);
+                                    showToast('Yazı silinirken hata oluştu.');
+                                  }
+                                }
+                              }} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
+                                <Trash2 size={14} /> <span>Yazıyı Sil</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {adminTab === 'settings' && (
                   <div className="space-y-8 animate-fade-up max-w-2xl">
                     <div className="glass p-8 rounded-xl space-y-6">
