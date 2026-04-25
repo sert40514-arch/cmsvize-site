@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Turnstile } from "react-turnstile";
 import { analyticsService } from './analyticsService';
+import { supabase } from './lib/supabase';
 import {
   ChevronRight,
   Camera,
@@ -142,15 +143,47 @@ const App = () => {
     return SITE_DATABASE;
   });
 
-  // Leads State
-  const [leads, setLeads] = useState(() => {
-    const saved = localStorage.getItem('cms_admin_leads');
-    if (saved) return JSON.parse(saved);
-    return [
-      { id: 1, name: "Ahmet Yılmaz", phone: "5551234567", country: "Almanya", service: "Tır Şoförü", date: "2026-04-24", status: "İşleme Alındı", note: "Evraklar eksiksiz ulaştı.", isNew: false },
-      { id: 2, name: "Ayşe Kaya", phone: "5329876543", country: "Polonya", service: "Fabrika / Üretim", date: "2026-04-25", status: "Yeni Başvuru", note: "CV inceleniyor.", isNew: false }
-    ];
-  });
+  // Leads State - Centralized via Supabase
+  const [leads, setLeads] = useState([]);
+  const [isLoadingLeads, setIsLoadingLeads] = useState(true);
+
+  // Fetch leads from Supabase
+  const fetchLeads = async () => {
+    setIsLoadingLeads(true);
+    try {
+      const { data, error } = await supabase
+        .from('basvurular')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const formattedLeads = (data || []).map(item => ({
+        id: item.id,
+        trackingId: item.tracking_code,
+        name: item.ad_soyad,
+        phone: item.telefon,
+        country: item.hedef_ulke,
+        service: item.calisma_alani,
+        date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
+        time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
+        status: item.status,
+        note: item.notlar,
+        source: item.source || "Site",
+        isNew: false
+      }));
+      
+      setLeads(formattedLeads);
+    } catch (err) {
+      console.error("Error fetching leads from Supabase:", err);
+    } finally {
+      setIsLoadingLeads(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
 
   // Settings State
   const [siteSettings, setSiteSettings] = useState(() => {
@@ -190,7 +223,6 @@ const App = () => {
 
   // Sync to localStorage
   useEffect(() => { localStorage.setItem('cms_admin_stats', JSON.stringify(siteContent)); }, [siteContent]);
-  useEffect(() => { localStorage.setItem('cms_admin_leads', JSON.stringify(leads)); }, [leads]);
   useEffect(() => { localStorage.setItem('cms_admin_settings', JSON.stringify(siteSettings)); }, [siteSettings]);
 
   // Data Integrity Guard
@@ -408,8 +440,9 @@ const App = () => {
   const [leadStatusFilter, setLeadStatusFilter] = useState('All');
   const [selectedLead, setSelectedLead] = useState(null);
 
-  const filteredLeads = leads.filter(l => {
-    const matchesSearch = l.name?.toLowerCase().includes(leadSearch.toLowerCase()) || l.phone?.includes(leadSearch);
+  const filteredLeads = (leads || []).filter(l => {
+    const searchLow = (leadSearch || '').toLowerCase();
+    const matchesSearch = l.name?.toLowerCase().includes(searchLow) || l.phone?.includes(leadSearch);
     const matchesStatus = leadStatusFilter === 'All' || l.status === leadStatusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -478,69 +511,68 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     }
 
     setIsSubmitting(true);
-    console.log("FORM SUBMIT TRIGGERED - Process Started");
-    console.log("Turnstile Token Status:", !!turnstileToken);
+    console.log("FORM SUBMIT TRIGGERED - Supabase Mode");
 
     try {
-      console.log("Verifying Turnstile Token...");
+      // 1. Verify Turnstile
       const verifyRes = await fetch('/api/verify-turnstile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: turnstileToken })
       });
       
-      console.log("Verify API Response Status:", verifyRes.status);
       const verifyData = await verifyRes.json();
-      console.log("Verify API Data Success:", verifyData.success);
-
       if (!verifyData.success) {
         setIsSubmitting(false);
-        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen sayfayı yenileyip tekrar deneyin.");
-        console.warn("Turnstile Verification Failed", verifyData);
+        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
         return;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 800));
-
+      // 2. Prepare Data
       const trackingId = `CMS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
       setSubmittedTrackingId(trackingId);
 
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-      const dateStr = now.toISOString().split('T')[0];
-
-      const newLead = {
-        id: Date.now(),
-        trackingId: trackingId,
-        name: formData.name,
-        phone: formData.phone,
-        country: formData.country,
-        service: formData.workField,
-        date: dateStr,
-        time: timeStr,
-        source: "Site Formu (Mobil/Desktop)",
+      const supabasePayload = {
+        tracking_code: trackingId,
+        ad_soyad: formData.name,
+        telefon: formData.phone,
+        hedef_ulke: formData.country,
+        calisma_alani: formData.workField,
+        notlar: formData.message || "Hızlı başvuru formu",
         status: "Yeni Başvuru",
-        note: formData.message || "Hızlı başvuru formu",
-        isNew: true
+        source: "Merkezi Veritabanı"
       };
-      
-      console.log("Saving new lead:", trackingId);
-      setLeads([newLead, ...leads]);
+
+      console.log("Supabase insert started", supabasePayload);
+
+      // 3. Insert into Supabase
+      const { data, error } = await supabase
+        .from('basvurular')
+        .insert([supabasePayload])
+        .select();
+
+      console.log("Supabase insert result", data, error);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // 4. Update local state and finish
+      await fetchLeads(); // Refresh leads
       
       const subHistory = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
       subHistory.push(Date.now());
       localStorage.setItem('cms_sub_history', JSON.stringify(subHistory.slice(-10)));
 
       playNotificationSound();
-      showToast('Başvurunuz Alındı!');
+      showToast('Başvurunuz başarıyla alındı, sizinle iletişime geçeceğiz!');
 
       setIsSubmitting(false);
       setFormSuccess(true);
-      console.log("SUBMISSION SUCCESSFUL");
     } catch (error) {
-      console.error("CRITICAL SUBMISSION ERROR:", error);
+      console.error("Supabase Submission Error:", error);
       setIsSubmitting(false);
-      showToast("Sistem hatası oluştu. Lütfen WhatsApp üzerinden ulaşın veya tekrar deneyin.");
+      showToast("Başvuru gönderilemedi, lütfen tekrar deneyin.");
     }
   };
 
@@ -1698,7 +1730,19 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                             <th className="p-4 text-right">İşlem</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="relative">
+                          {isLoadingLeads && (
+                            <tr>
+                              <td colSpan="6" className="p-2 text-center">
+                                <div className="absolute inset-0 bg-[#0B0F1A]/50 backdrop-blur-[1px] flex items-center justify-center z-10 py-10">
+                                  <div className="flex items-center space-x-2 text-[#facc15] font-black text-xs uppercase tracking-widest italic animate-pulse">
+                                    <Clock size={14} />
+                                    <span>Veritabanı Senkronize Ediliyor...</span>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
                           {filteredLeads.length > 0 ? filteredLeads.map((lead) => (
                             <tr key={lead.id} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${lead.isNew ? 'bg-[#facc15]/5' : ''}`}>
                               <td className="p-4">
@@ -1724,10 +1768,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               <td className="p-4">
                                 <select 
                                   value={lead.status}
-                                  onChange={(e) => { 
-                                    const newLeads = leads.map(l => l.id === lead.id ? {...l, status: e.target.value, isNew: false} : l);
-                                    setLeads(newLeads); 
-                                    showToast('Durum güncellendi'); 
+                                  onChange={async (e) => { 
+                                    const newStatus = e.target.value;
+                                    try {
+                                      const { error } = await supabase
+                                        .from('basvurular')
+                                        .update({ status: newStatus })
+                                        .eq('id', lead.id);
+                                      
+                                      if (error) throw error;
+                                      
+                                      const newLeads = leads.map(l => l.id === lead.id ? {...l, status: newStatus, isNew: false} : l);
+                                      setLeads(newLeads); 
+                                      showToast('Durum güncellendi'); 
+                                    } catch (err) {
+                                      console.error("Status update error:", err);
+                                      showToast('Durum güncellenemedi');
+                                    }
                                   }}
                                   className="bg-[#0B0F1A] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#facc15]"
                                 >
@@ -1752,7 +1809,24 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                 <a href={`https://wa.me/${lead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Merhaba ${lead.name}, CMSVize'den ulaşıyoruz. Başvurunuzla ilgili...`)}`} target="_blank" rel="noreferrer" className="inline-flex p-2 bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg transition-all" title="WhatsApp'tan Yaz">
                                   <MessageSquare size={16} />
                                 </a>
-                                <button onClick={() => { if(window.confirm('Bu başvuruyu silmek istediğinize emin misiniz?')) { setLeads(leads.filter(l => l.id !== lead.id)); } }} className="inline-flex p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all">
+                                <button onClick={async () => { 
+                                  if(window.confirm('Bu başvuruyu silmek istediğinize emin misiniz?')) { 
+                                    try {
+                                      const { error } = await supabase
+                                        .from('basvurular')
+                                        .delete()
+                                        .eq('id', lead.id);
+                                      
+                                      if (error) throw error;
+                                      
+                                      setLeads(leads.filter(l => l.id !== lead.id));
+                                      showToast('Başvuru silindi');
+                                    } catch (err) {
+                                      console.error("Delete error:", err);
+                                      showToast('Silme işlemi başarısız');
+                                    }
+                                  } 
+                                }} className="inline-flex p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all">
                                   <Trash2 size={16} />
                                 </button>
                               </td>
