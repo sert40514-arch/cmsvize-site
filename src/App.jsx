@@ -130,51 +130,90 @@ const App = () => {
   const [leads, setLeads] = useState([]);
   const [isLoadingLeads, setIsLoadingLeads] = useState(true);
 
-  // Fetch leads from Supabase
-  const fetchLeads = async () => {
+  // Testimonials & Settings State
+  const [testimonials, setTestimonials] = useState([]);
+  const [isTestimonialsLoading, setIsTestimonialsLoading] = useState(true);
+  const [showNewReviewForm, setShowNewReviewForm] = useState(false);
+  const [newReviewData, setNewReviewData] = useState({
+    name: '',
+    country: 'Almanya',
+    visa_type: '',
+    comment: '',
+    likes: 0,
+    comments_count: 0,
+    time_ago: '3 gün önce',
+    is_active: true
+  });
+  
+  const [siteSettings, setSiteSettings] = useState({
+    title: "CMSVize | Avrupa Kapısı Açılıyor",
+    phone: "905459918268",
+    whatsapp: "905459918268"
+  });
+
+  // Fetch data from Supabase
+  const fetchAllData = async () => {
     setIsLoadingLeads(true);
+    setIsTestimonialsLoading(true);
     try {
       const { data, error } = await supabase
         .from('applications')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      const formattedLeads = (data || []).map(item => ({
-        id: item.id,
-        trackingId: item.tracking_code || `CMS-${item.id}`,
-        name: item.full_name || '---',
-        phone: item.phone || '---',
-        country: item.target_country || '---',
-        service: item.service_type || '---',
-        date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
-        time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
-        status: item.status || 'Yeni Başvuru',
-        note: item.note || '---',
-        source: item.source || "Site Formu",
-        lead_quality: item.lead_quality || "Yeni",
-        isNew: false
-      }));
-      
-      setLeads(formattedLeads);
+      if (!error && data) {
+        const formattedLeads = data.map(item => ({
+          id: item.id,
+          trackingId: item.tracking_code || `CMS-${item.id}`,
+          name: item.full_name || '---',
+          phone: item.phone || '---',
+          country: item.target_country || '---',
+          service: item.service_type || '---',
+          date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
+          time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
+          status: item.status || 'Yeni Başvuru',
+          note: item.note || '---',
+          source: item.source || "Site Formu",
+          lead_quality: item.lead_quality || "Yeni",
+          isNew: false
+        }));
+        setLeads(formattedLeads);
+      }
+
+      const { data: testData, error: testError } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('id', { ascending: false });
+        
+      if (!testError && testData) {
+        setTestimonials(testData);
+      }
+
+      const { data: settingsData, error: settingsError } = await supabase
+        .from('site_settings')
+        .select('*')
+        .limit(1)
+        .maybeSingle();
+        
+      if (!settingsError && settingsData) {
+        setSiteSettings({
+          title: settingsData.title || "CMSVize",
+          phone: settingsData.phone || "",
+          whatsapp: settingsData.whatsapp || ""
+        });
+        if (settingsData.title) document.title = settingsData.title;
+      }
     } catch (err) {
-      console.error("Error fetching leads from Supabase:", err);
+      console.error("Error fetching data from Supabase:", err);
     } finally {
       setIsLoadingLeads(false);
+      setIsTestimonialsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLeads();
+    fetchAllData();
   }, []);
-
-  // Settings State
-  const [siteSettings, setSiteSettings] = useState({
-    whatsapp: "905459918268",
-    instagram: "cmsprime",
-    desc: "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."
-  });
 
   const [adminTab, setAdminTab] = useState('dashboard');
   const [toastMessage, setToastMessage] = useState('');
@@ -530,7 +569,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       }
 
       // 4. Update local state and finish
-      await fetchLeads(); // Refresh leads
+      await fetchAllData(); // Refresh leads
       
       if (!window.cms_sub_history) window.cms_sub_history = [];
       window.cms_sub_history.push(Date.now());
@@ -947,10 +986,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(siteContent?.reviews || []).map((ref, idx) => (
+                {(testimonials.filter(t => t.is_active) || []).map((ref, idx) => (
                   <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform">
-                      {ref.flag}
+                      {ref.country === 'Almanya' ? '🇩🇪' : ref.country === 'Polonya' ? '🇵🇱' : ref.country === 'Litvanya' ? '🇱🇹' : ref.country === 'Hollanda' ? '🇳🇱' : ref.country === 'Belçika' ? '🇧🇪' : '🌍'}
                     </div>
                     <div className="flex justify-between items-start">
                       <div className="flex space-x-3">
@@ -960,18 +999,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                             <h4 className="font-bold text-sm text-white">{ref.name}</h4>
                             <CheckCircle2 size={16} className="text-[#0a66c2]" />
                           </div>
-                          <p className="text-[11px] text-[#facc15] font-bold leading-tight mt-0.5">{ref.visa}</p>
-                          <p className="text-[10px] text-gray-500 mt-0.5">{ref.time} • 🌐</p>
+                          <p className="text-[11px] text-[#facc15] font-bold leading-tight mt-0.5">{ref.visa_type}</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">{ref.time_ago} • 🌐</p>
                         </div>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-200 leading-relaxed font-normal relative z-10">{ref.text}</div>
+                    <div className="text-sm text-gray-200 leading-relaxed font-normal relative z-10">{ref.comment}</div>
                     <div className="flex items-center space-x-1 pt-2 relative z-10">
                       <div className="flex -space-x-1">
                         <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                         <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                       </div>
-                      <span className="text-[11px] text-gray-400 font-medium ml-1">{ref.likes || 0} • <MessageSquare size={10} className="inline ml-1" /> {ref.comments || 0}</span>
+                      <span className="text-[11px] text-gray-400 font-medium ml-1">{ref.likes || 0} • <MessageSquare size={10} className="inline ml-1" /> {ref.comments_count || 0}</span>
                     </div>
                   </div>
                 ))}
@@ -1507,9 +1546,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
                   <div className="flex flex-col items-end">
                     <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
-                    <div className="bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded border border-[#facc15]/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
-                      <span className="w-1.5 h-1.5 bg-[#facc15] rounded-full"></span>
-                      <span>Analytics Bekleniyor</span>
+                    <div className="bg-green-500/10 text-green-500 px-2 py-0.5 rounded border border-green-500/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                      <span>Analytics Aktif</span>
                     </div>
                   </div>
                 </div>
@@ -1546,14 +1585,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                     {/* Analytics Placeholder Section */}
                     <div className="glass p-8 rounded-2xl border border-white/5 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#0a66c2]/5 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
                       <div className="relative z-10 flex flex-col items-center justify-center py-12 text-center space-y-4">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center animate-pulse">
-                          <Activity size={32} className="text-gray-600" />
+                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center">
+                          <CheckCircle2 size={32} className="text-green-500" />
                         </div>
-                        <h3 className="text-xl font-black italic uppercase tracking-tighter">Analytics Bağlantısı Bekleniyor</h3>
-                        <p className="text-gray-500 text-sm max-w-md font-medium">Gerçek ziyaretçi ve davranış verileri için GA4 veya Vercel Analytics bağlantısı yapılması gerekmektedir. Şu an demo veri gösterilmemektedir.</p>
-                        <button className="text-[10px] font-black uppercase tracking-widest border border-white/10 px-4 py-2 rounded-lg text-gray-500 hover:bg-white/5 transition-all">Sistemi Bağla</button>
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter">Vercel Analytics Aktif</h3>
+                        <p className="text-gray-500 text-sm max-w-md font-medium">Ziyaretçi ve davranış verileri Vercel Analytics üzerinden takip edilmektedir.</p>
                       </div>
                     </div>
 
@@ -1681,12 +1719,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                           className="flex-1 md:w-48 bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-xs font-bold outline-none focus:border-[#facc15]"
                         >
                           <option value="All">Tüm Durumlar</option>
-                          <option value="Yeni Başvuru">Yeni Başvuru</option>
-                          <option value="Arandı">Arandı</option>
-                          <option value="Evrak Bekleniyor">Evrak Bekleniyor</option>
-                          <option value="İşleme Alındı">İşleme Alındı</option>
+                          <option value="İşlemde">İşlemde</option>
                           <option value="Tamamlandı">Tamamlandı</option>
-                          <option value="İptal">İptal</option>
+                          <option value="Reddedildi">Reddedildi</option>
                         </select>
                       </div>
                     </div>
@@ -1761,12 +1796,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                   }}
                                   className="bg-[#0B0F1A] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#facc15]"
                                 >
-                                  <option value="Yeni Başvuru">Yeni Başvuru</option>
-                                  <option value="Arandı">Arandı</option>
-                                  <option value="Evrak Bekleniyor">Evrak Bekleniyor</option>
-                                  <option value="İşleme Alındı">İşleme Alındı</option>
+                                  <option value="İşlemde">İşlemde</option>
                                   <option value="Tamamlandı">Tamamlandı</option>
-                                  <option value="İptal">İptal</option>
+                                  <option value="Reddedildi">Reddedildi</option>
                                 </select>
                               </td>
                               <td className="p-4 text-[11px] text-gray-400 font-medium">
@@ -1824,58 +1856,148 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <div className="space-y-6 animate-fade-up">
                     <div className="flex justify-between items-center mb-4">
                       <p className="text-gray-500 font-medium text-sm">Site üzerindeki müşteri geri bildirimlerini buradan yönetin.</p>
-                      <button onClick={() => {
-                        const newReview = { id: Date.now(), name: "YENİ MÜŞTERİ", visa: "Vize Türü", flag: "🌍", time: "Yeni", text: "Yorum içeriği...", likes: 0 };
-                        setSiteContent({...siteContent, reviews: [newReview, ...(siteContent.reviews || [])]});
-                      }} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
-                        <Plus size={16} /> <span>Yeni Yorum Ekle</span>
+                      <button onClick={() => setShowNewReviewForm(!showNewReviewForm)} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                        <Plus size={16} /> <span>{showNewReviewForm ? 'Formu Kapat' : 'Yeni Yorum Ekle'}</span>
                       </button>
                     </div>
-                    <div className="space-y-6">
-                      {(siteContent?.reviews || []).map((review, idx) => (
-                        <div key={review.id} className="glass p-6 rounded-xl space-y-6 border border-white/5">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">MÜŞTERİ İSMİ</label>
-                              <input value={review.name} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].name = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">VİZE / ÜLKE (BAYRAK DAHİL)</label>
-                              <div className="flex space-x-2">
-                                <input value={review.flag} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].flag = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-12 bg-black/50 border border-white/10 px-2 py-2 rounded-lg text-center font-bold outline-none focus:border-[#facc15]" placeholder="🇩🇪" />
-                                <input value={review.visa} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].visa = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="flex-1 bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]" />
-                              </div>
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">BEĞENİ SAYISI / ZAMAN</label>
-                              <div className="flex space-x-2">
-                                <input type="number" value={review.likes} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].likes = parseInt(e.target.value) || 0; setSiteContent({...siteContent, reviews: newR}); }} className="w-20 bg-black/50 border border-white/10 px-2 py-2 rounded-lg text-center font-bold outline-none focus:border-[#facc15]" />
-                                <input value={review.time} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].time = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="flex-1 bg-black/50 border border-white/10 px-4 py-2 rounded-lg text-sm outline-none focus:border-[#facc15]" />
-                              </div>
-                            </div>
+
+                    {showNewReviewForm && (
+                      <div className="glass p-6 rounded-xl space-y-6 border border-[#facc15]/30 mb-8">
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#facc15]">Yeni Yorum Ekle</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Ad Soyad</label>
+                            <input value={newReviewData.name} onChange={(e) => setNewReviewData({...newReviewData, name: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: Ahmet Yılmaz" />
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">MÜŞTERİ YORUMU</label>
-                            <textarea value={review.text} onChange={(e) => { const newR = [...siteContent.reviews]; newR[idx].text = e.target.value; setSiteContent({...siteContent, reviews: newR}); }} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[80px]" />
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Ülke</label>
+                            <select value={newReviewData.country} onChange={(e) => setNewReviewData({...newReviewData, country: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]">
+                              <option className="bg-[#0B0F1A]" value="Almanya">Almanya</option>
+                              <option className="bg-[#0B0F1A]" value="Polonya">Polonya</option>
+                              <option className="bg-[#0B0F1A]" value="Litvanya">Litvanya</option>
+                              <option className="bg-[#0B0F1A]" value="Hollanda">Hollanda</option>
+                              <option className="bg-[#0B0F1A]" value="Belçika">Belçika</option>
+                              <option className="bg-[#0B0F1A]" value="diğer">Diğer</option>
+                            </select>
                           </div>
-                          <div className="flex justify-end">
-                            <button onClick={() => { if(window.confirm('Bu yorumu silmek istediğinize emin misiniz?')) { const newR = siteContent.reviews.filter(r => r.id !== review.id); setSiteContent({...siteContent, reviews: newR}); } }} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
-                              <Trash2 size={14} /> <span>Yorumu Kaldır</span>
-                            </button>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Vize Tipi</label>
+                            <input value={newReviewData.visa_type} onChange={(e) => setNewReviewData({...newReviewData, visa_type: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: D Tipi Ulusal Vize" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kaç Gün/Hafta Önce</label>
+                            <input value={newReviewData.time_ago} onChange={(e) => setNewReviewData({...newReviewData, time_ago: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: 3 gün önce" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Beğeni Sayısı</label>
+                            <input type="number" value={newReviewData.likes} onChange={(e) => setNewReviewData({...newReviewData, likes: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Yorum Sayısı</label>
+                            <input type="number" value={newReviewData.comments_count} onChange={(e) => setNewReviewData({...newReviewData, comments_count: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
                           </div>
                         </div>
-                      ))}
-                    </div>
-                    <div className="flex justify-end pt-4 border-t border-white/5">
-                      <button onClick={() => showToast('Yorumlar başarıyla kaydedildi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
-                        <Save size={18} /> <span>YORUMLARI YAYINLA</span>
-                      </button>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Yorum Metni</label>
+                          <textarea value={newReviewData.comment} onChange={(e) => setNewReviewData({...newReviewData, comment: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[80px]" placeholder="Yorum içeriği..." />
+                        </div>
+                        <div className="flex justify-end pt-4 border-t border-white/5">
+                          <button onClick={async () => {
+                            try {
+                              const { data, error } = await supabase.from('testimonials').insert([newReviewData]);
+                              if (error) throw error;
+                              showToast('Yorum başarıyla kaydedildi!');
+                              setShowNewReviewForm(false);
+                              setNewReviewData({ name: '', country: 'Almanya', visa_type: '', comment: '', likes: 0, comments_count: 0, time_ago: '3 gün önce', is_active: true });
+                              fetchAllData();
+                            } catch (err) {
+                              console.error(err);
+                              showToast('Yorum kaydedilirken bir hata oluştu.');
+                            }
+                          }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                            <Save size={18} /> <span>YORUMLARI YAYINLA</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-6">
+                      {isTestimonialsLoading ? (
+                        <div className="text-center text-gray-500 animate-pulse py-10">Yorumlar Yükleniyor...</div>
+                      ) : (
+                        testimonials.map((review) => (
+                          <div key={review.id} className="glass p-6 rounded-xl space-y-6 border border-white/5">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="text-lg font-black text-white">{review.name}</h4>
+                                <p className="text-xs text-[#facc15] font-bold">{review.visa_type} - {review.country}</p>
+                              </div>
+                              <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${review.is_active ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
+                                {review.is_active ? 'Yayında' : 'Gizli'}
+                              </span>
+                            </div>
+                            <p className="text-gray-300 text-sm leading-relaxed">{review.comment}</p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500 font-bold">
+                              <span>Beğeni: {review.likes}</span>
+                              <span>Yorum: {review.comments_count}</span>
+                              <span>Zaman: {review.time_ago}</span>
+                            </div>
+                            <div className="flex justify-end space-x-3 pt-4 border-t border-white/5">
+                              <button onClick={async () => {
+                                const newStatus = !review.is_active;
+                                try {
+                                  const { error } = await supabase.from('testimonials').update({ is_active: newStatus }).eq('id', review.id);
+                                  if (error) throw error;
+                                  showToast(newStatus ? 'Yorum yayına alındı!' : 'Yorum gizlendi.');
+                                  fetchAllData();
+                                } catch (err) {
+                                  console.error(err);
+                                  showToast('Durum güncellenemedi.');
+                                }
+                              }} className="bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
+                                <Edit size={14} /> <span>{review.is_active ? 'Gizle' : 'Yayınla'}</span>
+                              </button>
+                              <button onClick={async () => {
+                                if(window.confirm('Bu yorumu silmek istediğinize emin misiniz?')) {
+                                  try {
+                                    const { error } = await supabase.from('testimonials').delete().eq('id', review.id);
+                                    if (error) throw error;
+                                    showToast('Yorum silindi!');
+                                    fetchAllData();
+                                  } catch (err) {
+                                    console.error(err);
+                                    showToast('Yorum silinirken hata oluştu.');
+                                  }
+                                }
+                              }} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg transition-all text-xs font-bold flex items-center space-x-2">
+                                <Trash2 size={14} /> <span>Yorumu Kaldır</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
                 {adminTab === 'settings' && (
                   <div className="space-y-8 animate-fade-up max-w-2xl">
                     <div className="glass p-8 rounded-xl space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Site Başlığı</label>
+                        <input 
+                          value={siteSettings?.title || ''} 
+                          onChange={(e) => setSiteSettings({...siteSettings, title: e.target.value})}
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İletişim Telefonu</label>
+                        <input 
+                          value={siteSettings?.phone || ''} 
+                          onChange={(e) => setSiteSettings({...siteSettings, phone: e.target.value})}
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                        />
+                      </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">WhatsApp Numarası (Uluslararası Format)</label>
                         <input 
@@ -1884,25 +2006,24 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                           className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Instagram Kullanıcı Adı</label>
-                        <input 
-                          value={siteSettings?.instagram || ''} 
-                          onChange={(e) => setSiteSettings({...siteSettings, instagram: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Site Kısa Açıklaması (Footer SEO)</label>
-                        <textarea 
-                          value={siteSettings?.desc || ''} 
-                          onChange={(e) => setSiteSettings({...siteSettings, desc: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[100px]"
-                        />
-                      </div>
                     </div>
                     <div className="flex justify-end pt-4 border-t border-white/5">
-                      <button onClick={() => showToast('Site ayarları kaydedildi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                      <button onClick={async () => {
+                        try {
+                          const { error } = await supabase.from('site_settings').update({
+                            title: siteSettings.title,
+                            phone: siteSettings.phone,
+                            whatsapp: siteSettings.whatsapp
+                          }).eq('id', 1); // Varsayılan id 1
+                          
+                          if (error) throw error;
+                          showToast('Site ayarları kaydedildi!');
+                          fetchAllData(); // Refresh UI including document title
+                        } catch (err) {
+                          console.error(err);
+                          showToast('Ayarlar kaydedilirken hata oluştu.');
+                        }
+                      }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>AYARLARI KAYDET</span>
                       </button>
                     </div>
