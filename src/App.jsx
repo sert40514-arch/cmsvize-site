@@ -501,6 +501,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       const trackingId = `CMS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
       setSubmittedTrackingId(trackingId);
 
+      console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
+      console.log("SUPABASE KEY EXISTS:", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+
+      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        setIsSubmitting(false);
+        showToast("Veritabanı bağlantısı eksik. Lütfen sistem yöneticisiyle iletişime geçin.");
+        return;
+      }
+
       const supabasePayload = {
         tracking_code: trackingId,
         full_name: formData.name,
@@ -513,23 +522,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         source: "Site Formu"
       };
 
-      console.log("Supabase URL", import.meta.env.VITE_SUPABASE_URL);
-      console.log("Supabase key exists", !!import.meta.env.VITE_SUPABASE_ANON_KEY);
       console.log("Supabase insert started");
 
-      // 3. Insert into Supabase
       const { data, error } = await supabase
-        .from('applications')
+        .from("applications")
         .insert([supabasePayload])
         .select();
 
+      console.log("Supabase insert response:", { data, error });
+
       if (error) {
-        console.error('Supabase Hatası:', error);
-        const errorMsg = error.message === 'Failed to fetch' 
-          ? 'Veritabanı bağlantısı kurulamadı. Lütfen tekrar deneyin.'
-          : 'Veritabanı Hatası: ' + error.message;
-        alert(errorMsg);
-        throw new Error(error.message);
+        console.error("Supabase error:", error);
+        throw error;
       }
 
       console.log("Supabase insert successful:", data);
@@ -549,7 +553,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     } catch (error) {
       console.error("Supabase Submission Error:", error);
       setIsSubmitting(false);
-      showToast("Başvuru gönderilemedi, lütfen tekrar deneyin.");
+      
+      if (error.message === 'Failed to fetch') {
+        showToast("Veritabanı bağlantısı kurulamadı. Lütfen tekrar deneyin.");
+      } else {
+        showToast("Başvuru gönderilemedi, lütfen tekrar deneyin.");
+      }
     }
   };
 
