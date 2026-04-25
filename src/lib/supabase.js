@@ -1,10 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Hardcoded for debugging to bypass environment variable issues
+const supabaseUrl = 'https://rjxlauvvtllvbmtoyghl.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqeGxhdXZ2dGxseWJtdG95Z2hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjE1MzAsImV4cCI6MjA5MjYzNzUzMH0.WbHRw4GCkl1DD5OI-FbGc3lRtEW41s4rLdZQznxxQ4w';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("Supabase credentials missing. Database features will not work.");
-}
-
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder');
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

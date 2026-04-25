@@ -160,15 +160,15 @@ const App = () => {
       
       const formattedLeads = (data || []).map(item => ({
         id: item.id,
-        trackingId: item.tracking_code,
-        name: item.ad_soyad,
-        phone: item.telefon,
-        country: item.hedef_ulke,
-        service: item.calisma_alani,
+        trackingId: item.tracking_code || `CMS-${item.id}`,
+        name: item.ad_soyad || '---',
+        phone: item.telefon || '---',
+        country: item.hedef_ulke || '---',
+        service: item.calisma_alani || '---',
         date: item.created_at ? new Date(item.created_at).toISOString().split('T')[0] : '---',
         time: item.created_at ? new Date(item.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '---',
-        status: item.status,
-        note: item.ek_not,
+        status: item.status || 'Yeni Başvuru',
+        note: item.ek_not || '---',
         source: item.source || "Site",
         isNew: false
       }));
@@ -533,14 +533,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       setSubmittedTrackingId(trackingId);
 
       const supabasePayload = {
-        tracking_code: trackingId,
         ad_soyad: formData.name,
         telefon: formData.phone,
         hedef_ulke: formData.country,
         calisma_alani: formData.workField,
-        ek_not: formData.message || "Hızlı başvuru formu",
-        status: "Yeni Başvuru",
-        source: "Merkezi Veritabanı"
+        ek_not: formData.message || "Hızlı başvuru"
       };
 
       console.log("Supabase insert started", supabasePayload);
@@ -551,11 +548,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .insert([supabasePayload])
         .select();
 
-      console.log("Supabase insert result", data, error);
-
       if (error) {
+        console.error('Supabase Hatası:', error);
+        alert('Veritabanı Hatası: ' + error.message);
         throw new Error(error.message);
       }
+
+      console.log("Supabase insert successful:", data);
 
       // 4. Update local state and finish
       await fetchLeads(); // Refresh leads
