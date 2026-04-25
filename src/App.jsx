@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Turnstile } from "react-turnstile";
+import { analyticsService } from './analyticsService';
 import {
   ChevronRight,
   Camera,
@@ -376,6 +377,44 @@ const App = () => {
 
   const isPhoneValid = validatePhone(formData.phone);
   const isNameValid = validateName(formData.name);
+
+  // --- Admin Logic Helpers ---
+  const getDashboardStats = () => {
+    const total = leads.length;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const today = leads.filter(l => l.date === todayStr).length;
+    const pending = leads.filter(l => ["Yeni Başvuru", "Arandı", "Evrak Bekleniyor"].includes(l.status)).length;
+    const completed = leads.filter(l => l.status === "Tamamlandı").length;
+    const cancelled = leads.filter(l => l.status === "İptal").length;
+
+    const countries = leads.reduce((acc, lead) => { acc[lead.country] = (acc[lead.country] || 0) + 1; return acc; }, {});
+    const topCountry = Object.entries(countries).sort((a,b) => b[1] - a[1])[0]?.[0] || "---";
+
+    const services = leads.reduce((acc, lead) => { acc[lead.service] = (acc[lead.service] || 0) + 1; return acc; }, {});
+    const topService = Object.entries(services).sort((a,b) => b[1] - a[1])[0]?.[0] || "---";
+
+    return { total, today, pending, completed, cancelled, topCountry, topService };
+  };
+
+  const getLeadQuality = (lead) => {
+    if (!lead.name || !lead.phone) return { label: "Şüpheli", color: "text-red-500 bg-red-500/10" };
+    const nameParts = lead.name.trim().split(/\s+/);
+    if (nameParts.length < 2 || nameParts.some(p => p.length < 2)) return { label: "Şüpheli", color: "text-red-500 bg-red-500/10" };
+    if (isSpammy(lead.name) || (lead.note && isSpammy(lead.note))) return { label: "Spam!", color: "text-red-600 bg-red-600/20 animate-pulse" };
+    if (lead.note && lead.note.length > 25) return { label: "Sıcak Lead", color: "text-green-400 bg-green-400/10" };
+    return { label: "Normal", color: "text-blue-400 bg-blue-400/10" };
+  };
+
+  // Lead Filtering States
+  const [leadSearch, setLeadSearch] = useState('');
+  const [leadStatusFilter, setLeadStatusFilter] = useState('All');
+  const [selectedLead, setSelectedLead] = useState(null);
+
+  const filteredLeads = leads.filter(l => {
+    const matchesSearch = l.name?.toLowerCase().includes(leadSearch.toLowerCase()) || l.phone?.includes(leadSearch);
+    const matchesStatus = leadStatusFilter === 'All' || l.status === leadStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const getWhatsAppURL = (customData = null) => {
     const data = customData || formData;
@@ -1380,71 +1419,74 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       {adminTab === 'settings' && 'Site Ayarları'}
                       <span className="text-[#facc15] ml-2">Paneli</span>
                     </h1>
-                    <p className="text-gray-500 mt-1 font-medium">Sistemdeki tüm verileri güvenle yönetin.</p>
                   </div>
-                  <div className="text-right hidden md:block">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
-                    <div className="flex flex-col items-end">
-                      <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
-                      <div className="bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded border border-[#facc15]/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
-                        <span className="w-1.5 h-1.5 bg-[#facc15] rounded-full animate-ping"></span>
-                        <span>{activeViewers} Kişi Sitede</span>
-                      </div>
+                </div>
+
+                <div className="text-right hidden md:block">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
+                  <div className="flex flex-col items-end">
+                    <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
+                    <div className="bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded border border-[#facc15]/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
+                      <span className="w-1.5 h-1.5 bg-[#facc15] rounded-full"></span>
+                      <span>Analytics Bekleniyor</span>
                     </div>
                   </div>
                 </div>
 
                 {adminTab === 'dashboard' && (
                   <div className="space-y-8 animate-fade-up">
+                    {/* Real-time Data Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       <div className="glass p-6 rounded-xl border-t-4 border-[#facc15] relative overflow-hidden group">
-                        <Activity className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Günlük Ziyaretçi (Vercel Analytics)</p>
-                        <p className="text-4xl font-black italic mt-2 text-white">{Math.floor(totalViews / 8)}</p>
-                        <div className="mt-4 flex items-center text-green-500 text-xs font-bold">
-                          <ChevronRight size={14} className="-rotate-90" />
-                          <span>+12.5% Geçen Haftadan</span>
+                        <Users className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Toplam Başvuru</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{getDashboardStats().total}</p>
+                        <div className="mt-4 flex items-center text-[#facc15] text-xs font-bold">
+                          <span>Bugün: {getDashboardStats().today} Yeni</span>
                         </div>
                       </div>
                       <div className="glass p-6 rounded-xl border-t-4 border-blue-500 relative overflow-hidden group">
-                        <Star className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Toplam Görüntülenme</p>
-                        <p className="text-4xl font-black italic mt-2 text-white">{totalViews.toLocaleString()}</p>
+                        <Activity className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">İşlemdeki Başvurular</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{getDashboardStats().pending}</p>
                         <div className="mt-4 flex items-center text-blue-400 text-xs font-bold">
-                          <span>Sürekli Artıyor</span>
+                          <span>Yanıt Bekleyenler Dahil</span>
                         </div>
                       </div>
-                      <div className="glass p-6 rounded-xl border-t-4 border-purple-500 relative overflow-hidden group">
-                        <Briefcase className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Bekleyen Başvuru</p>
-                        <div className="flex items-center space-x-3 mt-2">
-                          <p className="text-4xl font-black italic text-white">{leads.filter(l => l.isNew).length}</p>
-                          {leads.filter(l => l.isNew).length > 0 && (
-                            <span className="bg-[#facc15] text-[#0B0F1A] text-[10px] font-black px-2 py-1 rounded animate-bounce">YENİ BAŞVURU!</span>
-                          )}
-                        </div>
-                        <div className="mt-4 flex items-center text-purple-400 text-xs font-bold">
-                          {leads.filter(l => l.isNew).length > 0 ? "Yanıt Bekleyenler Var" : "Tümü İncelendi"}
+                      <div className="glass p-6 rounded-xl border-t-4 border-green-500 relative overflow-hidden group">
+                        <CheckCircle2 className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Tamamlanan</p>
+                        <p className="text-4xl font-black italic mt-2 text-white">{getDashboardStats().completed}</p>
+                        <div className="mt-4 flex items-center text-green-400 text-xs font-bold">
+                          <span>Başarıyla Sonuçlananlar</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <div className="glass p-6 rounded-xl">
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Başarı Oranı</p>
-                        <p className="text-3xl font-black italic mt-2 text-white">%{siteContent?.stats?.success || 0}</p>
+                    {/* Analytics Placeholder Section */}
+                    <div className="glass p-8 rounded-2xl border border-white/5 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#0a66c2]/5 to-transparent"></div>
+                      <div className="relative z-10 flex flex-col items-center justify-center py-12 text-center space-y-4">
+                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center animate-pulse">
+                          <Activity size={32} className="text-gray-600" />
+                        </div>
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter">Analytics Bağlantısı Bekleniyor</h3>
+                        <p className="text-gray-500 text-sm max-w-md font-medium">Gerçek ziyaretçi ve davranış verileri için GA4 veya Vercel Analytics bağlantısı yapılması gerekmektedir. Şu an demo veri gösterilmemektedir.</p>
+                        <button className="text-[10px] font-black uppercase tracking-widest border border-white/10 px-4 py-2 rounded-lg text-gray-500 hover:bg-white/5 transition-all">Sistemi Bağla</button>
                       </div>
-                      <div className="glass p-6 rounded-xl">
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Müşteri Sayısı</p>
-                        <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.clients || 0}+</p>
+                    </div>
+
+                    {/* Quality Insights */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="glass p-6 rounded-xl space-y-4">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Popüler Hedef Ülke</p>
+                        <p className="text-2xl font-black italic text-[#facc15]">{getDashboardStats().topCountry}</p>
+                        <p className="text-[10px] text-gray-400 italic">En çok başvuru alan ülke.</p>
                       </div>
-                      <div className="glass p-6 rounded-xl">
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Hedef Ülke</p>
-                        <p className="text-3xl font-black italic mt-2 text-white">{siteContent?.stats?.countries || 0}</p>
-                      </div>
-                      <div className="glass p-6 rounded-xl">
-                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Aktif Başvuru</p>
-                        <p className="text-3xl font-black italic mt-2 text-white">{leads.length}</p>
+                      <div className="glass p-6 rounded-xl space-y-4">
+                        <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Popüler Hizmet Alanı</p>
+                        <p className="text-2xl font-black italic text-blue-400">{getDashboardStats().topService}</p>
+                        <p className="text-[10px] text-gray-400 italic">En çok talep gören iş alanı.</p>
                       </div>
                     </div>
                   </div>
@@ -1538,20 +1580,50 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                 {adminTab === 'leads' && (
                   <div className="space-y-6 animate-fade-up">
+                    {/* Search & Filter Bar */}
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between glass p-4 rounded-xl border border-white/5">
+                      <div className="relative w-full md:w-96">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                        <input 
+                          type="text" 
+                          placeholder="İsim veya telefon ara..." 
+                          value={leadSearch}
+                          onChange={(e) => setLeadSearch(e.target.value)}
+                          className="w-full bg-black/30 border border-white/10 pl-12 pr-4 py-3 rounded-lg text-sm font-bold outline-none focus:border-[#facc15]" 
+                        />
+                      </div>
+                      <div className="flex items-center space-x-3 w-full md:w-auto">
+                        <Filter size={18} className="text-gray-500" />
+                        <select 
+                          value={leadStatusFilter}
+                          onChange={(e) => setLeadStatusFilter(e.target.value)}
+                          className="flex-1 md:w-48 bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-xs font-bold outline-none focus:border-[#facc15]"
+                        >
+                          <option value="All">Tüm Durumlar</option>
+                          <option value="Yeni Başvuru">Yeni Başvuru</option>
+                          <option value="Arandı">Arandı</option>
+                          <option value="Evrak Bekleniyor">Evrak Bekleniyor</option>
+                          <option value="İşleme Alındı">İşleme Alındı</option>
+                          <option value="Tamamlandı">Tamamlandı</option>
+                          <option value="İptal">İptal</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
                         <thead>
                           <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                            <th className="p-4">Müşteri / Tel</th>
-                            <th className="p-4">Başvuru / Ülke</th>
-                            <th className="p-4">Ek Not</th>
+                            <th className="p-4">Müşteri Bilgisi</th>
+                            <th className="p-4">Hizmet / Ülke</th>
+                            <th className="p-4">Kalite Skor</th>
                             <th className="p-4">Durum</th>
                             <th className="p-4">Tarih</th>
                             <th className="p-4 text-right">İşlem</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {leads.map((lead, idx) => (
+                          {filteredLeads.length > 0 ? filteredLeads.map((lead) => (
                             <tr key={lead.id} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${lead.isNew ? 'bg-[#facc15]/5' : ''}`}>
                               <td className="p-4">
                                 <div className="flex items-center space-x-2">
@@ -1565,17 +1637,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                 <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{lead.country}</p>
                               </td>
                               <td className="p-4">
-                                <div className="max-w-[200px] truncate text-[11px] text-gray-400 italic" title={lead.note}>
-                                  {lead.note || "---"}
-                                </div>
+                                <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-md tracking-tighter ${getLeadQuality(lead).color}`}>
+                                  {getLeadQuality(lead).label}
+                                </span>
                               </td>
                               <td className="p-4">
                                 <select 
                                   value={lead.status}
                                   onChange={(e) => { 
-                                    const newLeads = [...leads]; 
-                                    newLeads[idx].status = e.target.value; 
-                                    newLeads[idx].isNew = false; // Status değişince yeni uyarısını kaldır
+                                    const newLeads = leads.map(l => l.id === lead.id ? {...l, status: e.target.value, isNew: false} : l);
                                     setLeads(newLeads); 
                                     showToast('Durum güncellendi'); 
                                   }}
@@ -1591,11 +1661,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               </td>
                               <td className="p-4 text-xs text-gray-400 font-medium">{lead.date}</td>
                               <td className="p-4 text-right space-x-2">
-                                {lead.isNew && (
-                                  <button onClick={() => { const newLeads = [...leads]; newLeads[idx].isNew = false; setLeads(newLeads); }} className="inline-flex p-2 bg-gray-800 text-gray-400 hover:text-white rounded-lg transition-all" title="Okundu İşaretle">
-                                    <Eye size={16} />
-                                  </button>
-                                )}
+                                <button onClick={() => setSelectedLead(lead)} className="inline-flex p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg transition-all" title="Detaylar">
+                                  <Eye size={16} />
+                                </button>
                                 <a href={`https://wa.me/${lead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Merhaba ${lead.name}, CMSVize'den ulaşıyoruz. Başvurunuzla ilgili...`)}`} target="_blank" rel="noreferrer" className="inline-flex p-2 bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg transition-all" title="WhatsApp'tan Yaz">
                                   <MessageSquare size={16} />
                                 </a>
@@ -1604,7 +1672,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                                 </button>
                               </td>
                             </tr>
-                          ))}
+                          )) : (
+                            <tr>
+                              <td colSpan="6" className="p-20 text-center text-gray-600 font-black uppercase tracking-widest">
+                                <div className="flex flex-col items-center space-y-4">
+                                  <Search size={40} className="opacity-20" />
+                                  <span>Henüz Veri Yok</span>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -1831,6 +1908,54 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </div>
         </a>
+      )}
+
+      {/* LEAD DETAILS MODAL */}
+      {selectedLead && (
+        <div className="fixed inset-0 z-[110] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 animate-fade-in">
+          <div className="bg-[#0B0F1A] border border-white/10 p-10 rounded-2xl w-full max-w-lg relative shadow-2xl animate-scale-up">
+            <X size={24} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white" onClick={() => setSelectedLead(null)} />
+            <div className="space-y-8">
+              <div>
+                <div className="flex items-center space-x-3 mb-2">
+                  <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${getLeadQuality(selectedLead).color}`}>
+                    {getLeadQuality(selectedLead).label}
+                  </span>
+                  <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">ID: #{selectedLead.id}</span>
+                </div>
+                <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">{selectedLead.name}</h3>
+                <p className="text-[#facc15] font-bold text-lg">{selectedLead.service} - {selectedLead.country}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-8 border-t border-white/5 pt-8">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Telefon</p>
+                  <p className="font-bold text-white">{selectedLead.phone}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Tarih</p>
+                  <p className="font-bold text-white">{selectedLead.date}</p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Müşteri Notu</p>
+                <div className="bg-white/5 p-4 rounded-xl text-gray-400 text-sm italic border border-white/5">
+                  {selectedLead.note || "Herhangi bir not eklenmemiş."}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <a href={`tel:${selectedLead.phone}`} className="bg-white/5 border border-white/10 hover:border-[#facc15] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all">
+                  <Phone size={18} /> <span>HEMEN ARA</span>
+                </a>
+                <a href={`https://wa.me/${selectedLead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Merhaba ${selectedLead.name}, CMSVize'den ulaşıyoruz.`)}`} target="_blank" rel="noreferrer" className="bg-[#25D366] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:scale-[1.02] transition-transform">
+                  <MessageSquare size={18} /> <span>WHATSAPP</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* FAKE LIVE POPUP */}
