@@ -771,7 +771,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-              <img src={logoImg} alt="CMSVize Logo" className="h-[40px] w-auto object-contain transition-transform group-hover:scale-105" />
+              <img src={logoImg} alt="CMSVize Logo" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -801,8 +801,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {/* MOBILE MENU */}
       {!currentPage.startsWith('admin') && mobileMenuOpen && (
         <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-          <div className="flex flex-col items-center justify-center h-full space-y-10 p-10">
-            <X size={40} className="absolute top-6 right-6 cursor-pointer" onClick={() => setMobileMenuOpen(false)} />
+          <div className="flex flex-col items-center justify-center h-full space-y-8 p-10 relative">
+            <X size={40} className="absolute top-6 right-6 cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
+            
+            <div className="mb-4">
+              <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto object-contain" />
+            </div>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
             <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
