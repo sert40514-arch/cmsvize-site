@@ -1495,7 +1495,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-gray-400 hover:text-[#facc15] mb-8 transition-colors">
                   <ArrowLeft size={16} /><span>Blog'a Dön</span>
                 </button>
-                {post.cover_image && <img src={post.cover_image} alt={post.title} className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8 border border-white/10 shadow-2xl" />}
+                {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8 border border-white/10 shadow-2xl" />}
                 <div className="flex items-center space-x-3 mb-6">
                   <span className="text-xs font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
                   <span className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
@@ -1512,7 +1512,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="grid md:grid-cols-2 gap-8">
             {blogPosts.filter(b => b.is_published).map(post => (
               <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="glass p-6 rounded-xl hover:border-[#facc15]/50 transition-all cursor-pointer group flex flex-col h-full border border-white/5">
-                {post.cover_image && <img src={post.cover_image} alt={post.title} className="w-full h-48 object-cover rounded-lg mb-4 group-hover:scale-[1.02] transition-transform duration-300 shadow-xl" />}
+                {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-48 object-cover rounded-lg mb-4 group-hover:scale-[1.02] transition-transform duration-300 shadow-xl" />}
                 <div className="flex-1">
                   <span className="text-[10px] font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
                   <h3 className="text-xl font-black italic mt-3 mb-2 group-hover:text-[#facc15] transition-colors text-white">{post.title}</h3>
