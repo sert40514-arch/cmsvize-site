@@ -486,20 +486,25 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     }
 
     setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 10000); // 10s disable
+    console.log("FORM SUBMIT TRIGGERED - Process Started");
+    console.log("Turnstile Token Status:", !!turnstileToken);
 
     try {
+      console.log("Verifying Turnstile Token...");
       const verifyRes = await fetch('/api/verify-turnstile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: turnstileToken })
       });
       
+      console.log("Verify API Response Status:", verifyRes.status);
       const verifyData = await verifyRes.json();
+      console.log("Verify API Data Success:", verifyData.success);
 
       if (!verifyData.success) {
         setIsSubmitting(false);
-        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+        showToast("Güvenlik doğrulaması başarısız oldu. Lütfen sayfayı yenileyip tekrar deneyin.");
+        console.warn("Turnstile Verification Failed", verifyData);
         return;
       }
 
@@ -521,14 +526,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         service: formData.workField,
         date: dateStr,
         time: timeStr,
-        source: "Site Formu",
+        source: "Site Formu (Mobil/Desktop)",
         status: "Yeni Başvuru",
         note: formData.message || "Hızlı başvuru formu",
         isNew: true
       };
+      
+      console.log("Saving new lead:", trackingId);
       setLeads([newLead, ...leads]);
       
-      // Update rate limit history
       const subHistory = JSON.parse(localStorage.getItem('cms_sub_history') || '[]');
       subHistory.push(Date.now());
       localStorage.setItem('cms_sub_history', JSON.stringify(subHistory.slice(-10)));
@@ -538,10 +544,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       setIsSubmitting(false);
       setFormSuccess(true);
+      console.log("SUBMISSION SUCCESSFUL");
     } catch (error) {
-      console.error("Form error:", error);
+      console.error("CRITICAL SUBMISSION ERROR:", error);
       setIsSubmitting(false);
-      showToast("Bir hata oluştu. Lütfen tekrar deneyin.");
+      showToast("Sistem hatası oluştu. Lütfen WhatsApp üzerinden ulaşın veya tekrar deneyin.");
     }
   };
 
@@ -900,7 +907,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* STATS TICKER */}
-          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
+          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl overflow-hidden">
             <div className="flex animate-scroll whitespace-nowrap">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
@@ -1186,10 +1193,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* FORM SECTION */}
-          <section ref={formRef} className="py-32 px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-0 rounded-xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5 relative">
-                <div className="bg-[#131926] p-10 lg:p-20 relative">
+          <section ref={formRef} className="py-20 lg:py-32 px-4 md:px-6 overflow-hidden">
+            <div className="max-w-6xl mx-auto w-full">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5 relative bg-[#0B0F1A]">
+                <div className="bg-[#131926] p-6 md:p-10 lg:p-20 relative w-full">
                   {isSubmitting && <div className="absolute inset-0 bg-[#131926]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center space-y-4">
                     <div className="w-12 h-12 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin"></div>
                     <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">İşleminiz Yapılıyor...</p>
@@ -1282,14 +1289,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
                       <div className="py-2 flex flex-col items-center space-y-4 min-h-[100px]">
                         {typeof Turnstile !== 'undefined' ? (
-                          <Turnstile 
-                            sitekey="0x4AAAAAADCs4Dto3zUFJEGb" 
-                            onVerify={(token) => {
-                              setTurnstileToken(token);
-                              setIsTurnstileVerified(true);
-                            }} 
-                            theme="dark"
-                          />
+                          <div className="w-full flex justify-center scale-[0.85] md:scale-100 origin-center">
+                            <Turnstile 
+                              num-token="1"
+                              sitekey="0x4AAAAAADCs4Dto3zUFJEGb" 
+                              onVerify={(token) => {
+                                console.log("Turnstile Token Received:", token.substring(0, 10) + "...");
+                                setTurnstileToken(token);
+                                setIsTurnstileVerified(true);
+                              }} 
+                              theme="dark"
+                            />
+                          </div>
                         ) : (
                           <div className="text-[10px] text-gray-500 italic uppercase font-black animate-pulse">Bot Doğrulaması Yükleniyor...</div>
                         )}
@@ -1310,7 +1321,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </form>
                   )}
                 </div>
-                <div className="bg-[#facc15] p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group">
+                <div className="bg-[#facc15] p-8 md:p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group w-full min-h-[400px]">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-black/5 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
                   <div className="space-y-10 relative z-10">
                     <h3 className="text-5xl lg:text-7xl font-black italic uppercase leading-[0.85] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
@@ -1977,7 +1988,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       {/* WHATSAPP FLOAT - ENHANCED */}
       {!currentPage.startsWith('admin') && (
-        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-10 right-10 z-50 group flex items-center">
+        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center">
           <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
             Size nasıl yardımcı olabiliriz?
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
