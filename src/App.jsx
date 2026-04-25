@@ -2114,7 +2114,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               setNewBlogData({ title: '', slug: '', summary: '', content: '', category: 'Vize Rehberi', image_url: '', is_published: true });
                               fetchAllData();
                             } catch (err) {
-                              console.error(err);
+                              console.error("BLOG INSERT ERROR:", err);
                               showToast('Blog eklenirken hata oluştu.');
                             }
                           }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
