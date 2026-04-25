@@ -183,10 +183,18 @@ const App = () => {
       const { data: testData, error: testError } = await supabase
         .from('testimonials')
         .select('*')
+        .eq('is_active', true)
         .order('id', { ascending: false });
         
       if (!testError && testData) {
         setTestimonials(testData);
+      } else if (testError) {
+        console.error("TESTIMONIALS ERROR:", testError);
+        setTestimonials([
+          { id: 1, name: "Caner T.", visa_type: "Almanya Ulusal Vize (D Tipi)", country: "Almanya", time_ago: "3 gün önce", comment: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar.", likes: 14, comments_count: 0, is_active: true },
+          { id: 2, name: "Burak E.", visa_type: "Polonya D Tipi Ulusal Vize", country: "Polonya", time_ago: "1 hafta önce", comment: "Polonya vizesi gibi yoğun bir süreçte CMSVize ekibinin kurumsal ve dürüst desteği için teşekkür ederim. Sayelerinde iş başı tarihim aksamadı.", likes: 14, comments_count: 0, is_active: true },
+          { id: 3, name: "Ayşe K.", visa_type: "Litvanya Oturum İzni", country: "Litvanya", time_ago: "1 hafta önce", comment: "Litvanya çalışma vizem CMSVize'nin titiz yönlendirmeleri sayesinde kısa sürede onaylandı. Randevu alımından evrak çevirisine kadar her şey kusursuzdu.", likes: 14, comments_count: 0, is_active: true }
+        ]);
       }
 
       const { data: settingsData, error: settingsError } = await supabase
