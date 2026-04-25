@@ -550,7 +550,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       if (error) {
         console.error('Supabase Hatası:', error);
-        alert('Veritabanı Hatası: ' + error.message);
+        const errorMsg = error.message === 'Failed to fetch' 
+          ? 'Veritabanına bağlanılamadı. Lütfen reklam engelleyicinizi (Ad-Blocker) veya VPN\'i kapatıp tekrar deneyin.'
+          : 'Veritabanı Hatası: ' + error.message;
+        alert(errorMsg);
         throw new Error(error.message);
       }
 
