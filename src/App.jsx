@@ -2088,8 +2088,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kapak Görseli URL</label>
-                            <input value={newBlogData.cover_image} onChange={(e) => setNewBlogData({...newBlogData, cover_image: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="https://..." />
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kapak Görseli</label>
+                            <input type="file" accept="image/*" onChange={async (e) => {
+                              const file = e.target.files[0];
+                              if(!file) return;
+                              showToast('Görsel yükleniyor...');
+                              try {
+                                const { data, error } = await supabase.storage.from('blog-images').upload(`${Date.now()}-${file.name}`, file);
+                                if (error) throw error;
+                                const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(data.path);
+                                setNewBlogData({...newBlogData, cover_image: urlData.publicUrl});
+                                showToast('Görsel başarıyla yüklendi!');
+                              } catch (err) {
+                                console.error('IMAGE UPLOAD ERROR:', err);
+                                showToast('Görsel yüklenirken hata oluştu.');
+                              }
+                            }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-gray-300" />
+                            {newBlogData.cover_image && <div className="mt-2 text-xs text-green-400 font-bold flex items-center space-x-1"><span>✓ Görsel Yüklendi:</span> <a href={newBlogData.cover_image} target="_blank" rel="noreferrer" className="underline truncate block max-w-xs">{newBlogData.cover_image}</a></div>}
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Özet</label>
