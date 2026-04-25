@@ -212,8 +212,9 @@ const App = () => {
   }, [siteContent]);
 
   const handleAdminLogin = (e) => {
-    e.preventDefault();
+    if(e) e.preventDefault();
     if (adminUser === 'cms_master_admin' && adminPass === 'CMS_vize_2026_@Admin_!Secure') {
+      localStorage.setItem('adminAuth', 'true');
       setAdminLoggedIn(true);
       setCurrentPage('admin-dashboard');
     } else {
@@ -225,11 +226,17 @@ const App = () => {
 
   const formRef = useRef(null);
 
-  // Path Detection for Direct Navigation
+  // Path Detection and Auth Check
   useEffect(() => {
+    const auth = localStorage.getItem('adminAuth');
+    const isLoggedIn = auth === 'true';
+    if (isLoggedIn) {
+      setAdminLoggedIn(true);
+    }
+
     const path = window.location.pathname;
     if (path === '/admin-panel-cms') {
-      if (adminLoggedIn) {
+      if (isLoggedIn) {
         setCurrentPage('admin-dashboard');
       } else {
         setCurrentPage('admin-login');
@@ -1464,6 +1471,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </nav>
               </div>
               <button onClick={() => { 
+                localStorage.removeItem('adminAuth');
                 setAdminLoggedIn(false); 
                 setCurrentPage('home'); 
                 window.location.pathname = '/'; 
