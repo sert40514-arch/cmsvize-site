@@ -1919,7 +1919,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                               setNewReviewData({ name: '', country: 'Almanya', visa_type: '', comment: '', likes: 0, comments_count: 0, time_ago: '3 gün önce', is_active: true });
                               fetchAllData();
                             } catch (err) {
-                              console.error(err);
+                              console.error("TESTIMONIALS INSERT ERROR:", err);
                               showToast('Yorum kaydedilirken bir hata oluştu.');
                             }
                           }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
