@@ -289,6 +289,7 @@ const App = () => {
         setBlogPosts(blogData);
       }
 
+      /* 
       const { data: settingsData, error: settingsError } = await supabase
         .from('site_settings')
         .select('*')
@@ -303,6 +304,7 @@ const App = () => {
         });
         if (settingsData.title) document.title = settingsData.title;
       }
+      */
     } catch (err) {
       console.error("Error fetching data from Supabase:", err);
     } finally {
@@ -687,7 +689,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
   };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     console.log("SUBMIT STARTED");
     console.log("FORM DATA", formData);
@@ -1051,17 +1053,28 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .animate-pulse-whatsapp { animation: pulse-intense 2s infinite; }
 
         /* Scroll Ticker Animation - Seamless Loop */
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        @keyframes cms-marquee-left {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
-        .animate-marquee { 
-          display: flex; 
-          width: max-content; 
-          animation: marquee 30s linear infinite; 
+        .cms-marquee-wrapper { overflow: hidden; white-space: nowrap; }
+        .cms-marquee-track {
+          display: flex;
+          width: max-content;
           will-change: transform;
+          animation: cms-marquee-left 22s linear infinite !important;
+          animation-play-state: running !important;
         }
-        .animate-marquee:hover { animation-play-state: paused; }
+        .cms-marquee-item { flex: 0 0 auto; }
+        .cms-marquee-track:hover { animation-play-state: paused !important; }
+
+        @media (max-width: 768px) {
+          .cms-marquee-track { animation-duration: 18s !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .cms-marquee-track { animation: none !important; }
+        }
 
         /* Scroll Reveal */
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -1357,10 +1370,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
 
           {/* STATS TICKER */}
-          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl overflow-hidden">
-            <div className="flex animate-marquee whitespace-nowrap">
+          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl cms-marquee-wrapper">
+            <div className="cms-marquee-track">
               {[1, 2].map(i => (
-                <div key={i} className="flex items-center flex-shrink-0">
+                <div key={i} className="cms-marquee-item flex items-center">
                   <div className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
                     <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
                     <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
@@ -1911,7 +1924,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       <button onClick={resetForm} className="mt-8 btn-corporate bg-white/5 border border-white/10 px-8 py-4 text-white hover:bg-white/10 transition-all font-bold text-sm tracking-widest uppercase">Yeni Başvuru Yap</button>
                     </div>
                   ) : (
-                    <div className="space-y-8">
+                    <form onSubmit={handleFormSubmit} className="space-y-8">
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">AD SOYAD</label>
                         <input 
@@ -2000,14 +2013,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </div>
 
                       <button 
-                        type="button" 
-                        onClick={handleFormSubmit}
+                        type="submit" 
                         disabled={!isPhoneValid || !isNameValid || !isTurnstileVerified}
                         className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid && isNameValid && isTurnstileVerified ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
                       >
-                        BAŞVURUYU TAMAMLA
+                        {isSubmitting ? 'GÖNDERİLİYOR...' : 'BAŞVURUYU TAMAMLA'}
                       </button>
-                    </div>
+                    </form>
                   )}
                 </div>
                 <div className="bg-[#facc15] p-8 md:p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group w-full min-h-[400px]">
