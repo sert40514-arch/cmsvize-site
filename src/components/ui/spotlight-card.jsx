@@ -28,6 +28,10 @@ const GlowCard = ({
   const innerRef = useRef(null);
 
   useEffect(() => {
+    // Only enable glow effect on desktop with fine pointer (mouse)
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!isDesktop) return;
+
     const syncPointer = (e) => {
       const { clientX: x, clientY: y } = e;
       
@@ -39,7 +43,7 @@ const GlowCard = ({
       }
     };
 
-    document.addEventListener('pointermove', syncPointer);
+    document.addEventListener('pointermove', syncPointer, { passive: true });
     return () => document.removeEventListener('pointermove', syncPointer);
   }, []);
 

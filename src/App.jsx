@@ -1046,15 +1046,29 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .hero-slide-in { opacity: 0; transform: translateX(-30px); animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
 
-        /* Mobile Performance Optimization */
+        /* Mobile Performance Optimization - Critical Fixes */
         @media (max-width: 768px) {
           * {
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.1s !important;
           }
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
+          .glass { backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
+          .reveal-on-scroll, .reveal-left { transition: opacity 0.5s ease-out !important; transform: none !important; }
+          .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+          .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
+          .shimmer, .animate-pulse-whatsapp { animation: none !important; }
+          [data-glow]::before, [data-glow]::after { display: none !important; } /* Disable GlowCard effects on mobile */
+          * { background-attachment: scroll !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
         }
 
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
@@ -1097,7 +1111,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0B0F1A]/80 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
+              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -1131,7 +1145,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <X size={40} className="absolute top-6 right-6 cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
             
             <div className="mb-4">
-              <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-16 w-auto object-contain" />
+              <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-16 w-auto object-contain" loading="lazy" decoding="async" />
             </div>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
@@ -1638,13 +1652,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <GlowCard customSize={true} className="p-8 shadow-2xl bg-black/40 border-white/10">
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40 p-4 text-center flex items-center justify-center">
-                    <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
+                    <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" loading="lazy" decoding="async" />
                   </div>
                   <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Resmi Oturum & Çalışma Kartı</p>
                 </GlowCard>
                 <GlowCard customSize={true} className="p-5 shadow-2xl">
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40">
-                    <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" />
+                    <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" loading="lazy" decoding="async" />
                   </div>
                   <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Uluslararası Lojistik Ağı</p>
                 </GlowCard>
@@ -1702,7 +1716,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   >
                     {/* Background Image with Safe Render */}
                     {post.img ? (
-                      <img src={post.img} alt={post.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <img src={post.img} alt={post.label} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
                     ) : (
                       <div className="absolute inset-0 bg-gray-800"></div>
                     )}
@@ -1763,7 +1777,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
                     <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
                       {member.img ? (
-                        <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+                        <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
                       ) : (
                         <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                           <User size={48} className="text-gray-500" />
@@ -3598,7 +3612,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
               <div className="space-y-8">
-                <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto" />
+                <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto" loading="lazy" decoding="async" />
                 <p className="text-gray-400 text-sm leading-relaxed font-medium">
                   Avrupa vizeleri ve oturum izinleri konusunda profesyonel çözüm ortağınız.
                 </p>
