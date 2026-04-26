@@ -1214,19 +1214,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
-                      <video 
-                        className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
-                        autoPlay={!isMobile}
-                        muted 
-                        loop 
-                        playsInline
-                        preload="none"
-                        poster={SupportingImg}
-                        title="CMSVize Litvanya Operasyon Süreci ve Başarı Hikayeleri"
-                      >
-                        <source src={cmsVideo} type="video/mp4" />
-                        Tarayıcınız video etiketini desteklemiyor.
-                      </video>
+                      <img 
+                        src={SupportingImg} 
+                        alt="CMSVize Hero" 
+                        className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl rounded-2xl"
+                        loading="lazy"
+                      />
                       
                       {/* Video üzerine overlay badge */}
                       <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none group-hover:translate-y-[-5px] transition-transform duration-500">
