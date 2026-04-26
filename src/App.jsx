@@ -1050,6 +1050,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes pulse-intense { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
         .animate-pulse-whatsapp { animation: pulse-intense 2s infinite; }
 
+        /* Scroll Ticker Animation */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { display: flex; width: fit-content; animation: scroll 40s linear infinite; }
+
         /* Scroll Reveal */
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal-left { opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -1061,13 +1065,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
         /* Mobile Performance Optimization - Critical Fixes */
         @media (max-width: 768px) {
-          * {
-            animation: none !important;
-            transition: none !important;
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.1s !important;
-          }
           body { overflow-x: hidden; }
           img, video { max-width: 100%; height: auto; }
           .container { padding: 0 16px; }
@@ -3551,8 +3548,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       <style>{`
         html { scroll-behavior: smooth; }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-scroll { display: flex; width: fit-content; animation: scroll 30s linear infinite; }
       `}</style>
 
       {/* TRACKING MODAL */}
