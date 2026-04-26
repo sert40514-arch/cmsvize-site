@@ -76,6 +76,12 @@ const SITE_DATABASE = {
 };
 
 const App = () => {
+  // --- CORE STATES ---
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (window.location.pathname === '/admin-panel-cms') return 'admin-login';
+    return 'home';
+  });
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -93,6 +99,10 @@ const App = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
 
+  // Counter States
+  const [counts, setCounts] = useState({ success: 0, approval: 0, years: 0, privacy: 0 });
+  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
+
   // PDF Lead Magnet States
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [pdfFormData, setPdfFormData] = useState({
@@ -101,9 +111,61 @@ const App = () => {
   const [isPdfSubmitting, setIsPdfSubmitting] = useState(false);
   const [pdfFormSuccess, setPdfFormSuccess] = useState(false);
 
-  // Counter State
-  const [counts, setCounts] = useState({ success: 0, approval: 0, years: 0, privacy: 0 });
+  // New States for Features
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardStep, setWizardStep] = useState(1);
+  const [wizardData, setWizardData] = useState({ job: '', country: '', name: '', phone: '' });
 
+  const [portalLoggedIn, setPortalLoggedIn] = useState(false);
+  const [portalUser, setPortalUser] = useState('');
+  const [portalPass, setPortalPass] = useState('');
+
+  // Admin States
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+  const [adminUser, setAdminUser] = useState('');
+  const [adminPass, setAdminPass] = useState('');
+  const [adminTab, setAdminTab] = useState('dashboard');
+
+  // Content & Data States
+  const [siteContent, setSiteContent] = useState(SITE_DATABASE);
+  const [leads, setLeads] = useState([]);
+  const [isLoadingLeads, setIsLoadingLeads] = useState(true);
+  const [testimonials, setTestimonials] = useState([]);
+  const [isTestimonialsLoading, setIsTestimonialsLoading] = useState(true);
+  const [showNewReviewForm, setShowNewReviewForm] = useState(false);
+  const [newReviewData, setNewReviewData] = useState({
+    name: '', country: 'Almanya', visa_type: '', comment: '', likes: 0, comments_count: 0, time_ago: '3 gün önce', is_active: true
+  });
+
+  // Blog States
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [isBlogLoading, setIsBlogLoading] = useState(true);
+  const [showNewBlogForm, setShowNewBlogForm] = useState(false);
+  const [newBlogData, setNewBlogData] = useState({
+    title: '', slug: '', summary: '', content: '', category: 'Vize Rehberi', cover_image: '', is_published: true
+  });
+  const [selectedBlogSlug, setSelectedBlogSlug] = useState(null);
+  
+  const [siteSettings, setSiteSettings] = useState({
+    title: "CMSVize | Avrupa Kapısı Açılıyor",
+    phone: "905459918268",
+    whatsapp: "905459918268"
+  });
+
+  // Toast & Tracking States
+  const [toastMessage, setToastMessage] = useState('');
+  const [totalViews, setTotalViews] = useState(12450);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [trackingCode, setTrackingCode] = useState('');
+  const [trackingResult, setTrackingResult] = useState(null);
+  const [trackingError, setTrackingError] = useState(false);
+
+  // Security States
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState(null);
+  const [submittedTrackingId, setSubmittedTrackingId] = useState('');
+
+  // --- EFFECTS ---
   useEffect(() => {
     if (currentPage === 'home') {
       const timer = setInterval(() => {
@@ -118,80 +180,9 @@ const App = () => {
     }
   }, [currentPage]);
 
-  // New States for Features
-  const [showWizard, setShowWizard] = useState(false);
-  const [wizardStep, setWizardStep] = useState(1);
-  const [wizardData, setWizardData] = useState({ job: '', country: '', name: '', phone: '' });
-
-  const [portalLoggedIn, setPortalLoggedIn] = useState(false);
-  const [portalUser, setPortalUser] = useState('');
-  const [portalPass, setPortalPass] = useState('');
-
-  const handlePortalLogin = (e) => {
-    e.preventDefault();
-    if (portalUser === 'cmsvize' && portalPass === 'cms2026cms681001') {
-      setPortalLoggedIn(true);
-    } else {
-      alert('Hatalı Bilgi');
-    }
-  };
-
-  // Routing State
-  const [currentPage, setCurrentPage] = useState(() => {
-    if (window.location.pathname === '/admin-panel-cms') return 'admin-login';
-    return 'home';
-  });
-
-  // Admin States
-  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
-  const [adminUser, setAdminUser] = useState('');
-  const [adminPass, setAdminPass] = useState('');
-  
-  // Counter State (for animated numbers on Home)
-  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
-  
-  // Centralized Content State
-  const [siteContent, setSiteContent] = useState(SITE_DATABASE);
-
-  // Leads State - Centralized via Supabase
-  const [leads, setLeads] = useState([]);
-  const [isLoadingLeads, setIsLoadingLeads] = useState(true);
-
-  // Testimonials & Settings State
-  const [testimonials, setTestimonials] = useState([]);
-  const [isTestimonialsLoading, setIsTestimonialsLoading] = useState(true);
-  const [showNewReviewForm, setShowNewReviewForm] = useState(false);
-  const [newReviewData, setNewReviewData] = useState({
-    name: '',
-    country: 'Almanya',
-    visa_type: '',
-    comment: '',
-    likes: 0,
-    comments_count: 0,
-    time_ago: '3 gün önce',
-    is_active: true
-  });
-
-  // Blog States
-  const [blogPosts, setBlogPosts] = useState([]);
-  const [isBlogLoading, setIsBlogLoading] = useState(true);
-  const [showNewBlogForm, setShowNewBlogForm] = useState(false);
-  const [newBlogData, setNewBlogData] = useState({
-    title: '',
-    slug: '',
-    summary: '',
-    content: '',
-    category: 'Vize Rehberi',
-    cover_image: '',
-    is_published: true
-  });
-  const [selectedBlogSlug, setSelectedBlogSlug] = useState(null);
-  
-  const [siteSettings, setSiteSettings] = useState({
-    title: "CMSVize | Avrupa Kapısı Açılıyor",
-    phone: "905459918268",
-    whatsapp: "905459918268"
-  });
+  useEffect(() => {
+    setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
+  }, []);
 
   // Fetch data from Supabase
   const fetchAllData = async () => {
@@ -275,30 +266,14 @@ const App = () => {
     fetchAllData();
   }, []);
 
-  const [adminTab, setAdminTab] = useState('dashboard');
-  const [toastMessage, setToastMessage] = useState('');
-  const [totalViews, setTotalViews] = useState(12450); // Simulation for Analytics
-  
-  // Tracking Module States
-  const [showTrackingModal, setShowTrackingModal] = useState(false);
-  const [trackingCode, setTrackingCode] = useState('');
-  const [trackingResult, setTrackingResult] = useState(null);
-  const [trackingError, setTrackingError] = useState(false);
-
-  // Security & Bot Protection
-  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState(null);
-  const [submittedTrackingId, setSubmittedTrackingId] = useState('');
-  
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
+  const handlePortalLogin = (e) => {
+    e.preventDefault();
+    if (portalUser === 'cmsvize' && portalPass === 'cms2026cms681001') {
+      setPortalLoggedIn(true);
+    } else {
+      alert('Hatalı Bilgi');
+    }
   };
-
-  // Simulation: Increase views on load
-  useEffect(() => {
-    setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
-  }, []);
 
   // Data Integrity Guard
   useEffect(() => {
