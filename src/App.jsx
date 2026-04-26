@@ -909,19 +909,44 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
       `}</style>
 
+      {/* TOP CONTACT BAR */}
+      {!currentPage.startsWith('admin') && (
+        <div className="fixed top-0 left-0 w-full z-[60] bg-[#05070A] border-b border-white/5 h-10 flex items-center overflow-hidden px-6">
+          <div className="max-w-7xl mx-auto w-full flex justify-between items-center text-[10px] md:text-xs font-bold tracking-[0.1em] text-gray-400">
+            <div className="flex items-center space-x-6">
+              <a href="tel:+905459918268" className="flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
+                <Phone size={12} className="text-[#facc15] group-hover:scale-110 transition-transform" />
+                <span className="hidden xs:inline">+90 545 991 82 68</span>
+                <span className="xs:hidden">Ara</span>
+              </a>
+              <a href="mailto:bilgi@cmsvize.com" className="hidden sm:flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
+                <Mail size={12} className="text-[#facc15] group-hover:scale-110 transition-transform" />
+                <span>bilgi@cmsvize.com</span>
+              </a>
+            </div>
+            <div className="flex items-center space-x-6">
+              <a href="https://instagram.com/cmsprime" target="_blank" rel="noreferrer" className="flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
+                <Instagram size={12} className="text-[#facc15] group-hover:scale-110 transition-transform" />
+                <span>@cmsprime</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* NAVBAR */}
       {!currentPage.startsWith('admin') && (
-        <nav className="fixed top-0 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center">
+        <nav className="fixed top-10 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center transition-all duration-300">
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
               <img src={logoImg} alt="CMSVize Logo" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">HİZMETLER</button>
-              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors">REFERANSLAR</button>
-              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
-              <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">HİZMETLER</button>
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">REFERANSLAR</button>
+              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors uppercase tracking-widest ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
+              <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 uppercase tracking-widest ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
                 <button onClick={() => setShowTrackingModal(true)} className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
@@ -929,12 +954,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <span>BAŞVURU TAKİP</span>
                 </button>
                 <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
-                  ÜCRETSİZ BAŞVURU BAŞLAT
+                  BAŞVURU BAŞLAT
                 </button>
               </div>
             </div>
 
-            <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <button className="lg:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
             </button>
           </div>
@@ -1030,9 +1055,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     {/* Arka plan glow efekti */}
                     <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
-                    <div className="hero-img-container relative bg-[#131926] z-10">
+                    <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
                       <video 
-                        className="w-full h-full object-cover aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
+                        className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
                         controls 
                         playsInline
                         poster={SupportingImg}
@@ -1042,14 +1067,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       </video>
                       
                       {/* Video üzerine overlay badge */}
-                      <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none">
+                      <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none group-hover:translate-y-[-5px] transition-transform duration-500">
                         <div>
                           <p className="text-[10px] font-black uppercase tracking-widest text-[#facc15]">Resmi Süreç</p>
                           <p className="text-sm font-black text-white italic">Litvanya Operasyonlarımız</p>
                         </div>
                         <div className="flex -space-x-2">
-                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-[#0a66c2] flex items-center justify-center text-[10px] font-bold">LT</div>
-                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-red-600 flex items-center justify-center text-[10px] font-bold">EU</div>
+                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-[#0a66c2] flex items-center justify-center text-[10px] font-bold shadow-lg">LT</div>
+                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-red-600 flex items-center justify-center text-[10px] font-bold shadow-lg">EU</div>
                         </div>
                       </div>
                     </div>
