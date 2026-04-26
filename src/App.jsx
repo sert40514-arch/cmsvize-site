@@ -104,6 +104,29 @@ const POPUPS = [
   "Mert A. – Danışman önerisi ile sürece başladı"
 ];
 
+// Helper to create TrustedHTML if Trusted Types is enabled
+const getTrustedHTML = (html) => {
+  if (window.trustedTypes && window.trustedTypes.createPolicy) {
+    if (!window.trustedTypes.defaultPolicy) {
+      try {
+        window.trustedTypes.createPolicy('default', {
+          createHTML: (string) => string,
+          createScript: (string) => string,
+          createScriptURL: (string) => string
+        });
+      } catch (e) {
+        // Policy might already exist
+      }
+    }
+    try {
+      return window.trustedTypes.defaultPolicy.createHTML(html);
+    } catch (e) {
+      return html;
+    }
+  }
+  return html;
+};
+
 const App = () => {
   // --- CORE STATES ---
   const [currentPage, setCurrentPage] = useState(() => {
@@ -994,6 +1017,8 @@ return (
             display: flex !important; 
             position: relative !important;
             z-index: 9999 !important;
+            background: rgba(255,255,255,0.1) !important;
+            border-radius: 8px !important;
           }
           
           /* Card fixes */
@@ -1132,7 +1157,7 @@ return (
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
                 {/* Sol Kolon: İçerik */}
-                <div className="lg:col-span-7 space-y-6 md:space-y-10 pt-16 lg:pt-0">
+                <div className="lg:col-span-7 space-y-6 md:space-y-10">
                   <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[#facc15] font-black text-[10px] md:text-xs tracking-widest uppercase shadow-inner">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
@@ -2014,7 +2039,7 @@ return (
                   <span className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-8 text-white">{post.title}</h1>
-                <div className="text-gray-300 text-lg leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br/>') }}></div>
+                <div className="text-gray-300 text-lg leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: getTrustedHTML(post.content.replace(/\n/g, '<br/>')) }}></div>
               </div>
             );
           })()}
