@@ -1050,9 +1050,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         @keyframes pulse-intense { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
         .animate-pulse-whatsapp { animation: pulse-intense 2s infinite; }
 
-        /* Scroll Ticker Animation */
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .animate-scroll { display: flex; width: fit-content; animation: scroll 40s linear infinite; }
+        /* Scroll Ticker Animation - Seamless Loop */
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee { 
+          display: flex; 
+          width: max-content; 
+          animation: marquee 30s linear infinite; 
+          will-change: transform;
+        }
+        .animate-marquee:hover { animation-play-state: paused; }
 
         /* Scroll Reveal */
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -1349,13 +1358,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
           {/* STATS TICKER */}
           <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl overflow-hidden">
-            <div className="flex animate-scroll whitespace-nowrap">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
-                  <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
-                  <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
-                  <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
-                  <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+            <div className="flex animate-marquee whitespace-nowrap">
+              {[1, 2].map(i => (
+                <div key={i} className="flex items-center flex-shrink-0">
+                  <div className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
+                    <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
+                    <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
+                    <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
+                    <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+                  </div>
                 </div>
               ))}
             </div>
