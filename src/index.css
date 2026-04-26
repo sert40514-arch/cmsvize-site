@@ -15,10 +15,12 @@
 }
 
 .cms-marquee-track {
-  display: flex;
-  flex-wrap: nowrap;
-  width: max-content;
-  animation: cms-marquee-left 24s linear infinite;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  width: max-content !important;
+  will-change: transform !important;
+  animation: cms-marquee-left 24s linear infinite !important;
+  animation-play-state: running !important;
 }
 
 .cms-marquee-track:hover {
