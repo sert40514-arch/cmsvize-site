@@ -1024,6 +1024,10 @@ return (
         }
 
         /* ===== NAVIGATION ===== */
+        nav img.logo, .navbar-logo, nav .logo-container {
+          background: transparent !important;
+          background-color: transparent !important;
+        }
         .top-bar {
           background-color: var(--primary);
           color: var(--white);
@@ -1465,15 +1469,15 @@ return (
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="stat-item reveal-on-scroll">
-                  <p className="stat-number font-title">{counts.success}+</p>
+                  <p className="stat-number font-title">500+</p>
                   <p className="stat-label">Başarılı Başvuru</p>
                 </div>
                 <div className="stat-item reveal-on-scroll" style={{ transitionDelay: '0.1s' }}>
-                  <p className="stat-number font-title">%{counts.approval}</p>
+                  <p className="stat-number font-title">%95+</p>
                   <p className="stat-label">Onay Oranı</p>
                 </div>
                 <div className="stat-item reveal-on-scroll" style={{ transitionDelay: '0.2s' }}>
-                  <p className="stat-number font-title">{counts.years}+</p>
+                  <p className="stat-number font-title">3+</p>
                   <p className="stat-label">Yıl Deneyim</p>
                 </div>
                 <div className="stat-item reveal-on-scroll" style={{ transitionDelay: '0.3s' }}>
@@ -1773,31 +1777,40 @@ return (
           </section>
 
           {/* BAŞVURU SÜRECİ (TIMELINE) */}
-          <section className="timeline-section reveal-on-scroll">
+          <section className="timeline-section reveal-on-scroll overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-20">
+              <div className="text-center mb-16">
                 <h2 className="text-4xl lg:text-5xl font-title text-primary uppercase">Nasıl <span className="text-gold">Çalışır?</span></h2>
-                <p className="text-text-light mt-4">Avrupa kapılarını aralayan 5 güvenli adım.</p>
+                <h3 className="text-gold font-title text-2xl uppercase mt-2">5 ADIMDA AVRUPA'YA</h3>
               </div>
               
               <div className="relative">
-                <div className="hidden lg:block timeline-line"></div>
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 relative z-10">
+                <div className="hidden lg:block absolute top-6 left-0 right-0 h-0.5 bg-gold/40"></div>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 relative z-10">
                   {[
-                    { num: "1", title: "Başvuru", desc: "Formu doldurun, uzmanımız sizi arasın." },
-                    { num: "2", title: "Değerlendirme", desc: "Profilinize en uygun rota belirlenir." },
-                    { num: "3", title: "Evrak", desc: "Belgeleriniz titizlikle hazırlanır." },
-                    { num: "4", title: "Başvuru", desc: "Resmi makamlara dosyanız iletilir." },
-                    { num: "5", title: "Vize & Oturum", desc: "Süreciniz başarıyla tamamlanır." }
+                    { num: "1", title: "ÜCRETSİZ BAŞVURU", desc: "Formu doldurun, 24 saat içinde uzmanımız sizi arasın." },
+                    { num: "2", title: "UZMAN DEĞERLENDİRME", desc: "Profiliniz analiz edilir, size özel yol haritası çizilir." },
+                    { num: "3", title: "EVRAK HAZIRLAMA", desc: "Tüm belgeler titizlikle hazırlanır ve kontrol edilir." },
+                    { num: "4", title: "RESMİ BAŞVURU", desc: "Eksiksiz dosyanız resmi makamlara iletilir." },
+                    { num: "5", title: "VİZE & OTURUM", desc: "Onayınız alınır, Avrupa maceranız başlar! 🎉" }
                   ].map((step, i) => (
-                    <div key={i} className="timeline-step">
-                      <div className="timeline-number font-title">
+                    <div key={i} className="relative text-center">
+                      <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 font-bold text-lg border-4 border-white shadow-md z-10 relative">
                         {step.num}
                       </div>
-                      <h4 className="text-xl font-title text-primary mb-2">{step.title}</h4>
-                      <p className="text-text-light text-sm">{step.desc}</p>
+                      <h4 className="text-primary font-semibold text-[14px] mb-3 leading-snug">{step.title}</h4>
+                      <p className="text-gray-500 font-normal text-[13px] leading-relaxed">{step.desc}</p>
                     </div>
                   ))}
+                </div>
+              </div>
+              
+              <div className="mt-24 text-center">
+                <div className="bg-primary p-10 rounded-xl inline-block w-full max-w-2xl mx-auto shadow-xl">
+                  <h3 className="text-white text-2xl font-title mb-6">Süreci Başlatmaya Hazır Mısınız?</h3>
+                  <button onClick={scrollToForm} className="bg-gold text-white px-8 py-4 rounded font-bold uppercase tracking-wider hover:bg-[#b0923d] transition-colors w-full md:w-auto">
+                    ÜCRETSİZ BAŞVURU BAŞLAT
+                  </button>
                 </div>
               </div>
             </div>
@@ -1805,18 +1818,24 @@ return (
 
           {/* SÜREÇTEN KESİTLER */}
           <section className="py-24 px-6 bg-white reveal-on-scroll">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="relative group overflow-hidden rounded-lg shadow-lg">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl lg:text-5xl font-title text-primary uppercase">BAŞARILI <span className="text-gold">SONUÇLARIMIZDAN</span></h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className="relative group overflow-hidden rounded-lg shadow-md border border-border">
                   <img src={OturumKartiImg} className="w-full h-auto transform transition-transform group-hover:scale-105" alt="Oturum Kartı" />
-                  <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all"></div>
-                  <p className="absolute bottom-4 left-6 text-white font-bold text-lg drop-shadow-md">RESMİ OTURUM & ÇALIŞMA KARTI</p>
                 </div>
-                <div className="relative group overflow-hidden rounded-lg shadow-lg">
+                <div className="relative group overflow-hidden rounded-lg shadow-md border border-border">
                   <img src={TirImg} className="w-full h-auto transform transition-transform group-hover:scale-105" alt="Tır Operasyonları" />
-                  <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all"></div>
-                  <p className="absolute bottom-4 left-6 text-white font-bold text-lg drop-shadow-md">ULUSLARARASI LOJİSTİK AĞI</p>
                 </div>
+              </div>
+              <div className="text-center space-y-8">
+                <p className="text-text-light text-lg font-medium">500+ müşterimiz Avrupa'da yeni hayatlarına başladı.</p>
+                <button onClick={scrollToForm} className="bg-gold text-white px-8 py-4 rounded font-bold uppercase tracking-wider hover:bg-[#b0923d] transition-colors inline-flex items-center justify-center space-x-2">
+                  <span>Siz de Aramıza Katılın</span>
+                  <ChevronRight size={18} />
+                </button>
               </div>
             </div>
           </section>
@@ -3706,20 +3725,22 @@ return (
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center py-12 border-t border-[#C9A84C]/20 gap-8 mb-8">
-              <div className="flex flex-wrap justify-center gap-8 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                <span className="flex items-center space-x-2"><Lock size={14} className="text-gold" /> <span>SSL GÜVENLİ</span></span>
-                <span className="flex items-center space-x-2"><CheckCircle2 size={14} className="text-gold" /> <span>KVKK UYUMLU</span></span>
-                <span className="flex items-center space-x-2"><ShieldCheck size={14} className="text-gold" /> <span>RESMİ DANIŞMANLIK</span></span>
+            <div className="flex flex-col md:flex-row justify-between items-center py-5 mt-12 border-t border-[rgba(201,168,76,0.3)] gap-4">
+              <div className="text-center md:text-left text-[12px] text-gray-500">
+                © 2026 CMSVize Global Consultancy. Tüm hakları saklıdır.
               </div>
-              <div className="flex space-x-8 text-[10px] font-bold uppercase tracking-widest text-gray-300">
+              <div className="flex flex-wrap justify-center gap-2 md:gap-4 text-[12px] text-gray-500 uppercase">
+                <span>SSL GÜVENLİ</span>
+                <span className="hidden md:inline">|</span>
+                <span>KVKK UYUMLU</span>
+                <span className="hidden md:inline">|</span>
+                <span>RESMİ DANIŞMANLIK</span>
+              </div>
+              <div className="flex space-x-4 text-[12px] text-gray-500 uppercase">
                 <button onClick={() => setCurrentPage('privacy')} className="hover:text-gold transition-colors">GİZLİLİK POLİTİKASI</button>
+                <span className="text-gray-600">|</span>
                 <button onClick={() => setCurrentPage('terms')} className="hover:text-gold transition-colors">KULLANIM KOŞULLARI</button>
               </div>
-            </div>
-
-            <div className="text-center text-sm text-gray-500 pb-4">
-              © 2026 CMSVize Global Consultancy. Tüm hakları saklıdır.
             </div>
           </div>
         </footer>
