@@ -1060,7 +1060,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           will-change: transform;
           animation: cms-marquee-left 24s linear infinite !important;
           animation-play-state: running !important;
-          transform: translate3d(0, 0, 0);
         }
         .cms-marquee-item { flex: 0 0 auto; }
         .cms-marquee-track:hover { animation-play-state: paused !important; }
@@ -1094,7 +1093,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           .reveal-on-scroll, .reveal-left { transition: opacity 0.5s ease-out !important; transform: none !important; }
           .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
           .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
-          .shimmer, .animate-pulse-whatsapp { animation: none !important; }
+          .shimmer { animation: none !important; }
+          /* WhatsApp pulse intentionally kept active on mobile */
+          .animate-pulse-whatsapp { animation: pulse-intense 2s infinite !important; animation-play-state: running !important; }
           
           /* GlowCard (Spotlight) Aggressive Mobile Disable */
           [data-glow] {
