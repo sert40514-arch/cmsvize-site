@@ -762,16 +762,22 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       window.cms_sub_history = window.cms_sub_history.slice(-10);
 
       playNotificationSound();
-      showToast('Başvurunuz başarıyla alındı, sizinle iletişime geçeceğiz!');
+      showToast('Başvurunuz başarıyla alındı!');
 
-      setIsSubmitting(false);
+      // Set success first
       setFormSuccess(true);
+      setIsSubmitting(false);
 
-      // Refresh leads in background if possible
+      // Scroll to form to ensure success message is visible
+      if (formRef.current) {
+        formRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Refresh leads in background
       try {
         await fetchAllData();
       } catch (f) {
-        console.warn("Background fetch failed, but submission was successful.");
+        console.warn("Background fetch failed:", f);
       }
     } catch (error) {
       console.error("SUPABASE INSERT ERROR:", error);
@@ -1851,7 +1857,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <div className="w-12 h-12 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin"></div>
                     <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">İşleminiz Yapılıyor...</p>
                   </div>}
-                  <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>
+                  {!formSuccess && <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>}
                   {formSuccess ? (
                     <div className="flex flex-col items-center justify-center text-center space-y-6 py-16 animate-fade-up">
                       <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
