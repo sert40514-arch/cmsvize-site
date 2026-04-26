@@ -988,6 +988,14 @@ return (
           /* Mobile menu spacing */
           .mobile-menu-open { padding: 16px !important; }
           
+          /* Mobile menu button fix */
+          .lg\\:hidden { display: flex !important; }
+          nav button.lg\\:hidden { 
+            display: flex !important; 
+            position: relative !important;
+            z-index: 9999 !important;
+          }
+          
           /* Card fixes */
           .linkedin-card, .linkedin-faq { padding: 16px !important; }
           
@@ -1124,8 +1132,8 @@ return (
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
                 {/* Sol Kolon: İçerik */}
-                <div className="lg:col-span-7 space-y-8 md:space-y-10">
-                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-[10px] md:text-xs tracking-widest uppercase shadow-inner hero-slide-in">
+                <div className="lg:col-span-7 space-y-6 md:space-y-10 pt-16 lg:pt-0">
+                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[#facc15] font-black text-[10px] md:text-xs tracking-widest uppercase shadow-inner">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#facc15]"></span>
