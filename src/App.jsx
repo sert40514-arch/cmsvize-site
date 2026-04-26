@@ -1006,7 +1006,6 @@ return (
           background-color: var(--white);
           margin: 0;
           padding: 0;
-          padding-top: 120px;
         }
 
         h1, h2, h3, h4, .font-title {
@@ -1025,6 +1024,14 @@ return (
         }
 
         /* ===== NAVIGATION ===== */
+        nav, header { 
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          z-index: 9999 !important;
+          width: 100% !important;
+        }
         .top-bar {
           background-color: var(--primary);
           color: var(--white);
@@ -1032,12 +1039,10 @@ return (
           display: flex;
           align-items: center;
           font-size: 13px;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          width: 100%;
-          z-index: 10000;
+          position: fixed !important;
+          top: 0 !important;
+          z-index: 10000 !important;
+          width: 100% !important;
         }
         .navbar {
           background-color: var(--white);
@@ -1045,13 +1050,16 @@ return (
           height: 80px;
           display: flex;
           align-items: center;
-          position: fixed;
-          top: 40px;
-          left: 0;
-          right: 0;
-          width: 100%;
-          z-index: 9999;
+          position: fixed !important;
+          top: 40px !important;
+          left: 0 !important;
+          right: 0 !important;
+          width: 100% !important;
+          z-index: 9999 !important;
           transition: all 0.3s ease;
+        }
+        main, #root > div > div:not(nav):first-child {
+          margin-top: 110px;
         }
         .navbar.scrolled {
           box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -1285,9 +1293,13 @@ return (
         /* ===== MOBILE RULES ===== */
         @media (max-width: 768px) {
           .top-bar { display: none !important; }
-          .navbar { height: 70px; }
+          main, #root > div > div:not(nav):first-child { margin-top: 70px; }
+          .navbar { height: 70px !important; top: 0 !important; }
           .hero-title { font-size: 36px; }
-          .hero-section { padding: 60px 0; }
+          .hero-section { padding: 60px 0; padding-top: 80px; }
+          section { padding: 40px 16px; }
+          h1 { font-size: 28px !important; }
+          h2 { font-size: 22px !important; }
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .service-grid { grid-template-columns: 1fr !important; }
           .hero-grid { grid-template-columns: 1fr !important; }
@@ -2017,11 +2029,11 @@ return (
           </section>
 
           {/* DYNAMIC MAP SECTION */}
-          <section className="py-24 px-6 bg-[#080C14] border-t border-white/5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#3b82f6]/10 via-[#0f172a]/0 to-transparent"></div>
+          <section className="py-24 px-6 bg-[#0F2557] border-t border-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent"></div>
             <div className="max-w-7xl mx-auto space-y-16 relative z-10">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-white">Aktif <span className="text-[#d69e2e]">Avrupa Ağı</span></h2>
+                <h2 className="text-3xl lg:text-4xl font-title uppercase text-white">AKTİF <span className="text-gold">AVRUPA AĞI</span></h2>
                 <p className="text-gray-300 font-medium">Uzmanlık alanımızdaki 5 ülkede kesintisiz hizmet.</p>
               </div>
               <div className="flex flex-wrap justify-center gap-6">
@@ -2032,11 +2044,11 @@ return (
                   { country: "Hollanda", code: "NL", flag: "🇳🇱", desc: "High-Skilled" },
                   { country: "Fransa", code: "FR", flag: "🇫🇷", desc: "Çalışma İzni" }
                 ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-center justify-center text-center p-8 rounded-xl w-44 cursor-pointer group transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,168,76,0.2)]" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)'}}>
+                  <div key={i} className="flex flex-col items-center justify-center text-center p-8 rounded-lg w-44 cursor-pointer group transition-all duration-300 hover:border-gold hover:bg-white/10" style={{background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(201,168,76,0.3)'}}>
                     <div className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">{item.flag}</div>
-                    <p className="text-xl font-black text-[#C9A84C] tracking-wider mb-1">{item.code}</p>
-                    <p className="font-bold text-white text-sm">{item.country}</p>
-                    <p className="text-[11px] text-gray-400 mt-1 leading-snug">{item.desc}</p>
+                    <p className="text-[32px] font-bold text-gold tracking-wider mb-1 leading-none">{item.code}</p>
+                    <p className="font-bold text-white text-[16px] mt-2">{item.country}</p>
+                    <p className="text-[13px] text-gray-300 mt-1 leading-snug">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -2047,27 +2059,27 @@ return (
           <section className="py-24 px-6 bg-white border-t border-border">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-3xl lg:text-4xl font-title text-primary uppercase">Avrupa Vize ve Oturum Danışmanlığ305nda <br className="hidden md:block" /> Profesyonel Süreç Yönetimi</h2>
-                <p className="text-text-light mt-4 max-w-2xl mx-auto">CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa'da iş, oturum ve aile birleşimi süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar.</p>
+                <h2 className="text-2xl lg:text-3xl font-title text-primary uppercase">Avrupa Vize ve Oturum Danışmanlığında <br className="hidden md:block" /> Profesyonel Süreç Yönetimi</h2>
+                <p className="text-[#4b5563] mt-4 max-w-2xl mx-auto font-medium">CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa'da iş, oturum ve aile birleşimi süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
-                  <div className="text-5xl mb-4">📋</div>
-                  <h3 className="text-xl font-title text-gold">Belge Hazırlığı</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">Tüm evrakları sizin için eksiksiz hazırlıyor, kontrollerini yapıyoruz.</p>
+                <div className="bg-white text-text p-8 rounded-lg text-center space-y-4 border border-border transition-colors hover:border-gold group">
+                  <div className="w-16 h-16 mx-auto bg-primary rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📋</div>
+                  <h3 className="text-lg font-title text-primary font-bold">Belge & Evrak Hazırlığı</h3>
+                  <p className="text-text-light text-sm leading-relaxed">Tüm belgeleri sizin için eksiksiz hazırlıyoruz.</p>
                 </div>
-                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
-                  <div className="text-5xl mb-4">✈️</div>
-                  <h3 className="text-xl font-title text-gold">Başvuru Yönetimi</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">Resmi makamlara eksiksiz iletiyor, sürecin her adımını takip ediyoruz.</p>
+                <div className="bg-white text-text p-8 rounded-lg text-center space-y-4 border border-border transition-colors hover:border-gold group">
+                  <div className="w-16 h-16 mx-auto bg-primary rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">✈️</div>
+                  <h3 className="text-lg font-title text-primary font-bold">Resmi Başvuru Yönetimi</h3>
+                  <p className="text-text-light text-sm leading-relaxed">Resmi makamlara eksiksiz iletiyoruz.</p>
                 </div>
-                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
-                  <div className="text-5xl mb-4">🏆</div>
-                  <h3 className="text-xl font-title text-gold">Sonuç Garantisi</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">%95+ onay oranıyla yanınızdayız. Ret durumunda ücretsiz itiraz desteği.</p>
+                <div className="bg-white text-text p-8 rounded-lg text-center space-y-4 border border-border transition-colors hover:border-gold group">
+                  <div className="w-16 h-16 mx-auto bg-primary rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🏆</div>
+                  <h3 className="text-lg font-title text-primary font-bold">Sonuç Garantisi</h3>
+                  <p className="text-text-light text-sm leading-relaxed">%95+ onay oranıyla her adımda yanınızdayız.</p>
                 </div>
               </div>
-              <div className="mt-12 p-6 rounded-lg border-l-4 border-gold bg-gray">
+              <div className="mt-12 p-4 rounded-lg border-l-4 border-primary bg-gray">
                 <p className="text-xs text-text-light leading-relaxed">
                   <span className="text-primary font-bold uppercase tracking-widest block mb-1">Yasal Uyarı &amp; Bilgilendirme:</span>
                   CMSVize danışmanlık hizmeti sunar. Nihai karar yetkisi ilgili konsolosluklara aittir.
@@ -3632,6 +3644,12 @@ return (
                     <Globe size={18} />
                   </a>
                 </div>
+                <div className="flex flex-wrap gap-3 pt-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  <span className="bg-white/5 px-2 py-1 rounded">🔒 SSL Güvenli</span>
+                  <span className="bg-white/5 px-2 py-1 rounded">✓ KVKK</span>
+                  <span className="bg-white/5 px-2 py-1 rounded">⭐ 500+ Başvuru</span>
+                  <span className="bg-white/5 px-2 py-1 rounded">🌍 TR & LT Ofis</span>
+                </div>
               </div>
 
               <div className="space-y-8">
@@ -3677,7 +3695,7 @@ return (
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center py-12 border-y border-white/5 gap-8 mb-12">
+            <div className="flex flex-col md:flex-row justify-between items-center py-12 border-t border-[#C9A84C]/20 gap-8 mb-8">
               <div className="flex flex-wrap justify-center gap-8 text-[10px] font-bold uppercase tracking-widest text-gray-500">
                 <span className="flex items-center space-x-2"><Lock size={14} className="text-gold" /> <span>SSL GÜVENLİ</span></span>
                 <span className="flex items-center space-x-2"><CheckCircle2 size={14} className="text-gold" /> <span>KVKK UYUMLU</span></span>
@@ -3689,8 +3707,8 @@ return (
               </div>
             </div>
 
-            <div className="text-center text-[10px] font-bold text-gray-600 tracking-[0.3em] uppercase">
-              © 2026 CMSVIZE GLOBAL CONSULTANCY. TÜM HAKLARI SAKLIDIR.
+            <div className="text-center text-sm text-gray-500 pb-4">
+              © 2026 CMSVize Global Consultancy. Tüm hakları saklıdır.
             </div>
           </div>
         </footer>
