@@ -48,6 +48,7 @@ import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
 import heroImg from './assets/hero.png';
 import cmsVideo from './assets/Cms.mp4';
+import litvanyaPdf from './assets/CMSVize_Litvanya_Rehberi_2026_PRO.pdf';
 
 // --- CONFIG & DATABASE ---
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
@@ -90,6 +91,14 @@ const App = () => {
   const [activeFaq, setActiveFaq] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+
+  // PDF Lead Magnet States
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [pdfFormData, setPdfFormData] = useState({
+    name: '', phone: '', targetCountry: 'Litvanya', workField: '', note: '', terms: false, hp: ''
+  });
+  const [isPdfSubmitting, setIsPdfSubmitting] = useState(false);
+  const [pdfFormSuccess, setPdfFormSuccess] = useState(false);
 
   // New States for Features
   const [showWizard, setShowWizard] = useState(false);
@@ -647,6 +656,60 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     }
   };
 
+  const handlePdfSubmit = async (e) => {
+    e.preventDefault();
+    if (pdfFormData.hp) return;
+    
+    const nameClean = pdfFormData.name.trim();
+    if (nameClean.length < 3) { showToast("Ad soyad en az 3 karakter olmalıdır."); return; }
+    if (/^\d+$/.test(nameClean)) { showToast("Ad soyad sadece rakamlardan oluşamaz."); return; }
+    if (/(.)\1{4,}/.test(nameClean)) { showToast("Lütfen geçerli bir ad soyad girin."); return; }
+    
+    const phoneClean = pdfFormData.phone.replace(/[^\d]/g, '');
+    if (phoneClean.length < 10) { showToast("Telefon numarası en az 10 rakamdan oluşmalıdır."); return; }
+    if (/(.)\1{4,}/.test(phoneClean)) { showToast("Lütfen geçerli bir telefon numarası girin."); return; }
+    
+    if (!pdfFormData.terms) { showToast("Lütfen KVKK/Şartlar kutucuğunu işaretleyin."); return; }
+
+    setIsPdfSubmitting(true);
+
+    try {
+      const trackingId = `PDF-${Math.floor(1000 + Math.random() * 9000)}`;
+      
+      const applicationData = {
+        tracking_code: trackingId,
+        full_name: pdfFormData.name,
+        phone: pdfFormData.phone,
+        target_country: pdfFormData.targetCountry || "Litvanya",
+        service_type: pdfFormData.workField || "Belirtilmedi",
+        note: pdfFormData.note || "PDF Rehber Talebi",
+        status: "Yeni Başvuru",
+        lead_quality: "Sıcak Lead",
+        source: "Litvanya PDF Rehberi"
+      };
+
+      const { error } = await supabase.from("applications").insert([applicationData]);
+      if (error) throw error;
+
+      await fetchAllData();
+      
+      setPdfFormSuccess(true);
+      showToast('Rehberiniz hazırlanıyor...');
+      setTimeout(() => {
+        window.open(litvanyaPdf, '_blank');
+        setShowPdfModal(false);
+        setPdfFormSuccess(false);
+        setPdfFormData({ name: '', phone: '', targetCountry: 'Litvanya', workField: '', note: '', terms: false, hp: '' });
+      }, 2500);
+      
+    } catch (err) {
+      console.error("PDF Lead Error:", err);
+      showToast("Rehber gönderilemedi. Lütfen tekrar deneyin.");
+    } finally {
+      setIsPdfSubmitting(false);
+    }
+  };
+
   const scrollToForm = () => {
     if (currentPage !== 'home') {
       setCurrentPage('home');
@@ -990,6 +1053,174 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               ))}
             </div>
           </div>
+
+          {/* PDF LEAD MAGNET SECTION */}
+          <section className="py-24 px-6 bg-gradient-to-b from-[#0B0F1A] to-[#131926] relative overflow-hidden border-t border-white/5">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#facc15]/10 via-transparent to-transparent opacity-50"></div>
+            <div className="max-w-5xl mx-auto glass p-10 lg:p-16 rounded-3xl border border-[#facc15]/20 shadow-[0_0_50px_-12px_rgba(250,204,21,0.15)] relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+              <div className="space-y-6 flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center space-x-2 bg-[#facc15]/10 border border-[#facc15]/20 px-4 py-1.5 rounded-full text-[#facc15] font-black text-[10px] tracking-widest uppercase">
+                  <Star size={12} fill="currentColor" />
+                  <span>ÜCRETSİZ PREMIUM İÇERİK</span>
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter leading-tight">
+                  2026 Litvanya 2 Yıllık <br />
+                  <span className="text-[#facc15]">Oturum Kartı Rehberi</span>
+                </h2>
+                <p className="text-gray-300 text-lg leading-relaxed font-medium max-w-xl">
+                  Litvanya oturum kartı süreci, gerekli belgeler, Schengen hakları ve başvuru adımlarını içeren kapsamlı rehberi ücretsiz alın.
+                </p>
+                <div className="flex flex-wrap gap-3 pt-2 justify-center lg:justify-start">
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">PDF Formatında</span>
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">Anında İndirilebilir</span>
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">Güncel 2026 Mevzuatı</span>
+                </div>
+              </div>
+              <div className="w-full lg:w-auto flex-shrink-0">
+                <button 
+                  onClick={() => setShowPdfModal(true)} 
+                  className="w-full lg:w-auto btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 rounded-xl font-black text-xl flex items-center justify-center space-x-3 group relative overflow-hidden shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.5)] transition-all"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                  <BookOpen size={24} />
+                  <span>ÜCRETSİZ REHBERİ AL</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* PDF LEAD MODAL */}
+          {showPdfModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-[#0B0F1A]/90 backdrop-blur-md" onClick={() => !isPdfSubmitting && setShowPdfModal(false)}></div>
+              <div className="bg-[#131926] border border-[#facc15]/30 rounded-2xl p-8 max-w-md w-full relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-fade-up max-h-[90vh] overflow-y-auto">
+                <button onClick={() => !isPdfSubmitting && setShowPdfModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 rounded-full p-2 transition-colors">
+                  <X size={20} />
+                </button>
+                
+                <div className="text-center space-y-4 mb-8">
+                  <div className="w-16 h-16 bg-[#facc15]/10 border border-[#facc15]/20 rounded-full flex items-center justify-center mx-auto text-[#facc15]">
+                    <BookOpen size={32} />
+                  </div>
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Rehberi <span className="text-[#facc15]">İndir</span></h3>
+                  <p className="text-sm text-gray-400 font-medium">Lütfen rehbere erişmek için bilgilerinizi eksiksiz doldurun.</p>
+                </div>
+
+                {pdfFormSuccess ? (
+                  <div className="text-center space-y-6 py-8">
+                    <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle2 size={40} className="text-green-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-xl font-black italic text-white uppercase">Rehberiniz Hazırlanıyor...</h4>
+                      <p className="text-sm text-gray-400">Dosya birazdan yeni sekmede açılacaktır.</p>
+                    </div>
+                    <div className="w-8 h-8 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
+                  </div>
+                ) : (
+                  <form onSubmit={handlePdfSubmit} className="space-y-5">
+                    <input type="text" name="hp" value={pdfFormData.hp} onChange={(e) => setPdfFormData({...pdfFormData, hp: e.target.value})} style={{ display: 'none' }} tabIndex="-1" autoComplete="off" />
+                    
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">AD SOYAD</label>
+                      <input 
+                        required 
+                        value={pdfFormData.name} 
+                        onChange={(e) => setPdfFormData({...pdfFormData, name: e.target.value.replace(/[^a-zA-Z\sğüşıöçĞÜŞİÖÇ]/g, '')})} 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors" 
+                        placeholder="Ad Soyad" 
+                      />
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">TELEFON</label>
+                      <input 
+                        required 
+                        value={pdfFormData.phone} 
+                        onChange={(e) => setPdfFormData({...pdfFormData, phone: e.target.value.replace(/[^\d+]/g, '')})} 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors" 
+                        placeholder="05xx xxx xx xx" 
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">HEDEF ÜLKE</label>
+                        <select 
+                          value={pdfFormData.targetCountry} 
+                          onChange={(e) => setPdfFormData({...pdfFormData, targetCountry: e.target.value})} 
+                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors text-white"
+                        >
+                          <option className="bg-[#0B0F1A]">Litvanya</option>
+                          <option className="bg-[#0B0F1A]">Almanya</option>
+                          <option className="bg-[#0B0F1A]">Polonya</option>
+                          <option className="bg-[#0B0F1A]">Hollanda</option>
+                          <option className="bg-[#0B0F1A]">Fransa</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">ÇALIŞMAK İSTEDİĞİ ALAN</label>
+                        <select
+                          value={pdfFormData.workField} 
+                          onChange={(e) => setPdfFormData({...pdfFormData, workField: e.target.value})} 
+                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors text-[#facc15]" 
+                        >
+                          <option className="bg-[#0B0F1A]" value="">Seçiniz...</option>
+                          <option className="bg-[#0B0F1A]">Tır Şoförlüğü</option>
+                          <option className="bg-[#0B0F1A]">Fabrika / Depo</option>
+                          <option className="bg-[#0B0F1A]">A1 Transfer</option>
+                          <option className="bg-[#0B0F1A]">Fark Etmez</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">EK NOT (Opsiyonel)</label>
+                      <textarea 
+                        value={pdfFormData.note} 
+                        onChange={(e) => setPdfFormData({...pdfFormData, note: e.target.value})} 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors resize-none" 
+                        rows="2" 
+                        placeholder="Eklemek istedikleriniz..."
+                      ></textarea>
+                    </div>
+
+                    <div className="flex items-start space-x-3 pt-2">
+                      <input 
+                        type="checkbox" 
+                        id="pdfTerms" 
+                        required
+                        checked={pdfFormData.terms}
+                        onChange={(e) => setPdfFormData({...pdfFormData, terms: e.target.checked})}
+                        className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#facc15] focus:ring-[#facc15] cursor-pointer accent-[#facc15]" 
+                      />
+                      <label htmlFor="pdfTerms" className="text-[10px] text-gray-400 leading-relaxed cursor-pointer font-medium">
+                        Danışmanlık hizmet şartlarını okudum, KVKK metnini onaylıyorum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.
+                      </label>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      disabled={isPdfSubmitting || !pdfFormData.terms || pdfFormData.name.length < 3 || pdfFormData.phone.length < 10}
+                      className="w-full btn-corporate bg-[#facc15] text-[#0B0F1A] py-4 rounded-xl font-black text-lg mt-4 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] transition-all"
+                    >
+                      {isPdfSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-[#0B0F1A] border-t-transparent rounded-full animate-spin"></div>
+                          <span>İŞLENİYOR...</span>
+                        </>
+                      ) : (
+                        <>
+                          <BookOpen size={20} />
+                          <span>PDF REHBERİ İNDİR</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* İSTATİSTİK */}
           <section id="istatistik" className="py-24 bg-white/[0.02]">
