@@ -2037,16 +2037,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#facc15]">YAŞAM REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4 reveal-on-scroll">
+              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4">
                 <h2 className="text-2xl font-black italic uppercase text-white">Litvanya Hakkında Genel Bilgi</h2>
                 <p>Litvanya, Baltık bölgesinde yer alan AB ve NATO üyesi bir ülkedir. Başkenti Vilnius, nüfusu yaklaşık 2.8 milyon, resmi para birimi Euro'dur. Schengen bölgesinde yer alır.</p>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Litvanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['27 Schengen ülkesinde vizesiz seyahat', 'Bati Avrupa\'ya kıyasla %40-50 daha uygun yaşam maliyeti', 'Hızlı büyüyen iş ve teknoloji ekosistemi', 'AB vatandaşlığına giden yol', 'Aile birleşimi hakkı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2054,7 +2054,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-white">Şehirler</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
@@ -2062,7 +2062,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     { name: 'Kaunas', title: 'Sanayi Merkezi', desc: 'Yaşam maliyeti daha uygundur.' },
                     { name: 'Klaipeda', title: 'Liman Şehri', desc: 'Lojistik ve denizcilik sektörü güçlü.' }
                   ].map((city, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5 reveal-left">
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
                       <h4 className="text-lg font-black text-[#facc15] italic">{city.name}</h4>
                       <p className="text-[10px] font-black uppercase text-gray-500">{city.title}</p>
                       <p className="text-xs">{city.desc}</p>
@@ -2071,9 +2071,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
@@ -2179,16 +2179,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4 reveal-on-scroll">
+              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4">
                 <h2 className="text-2xl font-black italic uppercase text-white">Almanya Hakkında Genel Bilgi</h2>
                 <p>Almanya, Avrupa'nın en büyük ekonomisi ve Türk göçmenler için en popüler destinasyondur. Başkenti Berlin, nüfusu ~84 milyon, para birimi Euro'dur.</p>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Almanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en yüksek maaşları', 'Güçlü sosyal haklar ve işçi güvencesi', 'Kaliteli sağlık ve eğitim sistemi', 'Büyük Türk topluluğu (yaklaşık 3 milyon)', 'Yüksek yaşam standardı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2196,7 +2196,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-white">Popüler İş Alanları</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -2205,7 +2205,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     { name: 'Fabrika & Üretim', desc: 'Otomotiv (BMW, Mercedes) sektöründe alım fazladır.' },
                     { name: 'İnşaat', desc: 'Tecrübeli işçilere yüksek ücret ödenmektedir.' }
                   ].map((job, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5 reveal-left">
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
                       <h4 className="text-lg font-black text-[#facc15] italic">{job.name}</h4>
                       <p className="text-xs">{job.desc}</p>
                     </div>
@@ -2213,9 +2213,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
@@ -2314,16 +2314,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4 reveal-on-scroll">
+              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4">
                 <h2 className="text-2xl font-black italic uppercase text-white">Polonya Hakkında Genel Bilgi</h2>
                 <p>Polonya, Orta Avrupa'nın en hızlı büyüyen ekonomilerinden biridir. Başkenti Varşova, nüfusu ~38 milyon, para birimi Zloti (PLN)'dir.</p>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Polonya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en hızlı büyüyen ekonomisi', 'Almanya\'ya kıyasla kolay vize süreci', 'Uygun yaşam maliyeti', 'Güçlü sanayi ve üretim sektörü', 'Türkiye\'ye yakın konum'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2331,9 +2331,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6 reveal-on-scroll">
+              <section className="space-y-6">
                 <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
