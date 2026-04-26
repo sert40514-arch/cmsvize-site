@@ -1096,6 +1096,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           * { background-attachment: scroll !important; }
           
           .hero-title { font-size: clamp(28px, 8vw, 48px) !important; }
+
+          /* Navbar & Logo Fix */
+          nav { top: 0 !important; height: 64px !important; }
+          .nav-logo-container { width: 72px !important; height: 72px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+          .nav-logo { max-width: 64px !important; width: 64px !important; height: auto !important; object-fit: contain !important; }
+          
+          /* Footer Logo Fix */
+          .footer-logo { max-width: 120px !important; height: auto !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1146,8 +1154,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {!currentPage.startsWith('admin') && (
         <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0B0F1A]/80 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
-            <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
+            <div onClick={() => setCurrentPage('home')} className="nav-logo-container flex items-center group cursor-pointer">
+              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="nav-logo h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -3649,7 +3657,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
               <div className="space-y-8">
-                <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto" loading="lazy" decoding="async" />
+                <img src={logoImg} alt="CMSVize Logo" className="footer-logo h-16 w-auto" loading="lazy" decoding="async" />
                 <p className="text-gray-400 text-sm leading-relaxed font-medium">
                   Avrupa vizeleri ve oturum izinleri konusunda profesyonel çözüm ortağınız.
                 </p>
