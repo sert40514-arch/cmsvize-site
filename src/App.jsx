@@ -34,7 +34,10 @@ import {
   Save,
   Activity,
   Edit,
-  Filter
+  Filter,
+  ClipboardList,
+  Folder,
+  Send
 } from 'lucide-react';
 
 // Custom Icons
@@ -1481,6 +1484,61 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </button>
                   </GlowCard>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          {/* NASIL ÇALIŞIR - BAŞVURU SÜRECİ */}
+          <section className="py-32 px-6 bg-[#05070A] relative overflow-hidden reveal-on-scroll">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-[#facc15]/30 to-transparent"></div>
+            
+            <div className="max-w-7xl mx-auto space-y-20">
+              <div className="text-center space-y-4">
+                <h2 className="text-sm font-black uppercase tracking-[0.3em] text-[#facc15]">NASIL ÇALIŞIR?</h2>
+                <h3 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Başvurudan Avrupa'ya — <span className="text-[#facc15]">5 Basit Adım</span></h3>
+                <div className="w-24 h-1.5 bg-[#facc15] mx-auto rounded-full"></div>
+              </div>
+
+              <div className="relative">
+                {/* Bağlantı Çizgisi (Desktop) */}
+                <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#facc15]/0 via-[#facc15]/20 to-[#facc15]/0 -translate-y-1/2"></div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 relative z-10">
+                  {[
+                    { num: "01", icon: <ClipboardList size={32} />, title: "ÜCRETSİZ BAŞVURU", desc: "Formu doldurun, uzman ekibimiz 24 saat içinde sizi arasın." },
+                    { num: "02", icon: <Folder size={32} />, title: "EVRAK HAZIRLAMA", desc: "Gerekli belgeler listelenir, eksikler tamamlanır. Tüm süreç rehberlik eşliğinde." },
+                    { num: "03", icon: <Send size={32} />, title: "BAŞVURU GÖNDERİMİ", desc: "Eksiksiz dosyanız resmi makamlara iletilir. Siz hiçbir şey yapmak zorunda değilsiniz." },
+                    { num: "04", icon: <Clock size={32} />, title: "ONAY SÜRECİ", desc: "Başvurunuz işleme alınır. Anlık durum takibi yapabilirsiniz." },
+                    { num: "05", icon: <Globe size={32} />, title: "AVRUPA'YA UÇUŞ! 🎉", desc: "Vizeniz/kartınız onaylanır. Avrupa maceranız başlıyor!" }
+                  ].map((step, i) => (
+                    <div key={i} className="group relative">
+                      <div className="glass p-8 rounded-3xl border border-white/5 hover:border-[#facc15]/40 transition-all duration-500 h-full flex flex-col items-center text-center space-y-6 hover:shadow-[0_0_30px_rgba(250,204,21,0.1)] group-hover:-translate-y-2">
+                        <div className="absolute -top-4 -right-4 bg-[#facc15] text-[#0B0F1A] w-10 h-10 rounded-xl font-black flex items-center justify-center text-sm shadow-xl group-hover:scale-110 transition-transform">
+                          {step.num}
+                        </div>
+                        <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500 border border-[#facc15]/20">
+                          {step.icon}
+                        </div>
+                        <h4 className="text-lg font-black italic uppercase tracking-tight">{step.title}</h4>
+                        <p className="text-xs text-gray-400 font-medium leading-relaxed">{step.desc}</p>
+                      </div>
+                      
+                      {/* Ok İşareti (Desktop) */}
+                      {i < 4 && (
+                        <div className="hidden lg:flex absolute top-1/2 -right-6 -translate-y-1/2 z-20 text-[#facc15]/40 group-hover:text-[#facc15] transition-colors">
+                          <ChevronRight size={24} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-12 text-center space-y-8">
+                <p className="text-xl text-gray-300 font-bold italic uppercase tracking-tighter">Hemen Başlamak İster Misiniz?</p>
+                <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-5 rounded-2xl font-black text-xl uppercase tracking-wider hover:scale-105 transition-transform shadow-[0_10px_40px_rgba(250,204,21,0.2)]">
+                  ÜCRETSİZ BAŞVURU BAŞLAT
+                </button>
               </div>
             </div>
           </section>
