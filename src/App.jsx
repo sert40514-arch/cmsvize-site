@@ -756,17 +756,20 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         throw error;
       }
 
-      // 4. Update local state and finish
+      console.log("APPLICATION INSERT SUCCESS");
+      console.log("SHOWING SUCCESS SCREEN");
+
+      // Set success first
+      setFormSuccess(true);
+      setIsSubmitting(false);
+
+      // Restore history
       if (!window.cms_sub_history) window.cms_sub_history = [];
       window.cms_sub_history.push(Date.now());
       window.cms_sub_history = window.cms_sub_history.slice(-10);
 
       playNotificationSound();
       showToast('Başvurunuz başarıyla alındı!');
-
-      // Set success first
-      setFormSuccess(true);
-      setIsSubmitting(false);
 
       // Scroll to form to ensure success message is visible
       if (formRef.current) {
@@ -1859,7 +1862,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>}
                   {!formSuccess && <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>}
                   {formSuccess ? (
-                    <div className="flex flex-col items-center justify-center text-center space-y-6 py-16 animate-fade-up">
+                    <div id="success-screen" className="flex flex-col items-center justify-center text-center space-y-6 py-16">
                       <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
                         <CheckCircle2 size={48} className="text-green-500" />
                       </div>
