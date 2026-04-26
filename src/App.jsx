@@ -75,8 +75,35 @@ import { GlowCard } from './components/ui/spotlight-card';
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
   ? import.meta.env.VITE_WHATSAPP_NUMBER 
   : "905459918268";
+
+// Corporate Design System Colors
+const colors = {
+  // Primary - Deep Professional Blue
+  primary: "#1e3a8a",
+  primaryLight: "#3b82f6",
+  primaryDark: "#1e293b",  
+  // Secondary - Refined Gold (used sparingly)
+  accent: "#d69e2e",
+  accentLight: "#fbbf24",  
+  // Backgrounds
+  bgMain: "#0f172a",
+  bgSecondary: "#1e293b",
+  bgCard: "#1e293b",
+  bgGlass: "rgba(255, 255, 255, 0.03)",  
+  // Text
+  textPrimary: "#f8fafc",
+  textSecondary: "#94a3b8",
+  textMuted: "#64748b",  
+  // Borders
+  border: "rgba(255, 255, 255, 0.08)",
+  borderLight: "rgba(255, 255, 255, 0.12)",  
+  // Status
+  success: "#10b981",
+  error: "#ef4444",
+};
+
 const STATS_DEFAULTS = { success: 98, clients: 2500, countries: 15 };
-const darkBg = "#0B0F1A";
+const darkBg = colors.bgMain;
 
 const INITIAL_REVIEWS = [
   { id: 1, name: "Caner T.", visa: "Almanya Ulusal Vize (D Tipi)", flag: "🇩🇪", time: "3 gün önce", text: "Almanya'daki işverenimle anlaştıktan sonra tüm süreci CMSVize yönetti. Dosya hazırlığı o kadar profesyoneldi ki konsoloslukta hiç soru bile sormadılar.", likes: 14 },
@@ -934,136 +961,325 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
   };
 
 return (
-    <div className="min-h-screen text-white font-sans selection:bg-yellow-400 selection:text-black overflow-x-hidden" style={{ backgroundColor: darkBg }}>
-      {/* Visual Layout Surgeon - Enhanced CSS */}
+    <div className="min-h-screen font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden" style={{ backgroundColor: colors.bgMain }}>
+      {/* Corporate Design System - Enhanced CSS */}
       <style>{`
-        @keyframes fade-up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-        .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* Scroll Reveal */
-        .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal-left { opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal-active { opacity: 1 !important; transform: translate(0, 0) !important; }
+        /* ===== CORPORATE DESIGN TOKENS ===== */
+        :root {
+          --color-primary: ${colors.primary};
+          --color-primary-light: ${colors.primaryLight};
+          --color-accent: ${colors.accent};
+          --color-bg-main: ${colors.bgMain};
+          --color-bg-secondary: ${colors.bgSecondary};
+          --color-text-primary: ${colors.textPrimary};
+          --color-text-secondary: ${colors.textSecondary};
+          --color-border: ${colors.border};
+          --space-xs: 0.5rem;
+          --space-sm: 1rem;
+          --space-md: 1.5rem;
+          --space-lg: 2rem;
+          --space-xl: 3rem;
+          --space-2xl: 4rem;
+          --radius-sm: 6px;
+          --radius-md: 10px;
+          --radius-lg: 16px;
+          --radius-xl: 24px;
+          --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+          --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+          --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+          --transition-base: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         
-        /* Hero Sequence */
-        .hero-slide-in { opacity: 0; transform: translateX(-30px); animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-
-        /* Mobile Performance Optimization - Critical Fixes */
+        /* ===== BASE ANIMATIONS ===== */
+        @keyframes fade-up { 
+          from { opacity: 0; transform: translateY(40px); } 
+          to { opacity: 1; transform: translateY(0); } 
+        }
+        .animate-fade-up { 
+          animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        
+        @keyframes slideIn { 
+          from { opacity: 0; transform: translateX(-30px); } 
+          to { opacity: 1; transform: translateX(0); } 
+        }
+        .hero-slide-in { 
+          opacity: 0; 
+          animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        
+        /* ===== CORPORATE COMPONENTS ===== */
+        .glass { 
+          background: ${colors.bgGlass}; 
+          backdrop-filter: blur(40px); 
+          border: 1px solid ${colors.border}; 
+          box-shadow: var(--shadow-lg);
+          transition: var(--transition-base);
+        }
+        .glass:hover {
+          border-color: ${colors.borderLight};
+          box-shadow: 0 8px 40px rgba(30, 58, 138, 0.15);
+        }
+        
+        .text-gradient { 
+          background: linear-gradient(135deg, #fff 0%, ${colors.primaryLight} 100%); 
+          -webkit-background-clip: text; 
+          -webkit-text-fill-color: transparent; 
+        }
+        
+        /* Scroll Reveal */
+        .reveal-on-scroll { 
+          opacity: 0; 
+          transform: translateY(30px); 
+          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .reveal-left { 
+          opacity: 0; 
+          transform: translateX(-30px); 
+          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .reveal-active { 
+          opacity: 1 !important; 
+          transform: translate(0, 0) !important; 
+        }
+        
+        /* ===== TYPOGRAPHY - CORPORATE ===== */
+        h1, h2, h3, h4, h5, h6 { 
+          font-family: system-ui, -apple-system, sans-serif;
+          letter-spacing: -0.02em;
+        }
+        .hero-title { 
+          font-size: clamp(2rem, 5vw, 4.5rem);
+          line-height: 1.1;
+          font-weight: 900;
+          letter-spacing: -0.03em;
+        }
+        .section-title { 
+          font-size: clamp(1.75rem, 4vw, 3rem);
+          font-weight: 800;
+          letter-spacing: -0.02em;
+          line-height: 1.2;
+        }
+        
+        /* ===== BUTTONS - CORPORATE STYLE ===== */
+        .btn-corporate { 
+          border-radius: var(--radius-md); 
+          transition: var(--transition-base); 
+          box-shadow: var(--shadow-sm);
+          font-weight: 700;
+          letter-spacing: 0.02em;
+        }
+        .btn-corporate:hover { 
+          transform: translateY(-2px); 
+          filter: brightness(1.05); 
+          box-shadow: var(--shadow-md), 0 0 20px rgba(30, 58, 138, 0.2); 
+        }
+        .btn-primary { 
+          background: var(--color-primary);
+          color: white;
+        }
+        .btn-accent { 
+          background: var(--color-accent);
+          color: var(--color-bg-main);
+        }
+        
+        /* ===== INPUTS ===== */
+        .input-corporate { 
+          border-radius: var(--radius-md); 
+          border: 1px solid ${colors.border}; 
+          background: ${colors.bgSecondary};
+          color: ${colors.textPrimary};
+          transition: var(--transition-base);
+          padding: var(--space-sm) var(--space-md);
+        }
+        .input-corporate:focus { 
+          border-color: var(--color-primary-light); 
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
+          outline: none; 
+          background: rgba(30, 41, 59, 0.8);
+        }
+        
+        /* ===== CARDS ===== */
+        .card-corporate {
+          background: ${colors.bgSecondary};
+          border: 1px solid ${colors.border};
+          border-radius: var(--radius-lg);
+          padding: var(--space-lg);
+          transition: var(--transition-base);
+        }
+        .card-corporate:hover {
+          border-color: ${colors.borderLight};
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-lg);
+        }
+        
+        /* ===== MOBILE OPTIMIZATIONS ===== */
         @media (max-width: 768px) {
+          :root {
+            --space-xs: 0.375rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+          }
+          
           html { font-size: 14px; }
           body { overflow-x: hidden; }
           img, video { max-width: 100%; height: auto; }
-          .container { padding: 0 12px; }
-          section { padding: 24px 12px; }
-
-          /* Hide non-essential on mobile */
-          .top-bar { display: none !important; }
           
-          /* Simplify glass effect for performance */
-          .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important; }
+          /* Simplify effects for performance */
+          .glass { 
+            backdrop-filter: none !important; 
+            -webkit-backdrop-filter: none !important; 
+            box-shadow: var(--shadow-sm) !important; 
+          }
           
-          /* Disable animations on mobile for performance */
-          .reveal-on-scroll, .reveal-left { transition: opacity 0.3s ease-out !important; transform: none !important; }
-          .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
-          .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
+          /* Disable complex animations */
+          .reveal-on-scroll, .reveal-left { 
+            transition: opacity 0.3s ease-out !important; 
+            transform: none !important; 
+          }
+          .hero-slide-in { 
+            animation: none !important; 
+            opacity: 1 !important; 
+            transform: none !important; 
+          }
+          .animate-fade-up { 
+            animation: none !important; 
+            opacity: 1 !important; 
+            transform: none !important; 
+          }
           .shimmer { animation: none !important; }
           
-          /* GlowCard (Spotlight) Aggressive Mobile Disable */
-          [data-glow] {
-            background-image: none !important;
-            background-attachment: initial !important;
-            filter: none !important;
-            backdrop-filter: none !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+          /* Typography mobile */
+          .hero-title { 
+            font-size: clamp(1.75rem, 7vw, 2.5rem) !important; 
+            line-height: 1.15 !important; 
           }
-          [data-glow]::before,
-          [data-glow]::after { display: none !important; }
-          [data-glow] [data-glow] { display: none !important; }
-
-          * { background-attachment: scroll !important; }
+          h1 { font-size: clamp(1.5rem, 6vw, 2.5rem) !important; }
+          h2 { font-size: clamp(1.25rem, 5vw, 2rem) !important; }
+          h3 { font-size: clamp(1.1rem, 4vw, 1.5rem) !important; }
+          p { font-size: 14px !important; line-height: 1.6 !important; }
           
-          /* Typography fixes */
-          .hero-title { font-size: clamp(24px, 7vw, 36px) !important; line-height: 1.1 !important; }
-          h1 { font-size: clamp(24px, 6vw, 36px) !important; }
-          h2 { font-size: clamp(20px, 5vw, 28px) !important; }
-          h3 { font-size: clamp(16px, 4vw, 22px) !important; }
-          p { font-size: 14px !important; line-height: 1.5 !important; }
+          /* Spacing */
+          section { padding: var(--space-lg) var(--space-sm) !important; }
+          .grid-cols-2, .grid-cols-3, .grid-cols-4 { 
+            grid-template-columns: 1fr !important; 
+          }
+          .grid { gap: var(--space-md) !important; }
           
-          /* Fix grids - single column on mobile */
-          .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr !important; }
-          .grid { gap: 12px !important; }
+          /* Navigation */
+          nav { 
+            top: 0 !important; 
+            height: 56px !important; 
+            padding: 0 var(--space-sm) !important; 
+          }
+          .nav-logo-container { 
+            width: 48px !important; 
+            height: 48px !important; 
+            flex-shrink: 0 !important; 
+          }
+          .nav-logo { 
+            max-width: 44px !important; 
+            width: 44px !important; 
+            height: auto !important; 
+          }
           
-          /* Form fixes */
-          .input-corporate { padding: 12px !important; font-size: 14px !important; }
-          .btn-corporate { padding: 14px 20px !important; font-size: 14px !important; width: 100%; text-align: center; }
+          /* Hide top bar on mobile */
+          .top-bar { display: none !important; }
           
-          /* Navbar & Logo Fix */
-          nav { top: 0 !important; height: 56px !important; padding: 0 12px !important; }
-          .nav-logo-container { width: 48px !important; height: 48px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
-          .nav-logo { max-width: 44px !important; width: 44px !important; height: auto !important; object-fit: contain !important; }
+          /* Forms */
+          .input-corporate { 
+            padding: 12px !important; 
+            font-size: 14px !important; 
+          }
+          .btn-corporate { 
+            padding: 14px 20px !important; 
+            font-size: 14px !important; 
+            width: 100%; 
+            text-align: center; 
+          }
           
-          /* Footer Logo Fix */
-          .footer-logo { max-width: 100px !important; height: auto !important; }
-          
-          /* Mobile menu spacing */
-          .mobile-menu-open { padding: 16px !important; }
-          
-          /* Mobile menu button fix */
-          .lg\\:hidden { display: flex !important; }
+          /* Mobile menu button */
           nav button.lg\\:hidden { 
             display: flex !important; 
             position: relative !important;
             z-index: 9999 !important;
-            background: rgba(255,255,255,0.1) !important;
-            border-radius: 8px !important;
+            background: rgba(255,255,255,0.08) !important;
+            border-radius: var(--radius-sm) !important;
+            padding: 8px !important;
           }
           
           /* Card fixes */
-          .linkedin-card, .linkedin-faq { padding: 16px !important; }
+          .linkedin-card, .linkedin-faq, .card-corporate { 
+            padding: var(--space-md) !important; 
+          }
           
-          /* Modal/Popup fixes */
-          .fixed { padding: 12px !important; }
-          
-          /* Table fixes for admin */
-          table { font-size: 10px !important; }
-          th, td { padding: 8px 4px !important; }
-          
-          /* WhatsApp float - smaller on mobile */
-          .fixed.bottom-6 { bottom: 12px !important; right: 12px !important; }
-          .fixed.bottom-6 > div { padding: 10px 14px !important; }
-          .fixed.bottom-6 svg { width: 20px !important; height: 20px !important; }
+          /* Footer */
+          .footer-logo { 
+            max-width: 100px !important; 
+            height: auto !important; 
+          }
         }
-
-        /* Small mobile (under 480px) */
+        
+        /* ===== SMALL MOBILE ===== */
         @media (max-width: 480px) {
           html { font-size: 13px; }
-          section { padding: 20px 10px; }
-          .btn-corporate { padding: 12px 16px !important; font-size: 13px !important; }
-          h1 { font-size: 22px !important; }
-          .glass { padding: 16px !important; }
-          .grid { gap: 8px !important; }
+          .btn-corporate { 
+            padding: 12px 16px !important; 
+            font-size: 13px !important; 
+          }
         }
-
-
-        .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
-        .hero-img-container:hover { border-color: rgba(250, 204, 21, 0.4); box-shadow: 0 0 70px rgba(250, 204, 21, 0.2); }
-        .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
-        .linkedin-faq { background: #1B1F23; border: 1px solid #30363D; }
-        .btn-corporate { border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .btn-corporate:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 0 20px rgba(250, 204, 21, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .input-corporate { border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
-        .input-corporate:focus { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2); outline: none; }
-        .text-gray-400 { color: #cbd5e1 !important; }
         
+        /* ===== UTILITY CLASSES ===== */
+        .text-primary { color: var(--color-text-primary) !important; }
+        .text-secondary { color: var(--color-text-secondary) !important; }
+        .text-muted { color: ${colors.textMuted} !important; }
+        .border-subtle { border-color: ${colors.border} !important; }
+        
+        /* ===== IMAGE CONTAINERS ===== */
+        .hero-img-container { 
+          position: relative; 
+          width: 100%; 
+          max-width: 620px; 
+          border-radius: var(--radius-xl); 
+          overflow: hidden; 
+          border: 2px solid rgba(59, 130, 246, 0.2); 
+          box-shadow: 0 0 50px rgba(59, 130, 246, 0.1); 
+          transition: var(--transition-base);
+        }
+        .hero-img-container:hover { 
+          border-color: rgba(59, 130, 246, 0.4); 
+          box-shadow: 0 0 70px rgba(59, 130, 246, 0.2); 
+        }
+        
+        /* ===== LINKEDIN CARDS ===== */
+        .linkedin-card { 
+          background: #1B1F23; 
+          border: 1px solid #30363D; 
+          border-radius: var(--radius-sm); 
+        }
+        .linkedin-faq { 
+          background: #1B1F23; 
+          border: 1px solid #30363D; 
+        }
+        
+        /* ===== SHIMMER EFFECT ===== */
         .shimmer {
-          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
           background-size: 200% 100%;
           animation: shimmer 2s infinite;
         }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes shimmer { 
+          0% { background-position: -200% 0; } 
+          100% { background-position: 200% 0; } 
+        }
+        
+        /* ===== GLOW CARD OVERRIDES ===== */
+        [data-glow] {
+          --base: 220;
+          --spread: 200;
+        }
       `}</style>
 
       {/* TOP CONTACT BAR */}
@@ -1071,13 +1287,13 @@ return (
         <div className="top-bar fixed top-0 left-0 w-full z-[60] bg-[#05070A] border-b border-white/5 h-10 flex items-center overflow-hidden px-6">
           <div className="max-w-7xl mx-auto w-full flex justify-between items-center text-[9px] md:text-xs font-bold tracking-[0.05em] text-gray-300">
             <div className="flex items-center space-x-3 md:space-x-6">
-              <span className="flex items-center space-x-1"><Phone size={12} className="text-[#facc15]" /> <span>+90 545 991 82 68</span></span>
-              <span className="hidden sm:flex items-center space-x-1"><Mail size={12} className="text-[#facc15]" /> <span>info@cmsvize.com</span></span>
-              <span className="hidden lg:flex items-center space-x-1"><Clock size={12} className="text-[#facc15]" /> <span>Pzt-Cum 09:00-18:00</span></span>
+              <span className="flex items-center space-x-1"><Phone size={12} className="text-[#d69e2e]" /> <span>+90 545 991 82 68</span></span>
+              <span className="hidden sm:flex items-center space-x-1"><Mail size={12} className="text-[#d69e2e]" /> <span>info@cmsvize.com</span></span>
+              <span className="hidden lg:flex items-center space-x-1"><Clock size={12} className="text-[#d69e2e]" /> <span>Pzt-Cum 09:00-18:00</span></span>
             </div>
             <div className="flex items-center space-x-3 md:space-x-6">
-              <span className="flex items-center space-x-1"><MapPin size={12} className="text-[#facc15]" /> <span>TR Ofis: Aksaray</span></span>
-              <span className="hidden xs:flex items-center space-x-1"><MapPin size={12} className="text-[#facc15]" /> <span>LT Ofis: Vilnius</span></span>
+              <span className="flex items-center space-x-1"><MapPin size={12} className="text-[#d69e2e]" /> <span>TR Ofis: Aksaray</span></span>
+              <span className="hidden xs:flex items-center space-x-1"><MapPin size={12} className="text-[#d69e2e]" /> <span>LT Ofis: Vilnius</span></span>
             </div>
           </div>
         </div>
@@ -1085,24 +1301,24 @@ return (
 
       {/* NAVBAR */}
       {!currentPage.startsWith('admin') && (
-        <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0B0F1A]/80 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
+        <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0f172a]/90 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="nav-logo-container flex items-center group cursor-pointer">
               <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="nav-logo h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
-              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">HİZMETLER</button>
-              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">REFERANSLAR</button>
-              <button onClick={() => setCurrentPage('guides_main')} className={`hover:text-[#facc15] transition-colors uppercase tracking-widest ${['guides_main', 'guide_litvanya', 'guide_almanya', 'guide_polonya'].includes(currentPage) ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
-              <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 uppercase tracking-widest ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#d69e2e] transition-colors uppercase tracking-widest">HİZMETLER</button>
+              <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#d69e2e] transition-colors uppercase tracking-widest">REFERANSLAR</button>
+              <button onClick={() => setCurrentPage('guides_main')} className={`hover:text-[#d69e2e] transition-colors uppercase tracking-widest ${['guides_main', 'guide_litvanya', 'guide_almanya', 'guide_polonya'].includes(currentPage) ? 'text-[#d69e2e]' : ''}`}>VİZE REHBERİ</button>
+              <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#d69e2e] transition-colors flex items-center space-x-1 uppercase tracking-widest ${currentPage === 'portal' ? 'text-[#d69e2e]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
-              <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
+              <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#1e293b]">
                 <button onClick={() => setShowTrackingModal(true)} className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
-                  <Search size={16} className="text-[#0a66c2]" />
+                  <Search size={16} className="text-[#3b82f6]" />
                   <span>BAŞVURU TAKİP</span>
                 </button>
-                <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-8 py-2.5 font-black rounded-md">
+                <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-white px-8 py-2.5 font-black rounded-md">
                   BAŞVURU BAŞLAT
                 </button>
               </div>
@@ -1117,20 +1333,20 @@ return (
 
       {/* MOBILE MENU OVERLAY */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-[#0B0F1A] flex flex-col p-8 md:p-12 animate-fade-in lg:hidden overflow-y-auto">
+        <div className="fixed inset-0 z-[100] bg-[#0f172a] flex flex-col p-8 md:p-12 animate-fade-in lg:hidden overflow-y-auto">
           <div className="flex justify-between items-center mb-12">
             <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-12 w-auto object-contain" />
-            <X size={32} className="cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
+            <X size={32} className="cursor-pointer text-gray-300 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
           </div>
 
           <div className="flex flex-col space-y-6 flex-grow">
-            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">HİZMETLER</button>
-            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">REFERANSLAR</button>
-            <button onClick={() => { setCurrentPage('guides_main'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">VİZE REHBERİ</button>
-            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">BLOG</button>
-            <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">PORTAL</button>
-            <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4 flex items-center space-x-2">
-              <Search size={28} className="text-[#0a66c2]" />
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4">HİZMETLER</button>
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4">REFERANSLAR</button>
+            <button onClick={() => { setCurrentPage('guides_main'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4">VİZE REHBERİ</button>
+            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4">BLOG</button>
+            <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4">PORTAL</button>
+            <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#d69e2e] transition-colors border-b border-white/5 pb-4 flex items-center space-x-2">
+              <Search size={28} className="text-[#3b82f6]" />
               <span>BAŞVURU TAKİP</span>
             </button>
           </div>
@@ -1138,7 +1354,7 @@ return (
           <div className="mt-12">
             <button 
               onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('basvuru')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-              className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-xl font-black italic text-2xl uppercase tracking-tighter shadow-xl"
+              className="w-full bg-[#1e3a8a] text-white py-6 rounded-xl font-black italic text-2xl uppercase tracking-tighter shadow-xl"
             >
               BAŞVURU BAŞLAT
             </button>
@@ -1151,17 +1367,17 @@ return (
         <>
           {/* HERO SECTION */}
           <section className="relative pt-32 lg:pt-48 pb-16 lg:pb-32 px-4 md:px-6 overflow-hidden">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#0a66c2]/5 rounded-full blur-[120px] -z-10"></div>
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#1e3a8a]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#3b82f6]/5 rounded-full blur-[120px] -z-10"></div>
             
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
                 {/* Sol Kolon: İçerik */}
                 <div className="lg:col-span-7 space-y-6 md:space-y-10">
-                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[#facc15] font-black text-[10px] md:text-xs tracking-widest uppercase shadow-inner">
+                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[#d69e2e] font-black text-[10px] md:text-xs tracking-widest shadow-inner">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#facc15]"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d69e2e] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d69e2e]"></span>
                     </span>
                     <span>Sınırlı Kontenjan • Bugün sadece 12 kişi kabul ediliyor</span>
                   </div>
@@ -1169,22 +1385,22 @@ return (
                   <div className="space-y-6">
                     <h1 className="hero-title text-4xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase hero-slide-in" style={{ animationDelay: '0.3s' }}>
                       2 Yıllık Litvanya <br />
-                      <span className="text-[#facc15]">Oturum Kartı</span> <br />
-                      <span className="text-2xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa’da Çalışma Fırsatı</span>
+                      <span className="text-[#d69e2e]">Oturum Kartı</span> <br />
+                      <span className="text-2xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa'da Çalışma Fırsatı</span>
                     </h1>
-                    <p className="text-lg lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium hero-slide-in" style={{ animationDelay: '0.6s' }}>
+                    <p className="text-lg lg:text-2xl text-gray-300 max-w-2xl leading-relaxed font-medium hero-slide-in" style={{ animationDelay: '0.6s' }}>
                       Dil bilmeden Avrupa’da çalışma fırsatı. Tüm süreci uzman ekibimiz yönetir, siz sadece yola çıkarsınız.
                     </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 hero-slide-in" style={{ animationDelay: '0.9s' }}>
-                    <button onClick={scrollToForm} className="w-full sm:w-auto btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-5 font-black text-lg md:text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(250,204,21,0.2)]">
+                    <button onClick={scrollToForm} className="w-full sm:w-auto btn-corporate btn-primary px-10 py-5 font-black text-lg md:text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(30,58,138,0.2)]">
                       <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
                       <ChevronRight className="group-hover:translate-x-2 transition-transform" />
                     </button>
                     <button onClick={() => setShowWizard(true)} className="w-full sm:w-auto btn-corporate glass px-10 py-5 font-black text-lg md:text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                      <BookOpen className="text-[#facc15]" />
+                      <BookOpen className="text-[#d69e2e]" />
                       <span>UYGUNLUK TESTİ</span>
                     </button>
                   </div>
@@ -1198,7 +1414,7 @@ return (
                       { label: "Ücretsiz", text: "Ön Değerlendirme" }
                     ].map((m, i) => (
                       <div key={i} className="space-y-1">
-                        <p className="text-2xl font-black text-[#facc15] tracking-tighter italic">{m.label}</p>
+                        <p className="text-2xl font-black text-[#d69e2e] tracking-tighter italic">{m.label}</p>
                         <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black leading-tight">{m.text}</p>
                       </div>
                     ))}
@@ -1208,17 +1424,17 @@ return (
                 {/* Sağ Kolon: Video / Görsel Alanı */}
                 <div className="hidden lg:flex lg:col-span-5 justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
                   <div className="w-full max-w-[500px] relative group">
-                    <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
+                    <div className="absolute -inset-4 bg-[#1e3a8a]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="hero-img-container relative bg-[#0f172a] z-10 flex items-center justify-center">
                       <img src={SupportingImg} alt="CMSVize Hero" className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl rounded-2xl" loading="lazy" />
                       <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none group-hover:translate-y-[-5px] transition-transform duration-500">
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-[#facc15]">Resmi Süreç</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-[#d69e2e]">Resmi Süreç</p>
                           <p className="text-sm font-black text-white italic">Litvanya Operasyonlarımız</p>
                         </div>
                         <div className="flex -space-x-2">
-                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-[#0a66c2] flex items-center justify-center text-[10px] font-bold shadow-lg">LT</div>
-                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-red-600 flex items-center justify-center text-[10px] font-bold shadow-lg">EU</div>
+                          <div className="w-8 h-8 rounded-full border-2 border-[#1e293b] bg-[#3b82f6] flex items-center justify-center text-[10px] font-bold shadow-lg">LT</div>
+                          <div className="w-8 h-8 rounded-full border-2 border-[#1e293b] bg-red-600 flex items-center justify-center text-[10px] font-bold shadow-lg">EU</div>
                         </div>
                       </div>
                     </div>
@@ -1233,19 +1449,19 @@ return (
             <div className="max-w-7xl mx-auto px-6 relative z-10">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                 <div className="space-y-2">
-                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.success}+</p>
+                  <p className="text-5xl lg:text-7xl font-black text-[#d69e2e] tracking-tighter italic">{counts.success}+</p>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Başarılı <br />Başvuru</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">%{counts.approval}+</p>
+                  <p className="text-5xl lg:text-7xl font-black text-[#d69e2e] tracking-tighter italic">%{counts.approval}+</p>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Onay <br />Oranı</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.years}+ YIL</p>
+                  <p className="text-5xl lg:text-7xl font-black text-[#d69e2e] tracking-tighter italic">{counts.years}+ YIL</p>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Sektör <br />Deneyimi</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.privacy}%</p>
+                  <p className="text-5xl lg:text-7xl font-black text-[#d69e2e] tracking-tighter italic">{counts.privacy}%</p>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Gizlilik <br />Güvencesi</p>
                 </div>
               </div>
@@ -1253,11 +1469,11 @@ return (
           </section>
 
           {/* NEDEN BİZ? */}
-          <section className="py-24 px-6 bg-[#0B0F1A] reveal-on-scroll">
+          <section className="py-24 px-6 bg-[#0f172a] reveal-on-scroll">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16 space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
-                <div className="w-20 h-1.5 bg-[#facc15] mx-auto rounded-full"></div>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Neden <span className="text-[#d69e2e]">CMSVize?</span></h2>
+                <div className="w-20 h-1.5 bg-[#1e3a8a] mx-auto rounded-full"></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
@@ -1268,8 +1484,8 @@ return (
                   "KVKK Uyumlu Veri Güvenliği",
                   "Uzman Hukuki Danışmanlık Desteği"
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center space-x-4 glass p-6 rounded-2xl border border-white/5 hover:border-[#facc15]/30 transition-all">
-                    <div className="w-10 h-10 bg-[#facc15]/20 rounded-full flex items-center justify-center text-[#facc15] flex-shrink-0">
+                  <div key={i} className="flex items-center space-x-4 glass p-6 rounded-2xl border border-white/5 hover:border-[#d69e2e]/30 transition-all">
+                    <div className="w-10 h-10 bg-[#1e3a8a]/20 rounded-full flex items-center justify-center text-[#d69e2e] flex-shrink-0">
                       <CheckCircle2 size={24} />
                     </div>
                     <span className="font-bold text-gray-200">{item}</span>
@@ -1281,7 +1497,7 @@ return (
 
 
           {/* STATS TICKER */}
-          <div className="bg-[#facc15] border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
+          <div className="bg-[#1e3a8a] border-y-4 border-[#0f172a] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
             <div style={{ overflow: 'hidden', width: '100%', padding: '20px 0' }}>
               <div
                 className="cms-marquee-track"
@@ -1289,7 +1505,7 @@ return (
               >
                 {[1, 2].map(i => (
                   <div key={i} style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
-                    <div className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
+                    <div className="flex items-center space-x-12 px-6 text-white font-black italic text-2xl uppercase tracking-tighter">
                       <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
                       <span>A1 Transfer &amp; Sigorta</span> <Star size={24} fill="currentColor" />
                       <span>Fabrika &amp; Depo İşleri</span> <Star size={24} fill="currentColor" />
@@ -1302,31 +1518,31 @@ return (
           </div>
 
           {/* PDF LEAD MAGNET SECTION */}
-          <section className="py-24 px-6 bg-gradient-to-b from-[#0B0F1A] to-[#131926] relative overflow-hidden border-t border-white/5">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#facc15]/10 via-transparent to-transparent opacity-50"></div>
-            <div className="max-w-5xl mx-auto glass p-10 lg:p-16 rounded-3xl border border-[#facc15]/20 shadow-[0_0_50px_-12px_rgba(250,204,21,0.15)] relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <section className="py-24 px-6 bg-gradient-to-b from-[#0f172a] to-[#1e293b] relative overflow-hidden border-t border-white/5">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#1e3a8a]/10 via-transparent to-transparent opacity-50"></div>
+            <div className="max-w-5xl mx-auto glass p-10 lg:p-16 rounded-3xl border border-[#d69e2e]/20 shadow-[0_0_50px_-12px_rgba(250,204,21,0.15)] relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
               <div className="space-y-6 flex-1 text-center lg:text-left">
-                <div className="inline-flex items-center space-x-2 bg-[#facc15]/10 border border-[#facc15]/20 px-4 py-1.5 rounded-full text-[#facc15] font-black text-[10px] tracking-widest uppercase">
+                <div className="inline-flex items-center space-x-2 bg-[#1e3a8a]/10 border border-[#d69e2e]/20 px-4 py-1.5 rounded-full text-[#d69e2e] font-black text-[10px] tracking-widest uppercase">
                   <Star size={12} fill="currentColor" />
                   <span>ÜCRETSİZ PREMIUM İÇERİK</span>
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter leading-tight">
                   2026 Litvanya 2 Yıllık <br />
-                  <span className="text-[#facc15]">Oturum Kartı Rehberi</span>
+                  <span className="text-[#d69e2e]">Oturum Kartı Rehberi</span>
                 </h2>
                 <p className="text-gray-300 text-lg leading-relaxed font-medium max-w-xl">
                   Litvanya oturum kartı süreci, gerekli belgeler, Schengen hakları ve başvuru adımlarını içeren kapsamlı rehberi ücretsiz alın.
                 </p>
                 <div className="flex flex-wrap gap-3 pt-2 justify-center lg:justify-start">
-                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">PDF Formatında</span>
-                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">Anında İndirilebilir</span>
-                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-400">Güncel 2026 Mevzuatı</span>
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-300">PDF Formatında</span>
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-300">Anında İndirilebilir</span>
+                  <span className="bg-black/50 border border-white/10 px-3 py-1 rounded text-xs font-bold text-gray-300">Güncel 2026 Mevzuatı</span>
                 </div>
               </div>
               <div className="w-full lg:w-auto flex-shrink-0">
                 <button 
                   onClick={() => setShowPdfModal(true)} 
-                  className="w-full lg:w-auto btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 rounded-xl font-black text-xl flex items-center justify-center space-x-3 group relative overflow-hidden shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.5)] transition-all"
+                  className="w-full lg:w-auto btn-corporate bg-[#1e3a8a] text-white px-12 py-6 rounded-xl font-black text-xl flex items-center justify-center space-x-3 group relative overflow-hidden shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.5)] transition-all"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                   <BookOpen size={24} />
@@ -1339,18 +1555,18 @@ return (
           {/* PDF LEAD MODAL */}
           {showPdfModal && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <div className="absolute inset-0 bg-[#0B0F1A]/90 backdrop-blur-md" onClick={() => !isPdfSubmitting && setShowPdfModal(false)}></div>
-              <div className="bg-[#131926] border border-[#facc15]/30 rounded-2xl p-8 max-w-md w-full relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-fade-up max-h-[90vh] overflow-y-auto">
-                <button onClick={() => !isPdfSubmitting && setShowPdfModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 rounded-full p-2 transition-colors">
+              <div className="absolute inset-0 bg-[#0f172a]/90 backdrop-blur-md" onClick={() => !isPdfSubmitting && setShowPdfModal(false)}></div>
+              <div className="bg-[#1e293b] border border-[#d69e2e]/30 rounded-2xl p-8 max-w-md w-full relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-fade-up max-h-[90vh] overflow-y-auto">
+                <button onClick={() => !isPdfSubmitting && setShowPdfModal(false)} className="absolute top-4 right-4 text-gray-300 hover:text-white bg-white/5 rounded-full p-2 transition-colors">
                   <X size={20} />
                 </button>
                 
                 <div className="text-center space-y-4 mb-8">
-                  <div className="w-16 h-16 bg-[#facc15]/10 border border-[#facc15]/20 rounded-full flex items-center justify-center mx-auto text-[#facc15]">
+                  <div className="w-16 h-16 bg-[#1e3a8a]/10 border border-[#d69e2e]/20 rounded-full flex items-center justify-center mx-auto text-[#d69e2e]">
                     <BookOpen size={32} />
                   </div>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Rehberi <span className="text-[#facc15]">İndir</span></h3>
-                  <p className="text-sm text-gray-400 font-medium">Lütfen rehbere erişmek için bilgilerinizi eksiksiz doldurun.</p>
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Rehberi <span className="text-[#d69e2e]">İndir</span></h3>
+                  <p className="text-sm text-gray-300 font-medium">Lütfen rehbere erişmek için bilgilerinizi eksiksiz doldurun.</p>
                 </div>
 
                 {pdfFormSuccess ? (
@@ -1360,9 +1576,9 @@ return (
                     </div>
                     <div className="space-y-2">
                       <h4 className="text-xl font-black italic text-white uppercase">Rehberiniz Hazırlanıyor...</h4>
-                      <p className="text-sm text-gray-400">Dosya birazdan yeni sekmede açılacaktır.</p>
+                      <p className="text-sm text-gray-300">Dosya birazdan yeni sekmede açılacaktır.</p>
                     </div>
-                    <div className="w-8 h-8 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
+                    <div className="w-8 h-8 border-4 border-[#d69e2e] border-t-transparent rounded-full animate-spin mx-auto mt-4"></div>
                   </div>
                 ) : (
                   <form onSubmit={handlePdfSubmit} className="space-y-5">
@@ -1374,7 +1590,7 @@ return (
                         required 
                         value={pdfFormData.name} 
                         onChange={(e) => setPdfFormData({...pdfFormData, name: e.target.value.replace(/[^a-zA-Z\sğüşıöçĞÜŞİÖÇ]/g, '')})} 
-                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors" 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#d69e2e] outline-none transition-colors" 
                         placeholder="Ad Soyad" 
                       />
                     </div>
@@ -1385,7 +1601,7 @@ return (
                         required 
                         value={pdfFormData.phone} 
                         onChange={(e) => setPdfFormData({...pdfFormData, phone: e.target.value.replace(/[^\d+]/g, '')})} 
-                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors" 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#d69e2e] outline-none transition-colors" 
                         placeholder="05xx xxx xx xx" 
                       />
                     </div>
@@ -1396,13 +1612,13 @@ return (
                         <select 
                           value={pdfFormData.targetCountry} 
                           onChange={(e) => setPdfFormData({...pdfFormData, targetCountry: e.target.value})} 
-                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors text-white"
+                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#d69e2e] outline-none transition-colors text-white"
                         >
-                          <option className="bg-[#0B0F1A]">Litvanya</option>
-                          <option className="bg-[#0B0F1A]">Almanya</option>
-                          <option className="bg-[#0B0F1A]">Polonya</option>
-                          <option className="bg-[#0B0F1A]">Hollanda</option>
-                          <option className="bg-[#0B0F1A]">Fransa</option>
+                          <option className="bg-[#0f172a]">Litvanya</option>
+                          <option className="bg-[#0f172a]">Almanya</option>
+                          <option className="bg-[#0f172a]">Polonya</option>
+                          <option className="bg-[#0f172a]">Hollanda</option>
+                          <option className="bg-[#0f172a]">Fransa</option>
                         </select>
                       </div>
                       <div className="space-y-1">
@@ -1410,13 +1626,13 @@ return (
                         <select
                           value={pdfFormData.workField} 
                           onChange={(e) => setPdfFormData({...pdfFormData, workField: e.target.value})} 
-                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors text-[#facc15]" 
+                          className="w-full bg-black/40 px-3 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#d69e2e] outline-none transition-colors text-[#d69e2e]" 
                         >
-                          <option className="bg-[#0B0F1A]" value="">Seçiniz...</option>
-                          <option className="bg-[#0B0F1A]">Tır Şoförlüğü</option>
-                          <option className="bg-[#0B0F1A]">Fabrika / Depo</option>
-                          <option className="bg-[#0B0F1A]">A1 Transfer</option>
-                          <option className="bg-[#0B0F1A]">Fark Etmez</option>
+                          <option className="bg-[#0f172a]" value="">Seçiniz...</option>
+                          <option className="bg-[#0f172a]">Tır Şoförlüğü</option>
+                          <option className="bg-[#0f172a]">Fabrika / Depo</option>
+                          <option className="bg-[#0f172a]">A1 Transfer</option>
+                          <option className="bg-[#0f172a]">Fark Etmez</option>
                         </select>
                       </div>
                     </div>
@@ -1426,7 +1642,7 @@ return (
                       <textarea 
                         value={pdfFormData.note} 
                         onChange={(e) => setPdfFormData({...pdfFormData, note: e.target.value})} 
-                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#facc15] outline-none transition-colors resize-none" 
+                        className="w-full bg-black/40 px-5 py-3.5 text-sm font-bold border border-white/10 rounded-lg focus:border-[#d69e2e] outline-none transition-colors resize-none" 
                         rows="2" 
                         placeholder="Eklemek istedikleriniz..."
                       ></textarea>
@@ -1439,9 +1655,9 @@ return (
                         required
                         checked={pdfFormData.terms}
                         onChange={(e) => setPdfFormData({...pdfFormData, terms: e.target.checked})}
-                        className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#facc15] focus:ring-[#facc15] cursor-pointer accent-[#facc15]" 
+                        className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#d69e2e] focus:ring-[#d69e2e] cursor-pointer accent-[#d69e2e]" 
                       />
-                      <label htmlFor="pdfTerms" className="text-[10px] text-gray-400 leading-relaxed cursor-pointer font-medium">
+                      <label htmlFor="pdfTerms" className="text-[10px] text-gray-300 leading-relaxed cursor-pointer font-medium">
                         Danışmanlık hizmet şartlarını okudum, KVKK metnini onaylıyorum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.
                       </label>
                     </div>
@@ -1449,11 +1665,11 @@ return (
                     <button 
                       type="submit" 
                       disabled={isPdfSubmitting || !pdfFormData.terms || pdfFormData.name.length < 3 || pdfFormData.phone.length < 10}
-                      className="w-full btn-corporate bg-[#facc15] text-[#0B0F1A] py-4 rounded-xl font-black text-lg mt-4 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] transition-all"
+                      className="w-full btn-corporate bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg mt-4 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] transition-all"
                     >
                       {isPdfSubmitting ? (
                         <>
-                          <div className="w-5 h-5 border-2 border-[#0B0F1A] border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-5 h-5 border-2 border-[#0f172a] border-t-transparent rounded-full animate-spin"></div>
                           <span>İŞLENİYOR...</span>
                         </>
                       ) : (
@@ -1474,18 +1690,18 @@ return (
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="text-center space-y-4">
-                  <div className="flex justify-center text-[#facc15] mb-2"> <Star size={48} /> </div>
-                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">%{stats.success}</p>
+                  <div className="flex justify-center text-[#d69e2e] mb-2"> <Star size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#d69e2e] tracking-tighter">%{stats.success}</p>
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Vize Başarı Oranı</p>
                 </div>
                 <div className="text-center space-y-4 border-y md:border-y-0 md:border-x border-white/5 py-10 md:py-0">
-                  <div className="flex justify-center text-[#facc15] mb-2"> <Users size={48} /> </div>
-                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.clients}+</p>
+                  <div className="flex justify-center text-[#d69e2e] mb-2"> <Users size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#d69e2e] tracking-tighter">{stats.clients}+</p>
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Mutlu Müşteri</p>
                 </div>
                 <div className="text-center space-y-4">
-                  <div className="flex justify-center text-[#facc15] mb-2"> <Globe size={48} /> </div>
-                  <p className="text-6xl font-black italic text-[#facc15] tracking-tighter">{stats.countries}+</p>
+                  <div className="flex justify-center text-[#d69e2e] mb-2"> <Globe size={48} /> </div>
+                  <p className="text-6xl font-black italic text-[#d69e2e] tracking-tighter">{stats.countries}+</p>
                   <p className="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Hedef Ülke</p>
                 </div>
               </div>
@@ -1493,15 +1709,15 @@ return (
           </section>
 
           {/* MÜŞTERİ GÖRÜŞLERİ */}
-          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A] reveal-on-scroll">
+          <section id="referanslar" className="py-32 px-6 bg-[#0f172a] reveal-on-scroll">
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#0a66c2]">Görüşleri</span></h2>
-                <p className="text-gray-400 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#3b82f6]">Görüşleri</span></h2>
+                <p className="text-gray-300 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {((testimonials || []).filter(t => t.is_active)).map((ref, idx) => (
-                  <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
+                  <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#3b82f6]/30 transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform" title={ref.country}>
                       {ref.country === 'Almanya' ? '🇩🇪' : ref.country === 'Polonya' ? '🇵🇱' : ref.country === 'Litvanya' ? '🇱🇹' : ref.country === 'Hollanda' ? '🇳🇱' : ref.country === 'Belçika' ? '🇧🇪' : '🌍'}
                     </div>
@@ -1511,9 +1727,9 @@ return (
                         <div className="z-10 pr-6">
                           <div className="flex items-center space-x-1">
                             <h4 className="font-bold text-sm text-white">{ref.name}</h4>
-                            <CheckCircle2 size={16} className="text-[#0a66c2]" />
+                            <CheckCircle2 size={16} className="text-[#3b82f6]" />
                           </div>
-                          <p className="text-[11px] text-[#facc15] font-bold leading-tight mt-0.5">{ref.visa_type}</p>
+                          <p className="text-[11px] text-[#d69e2e] font-bold leading-tight mt-0.5">{ref.visa_type}</p>
                           <p className="text-[10px] text-gray-500 mt-0.5">{ref.time_ago} • 🌐</p>
                         </div>
                       </div>
@@ -1521,10 +1737,10 @@ return (
                     <div className="text-sm text-gray-200 leading-relaxed font-normal relative z-10">{ref.comment}</div>
                     <div className="flex items-center space-x-1 pt-2 relative z-10">
                       <div className="flex -space-x-1">
-                        <div className="w-5 h-5 bg-[#0a66c2] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
+                        <div className="w-5 h-5 bg-[#3b82f6] rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                         <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border-2 border-[#1B1F23]"><Star size={10} className="text-white fill-white" /></div>
                       </div>
-                      <span className="text-[11px] text-gray-400 font-medium ml-1">{ref.likes || 0} • <MessageSquare size={10} className="inline ml-1" /> {ref.comments_count || 0}</span>
+                      <span className="text-[11px] text-gray-300 font-medium ml-1">{ref.likes || 0} • <MessageSquare size={10} className="inline ml-1" /> {ref.comments_count || 0}</span>
                     </div>
                   </div>
                 ))}
@@ -1536,8 +1752,8 @@ return (
           <section id="hizmetler" className="py-32 lg:py-48 px-6 reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-20">
               <div className="text-center space-y-6 max-w-3xl mx-auto">
-                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Genişletilmiş <br /> <span className="text-[#facc15]">Hizmetlerimiz</span></h2>
-                <p className="text-xl text-gray-400 font-medium">Her profil için uygun bir Avrupa iş planı hazırlıyoruz.</p>
+                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Genişletilmiş <br /> <span className="text-[#d69e2e]">Hizmetlerimiz</span></h2>
+                <p className="text-xl text-gray-300 font-medium">Her profil için uygun bir Avrupa iş planı hazırlıyoruz.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[
@@ -1555,12 +1771,12 @@ return (
                   <GlowCard 
                     key={i} 
                     customSize={true} 
-                    className="group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden hover:-translate-y-2"
+                    className="group hover:border-[#d69e2e]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden hover:-translate-y-2"
                   >
-                    <div className="w-16 h-16 bg-[#facc15]/10 rounded-full flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all border border-white/5">{item.icon}</div>
+                    <div className="w-16 h-16 bg-[#1e3a8a]/10 rounded-full flex items-center justify-center text-[#d69e2e] mb-8 group-hover:bg-[#1e3a8a] group-hover:text-white transition-all border border-white/5">{item.icon}</div>
                     <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
-                    <p className="text-gray-400 font-medium leading-relaxed mb-6">{item.desc}</p>
-                    <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
+                    <p className="text-gray-300 font-medium leading-relaxed mb-6">{item.desc}</p>
+                    <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#d69e2e] font-black text-sm uppercase tracking-widest group">
                       <span>Detaylar</span> <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </GlowCard>
@@ -1571,18 +1787,18 @@ return (
 
           {/* NASIL ÇALIŞIR - BAŞVURU SÜRECİ */}
           <section className="py-32 px-6 bg-[#05070A] relative overflow-hidden reveal-on-scroll">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-[#facc15]/30 to-transparent"></div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-[#1e3a8a]/30 to-transparent"></div>
             
             <div className="max-w-7xl mx-auto space-y-20">
               <div className="text-center space-y-4">
-                <h2 className="text-sm font-black uppercase tracking-[0.3em] text-[#facc15]">NASIL ÇALIŞIR?</h2>
-                <h3 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Başvurudan Avrupa'ya — <span className="text-[#facc15]">5 Basit Adım</span></h3>
-                <div className="w-24 h-1.5 bg-[#facc15] mx-auto rounded-full"></div>
+                <h2 className="text-sm font-black uppercase tracking-[0.3em] text-[#d69e2e]">NASIL ÇALIŞIR?</h2>
+                <h3 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Başvurudan Avrupa'ya — <span className="text-[#d69e2e]">5 Basit Adım</span></h3>
+                <div className="w-24 h-1.5 bg-[#1e3a8a] mx-auto rounded-full"></div>
               </div>
 
               <div className="relative">
                 {/* Bağlantı Çizgisi (Desktop) */}
-                <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#facc15]/0 via-[#facc15]/20 to-[#facc15]/0 -translate-y-1/2"></div>
+                <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#1e3a8a]/0 via-[#1e3a8a]/20 to-[#1e3a8a]/0 -translate-y-1/2"></div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 relative z-10">
                   {[
@@ -1593,24 +1809,24 @@ return (
                     { num: "05", icon: <Globe size={32} />, title: "AVRUPA'YA UÇUŞ! 🎉", desc: "Vizeniz/kartınız onaylanır. Avrupa maceranız başlıyor!" }
                   ].map((step, i) => (
                     <div key={i} className="group relative">
-                      <div className="glass p-10 rounded-[2.5rem] border border-white/5 hover:border-[#facc15]/60 transition-all duration-700 h-full flex flex-col items-center text-center space-y-8 hover:shadow-[0_20px_50px_rgba(250,204,21,0.15)] group-hover:-translate-y-4">
-                        <div className="absolute -top-5 -right-5 bg-gradient-to-br from-[#facc15] to-[#ca8a04] text-[#0B0F1A] w-12 h-12 rounded-2xl font-black flex items-center justify-center text-lg shadow-2xl group-hover:scale-125 transition-transform duration-500">
+                      <div className="glass p-10 rounded-[2.5rem] border border-white/5 hover:border-[#d69e2e]/60 transition-all duration-700 h-full flex flex-col items-center text-center space-y-8 hover:shadow-[0_20px_50px_rgba(250,204,21,0.15)] group-hover:-translate-y-4">
+                        <div className="absolute -top-5 -right-5 bg-gradient-to-br from-[#1e3a8a] to-[#ca8a04] text-white w-12 h-12 rounded-2xl font-black flex items-center justify-center text-lg shadow-2xl group-hover:scale-125 transition-transform duration-500">
                           {step.num}
                         </div>
-                        <div className="w-20 h-20 bg-[#facc15]/10 rounded-[2rem] flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-700 border border-[#facc15]/20 shadow-inner group-hover:shadow-[0_0_30px_rgba(250,204,21,0.5)]">
+                        <div className="w-20 h-20 bg-[#1e3a8a]/10 rounded-[2rem] flex items-center justify-center text-[#d69e2e] group-hover:bg-[#1e3a8a] group-hover:text-white transition-all duration-700 border border-[#d69e2e]/20 shadow-inner group-hover:shadow-[0_0_30px_rgba(250,204,21,0.5)]">
                           {step.icon}
                         </div>
-                        <h4 className="text-xl font-black italic uppercase tracking-tighter group-hover:text-[#facc15] transition-colors">{step.title}</h4>
-                        <p className="text-sm text-gray-400 font-medium leading-relaxed opacity-80 group-hover:opacity-100">{step.desc}</p>
+                        <h4 className="text-xl font-black italic uppercase tracking-tighter group-hover:text-[#d69e2e] transition-colors">{step.title}</h4>
+                        <p className="text-sm text-gray-300 font-medium leading-relaxed opacity-80 group-hover:opacity-100">{step.desc}</p>
                       </div>
                       
                       {/* Ok İşareti (Desktop) */}
                       {i < 4 && (
                         <>
-                          <div className="hidden lg:flex absolute top-1/2 -right-10 -translate-y-1/2 z-20 text-[#facc15]/20 group-hover:text-[#facc15] group-hover:translate-x-2 transition-all duration-700">
+                          <div className="hidden lg:flex absolute top-1/2 -right-10 -translate-y-1/2 z-20 text-[#d69e2e]/20 group-hover:text-[#d69e2e] group-hover:translate-x-2 transition-all duration-700">
                             <ChevronRight size={32} strokeWidth={3} />
                           </div>
-                          <div className="flex lg:hidden justify-center items-center py-4 text-[#facc15]/40 animate-pulse">
+                          <div className="flex lg:hidden justify-center items-center py-4 text-[#d69e2e]/40 animate-pulse">
                             <ChevronDown size={32} strokeWidth={3} />
                           </div>
                         </>
@@ -1622,7 +1838,7 @@ return (
 
               <div className="pt-12 text-center space-y-8">
                 <p className="text-xl text-gray-300 font-bold italic uppercase tracking-tighter">Hemen Başlamak İster Misiniz?</p>
-                <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-5 rounded-2xl font-black text-xl uppercase tracking-wider hover:scale-105 transition-transform shadow-[0_10px_40px_rgba(250,204,21,0.2)]">
+                <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-white px-12 py-5 rounded-2xl font-black text-xl uppercase tracking-wider hover:scale-105 transition-transform shadow-[0_10px_40px_rgba(250,204,21,0.2)]">
                   ÜCRETSİZ BAŞVURU BAŞLAT
                 </button>
               </div>
@@ -1633,8 +1849,8 @@ return (
           <section id="surec" className="py-32 px-6 bg-white/[0.01] reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-20">
               <div className="text-center space-y-6 max-w-3xl mx-auto">
-                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Görsel <span className="text-[#facc15]">Sürecimiz</span></h2>
-                <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
+                <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Görsel <span className="text-[#d69e2e]">Sürecimiz</span></h2>
+                <p className="text-xl text-gray-300 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <GlowCard customSize={true} className="p-8 shadow-2xl bg-black/40 border-white/10">
@@ -1657,11 +1873,11 @@ return (
           <section className="py-24 px-6 bg-white/[0.02] border-y border-white/5 reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-12">
               <div className="flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center mb-2 border border-[#facc15]/20">
-                  <Camera size={32} className="text-[#facc15]" />
+                <div className="w-16 h-16 bg-[#1e3a8a]/10 rounded-2xl flex items-center justify-center mb-2 border border-[#d69e2e]/20">
+                  <Camera size={32} className="text-[#d69e2e]" />
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Bizi Instagram'da <span className="text-[#facc15]">Takip Edin</span></h2>
-                <p className="text-gray-400 font-medium text-lg">Güncel vize başarılarımız, duyurular ve yurtdışı yaşam ipuçları için profilimizi ziyaret edin.</p>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Bizi Instagram'da <span className="text-[#d69e2e]">Takip Edin</span></h2>
+                <p className="text-gray-300 font-medium text-lg">Güncel vize başarılarımız, duyurular ve yurtdışı yaşam ipuçları için profilimizi ziyaret edin.</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
                 {[
@@ -1735,15 +1951,15 @@ return (
 
                     {/* Bottom content */}
                     <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-                      <p className="text-[#facc15] text-[11px] font-black uppercase leading-tight drop-shadow-lg line-clamp-2">{post.label}</p>
+                      <p className="text-[#d69e2e] text-[11px] font-black uppercase leading-tight drop-shadow-lg line-clamp-2">{post.label}</p>
                       <p className="text-white/70 text-[9px] font-bold mt-0.5 tracking-widest">{post.tag}</p>
                     </div>
 
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-[#facc15]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center border-2 border-[#facc15] rounded-xl">
+                    <div className="absolute inset-0 bg-[#1e3a8a]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center border-2 border-[#d69e2e] rounded-xl">
                       <div className="bg-black/70 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center space-x-2 scale-75 group-hover:scale-100 transition-transform duration-300">
-                        <Camera size={16} className="text-[#facc15]" />
-                        <span className="text-[#facc15] font-black text-xs uppercase">Profili Gör</span>
+                        <Camera size={16} className="text-[#d69e2e]" />
+                        <span className="text-[#d69e2e] font-black text-xs uppercase">Profili Gör</span>
                       </div>
                     </div>
                   </a>
@@ -1756,12 +1972,12 @@ return (
           <section id="ekip" className="py-32 px-6">
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">CMSPRİME <span className="text-[#facc15]">EKİBİ</span></h2>
-                <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">CMSPRİME <span className="text-[#d69e2e]">EKİBİ</span></h2>
+                <p className="text-gray-300 font-medium text-lg tracking-tight">Vize ve kariyer yolculuğunuzda size rehberlik eden profesyoneller.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
                 {siteContent?.team?.filter(m => m.isVisible !== false).map((member) => (
-                  <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
+                  <div key={member.id} className="glass p-6 rounded-2xl group hover:border-[#d69e2e]/30 transition-all duration-500 shadow-2xl relative overflow-hidden">
                     <div className="aspect-[3/4] rounded-xl overflow-hidden mb-8 relative bg-black/40">
                       {member.img ? (
                         <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
@@ -1770,11 +1986,11 @@ return (
                           <User size={48} className="text-gray-500" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A] via-transparent to-transparent opacity-60"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-60"></div>
                     </div>
                     <h3 className="text-2xl font-black italic uppercase tracking-tighter">{member.name}</h3>
-                    <p className="text-[#facc15] font-black text-xs uppercase tracking-widest mt-2">{member.title}</p>
-                    {member.desc && <p className="text-gray-400 mt-4 text-sm font-medium leading-relaxed">{member.desc}</p>}
+                    <p className="text-[#d69e2e] font-black text-xs uppercase tracking-widest mt-2">{member.title}</p>
+                    {member.desc && <p className="text-gray-300 mt-4 text-sm font-medium leading-relaxed">{member.desc}</p>}
                   </div>
                 ))}
               </div>
@@ -1782,11 +1998,11 @@ return (
           </section>
 
           {/* SSS */}
-          <section id="sss" className="py-32 px-6 bg-[#0B0F1A]">
+          <section id="sss" className="py-32 px-6 bg-[#0f172a]">
             <div className="max-w-4xl mx-auto space-y-16">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Sıkça Sorulan <span className="text-[#facc15]">Sorular</span></h2>
-                <p className="text-gray-400 font-medium text-lg tracking-tight">Vize ve çalışma süreçlerine dair bilmeniz gerekenler.</p>
+                <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Sıkça Sorulan <span className="text-[#d69e2e]">Sorular</span></h2>
+                <p className="text-gray-300 font-medium text-lg tracking-tight">Vize ve çalışma süreçlerine dair bilmeniz gerekenler.</p>
               </div>
               <div className="space-y-3">
                 {[
@@ -1797,11 +2013,11 @@ return (
                 ].map((faq, idx) => (
                   <div key={idx} className="linkedin-faq overflow-hidden transition-all duration-300 rounded-lg">
                     <button onClick={() => setActiveFaq(activeFaq === idx ? null : idx)} className="w-full p-6 flex items-center justify-between text-left hover:bg-white/[0.02]">
-                      <span className={`text-lg font-bold transition-colors ${activeFaq === idx ? 'text-[#facc15]' : 'text-gray-200'}`}>{faq.q}</span>
-                      <ChevronDown className={`transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-[#facc15]' : 'text-gray-500'}`} />
+                      <span className={`text-lg font-bold transition-colors ${activeFaq === idx ? 'text-[#d69e2e]' : 'text-gray-200'}`}>{faq.q}</span>
+                      <ChevronDown className={`transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-[#d69e2e]' : 'text-gray-500'}`} />
                     </button>
                     <div className={`transition-all duration-500 overflow-hidden ${activeFaq === idx ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                      <div className="p-6 pt-0 text-gray-400 font-normal border-t border-white/5 bg-white/[0.01] leading-relaxed">{faq.a}</div>
+                      <div className="p-6 pt-0 text-gray-300 font-normal border-t border-white/5 bg-white/[0.01] leading-relaxed">{faq.a}</div>
                     </div>
                   </div>
                 ))}
@@ -1812,13 +2028,13 @@ return (
           {/* FORM SECTION */}
           <section ref={formRef} className="py-20 lg:py-32 px-4 md:px-6 overflow-hidden">
             <div className="max-w-6xl mx-auto w-full">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5 relative bg-[#0B0F1A]">
-                <div className="bg-[#131926] p-6 md:p-10 lg:p-20 relative w-full">
-                  {isSubmitting && <div className="absolute inset-0 bg-[#131926]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center space-y-4">
-                    <div className="w-12 h-12 border-4 border-[#facc15] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="font-black italic uppercase text-[#facc15] tracking-widest text-sm">İşleminiz Yapılıyor...</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5 relative bg-[#0f172a]">
+                <div className="bg-[#1e293b] p-6 md:p-10 lg:p-20 relative w-full">
+                  {isSubmitting && <div className="absolute inset-0 bg-[#1e293b]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center space-y-4">
+                    <div className="w-12 h-12 border-4 border-[#d69e2e] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="font-black italic uppercase text-[#d69e2e] tracking-widest text-sm">İşleminiz Yapılıyor...</p>
                   </div>}
-                  {!formSuccess && <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#facc15]">Başvur</span></h2>}
+                  {!formSuccess && <h2 className="text-5xl font-black italic uppercase tracking-tighter italic mb-10">Hemen <span className="text-[#d69e2e]">Başvur</span></h2>}
                   {formSuccess ? (
                     <div id="success-screen" className="flex flex-col items-center justify-center text-center space-y-6 py-16">
                       <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
@@ -1826,11 +2042,11 @@ return (
                       </div>
                       <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">BAŞVURUNUZ BAŞARIYLA ALINDI!</h3>
                       <div className="space-y-4">
-                        <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
+                        <p className="text-gray-300 font-medium text-lg leading-relaxed max-w-sm">Uzmanlarımız en kısa sürede vermiş olduğunuz bilgiler üzerinden size dönüş yapacaktır.</p>
                         <div className="bg-white/5 border border-white/10 p-6 rounded-xl space-y-3">
                           <div>
                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Takip Numaranız</p>
-                            <p className="text-2xl font-black italic text-[#facc15] tracking-tighter">{submittedTrackingId}</p>
+                            <p className="text-2xl font-black italic text-[#d69e2e] tracking-tighter">{submittedTrackingId}</p>
                           </div>
                           <div className="pt-3 border-t border-white/5">
                             <p className="text-[11px] font-bold text-gray-300">Ortalama dönüş süresi: 15–30 dakika</p>
@@ -1848,7 +2064,7 @@ return (
                           name="name" 
                           value={formData.name} 
                           onChange={handleInputChange} 
-                          className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.name && !isNameValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} 
+                          className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.name && !isNameValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#d69e2e]'}`} 
                           placeholder="Ad Soyad" 
                         />
                         {formData.name && !isNameValid && (
@@ -1864,7 +2080,7 @@ return (
                             name="phone" 
                             value={formData.phone} 
                             onChange={handleInputChange} 
-                            className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.phone && !isPhoneValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} 
+                            className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.phone && !isPhoneValid ? 'border-red-500 bg-red-500/5' : 'focus:border-[#d69e2e]'}`} 
                             placeholder="+90 5xx..." 
                           />
                           {formData.phone && !isPhoneValid && (
@@ -1873,35 +2089,35 @@ return (
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">HEDEF ÜLKE</label>
-                          <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] transition-colors">
-                            <option className="bg-[#0B0F1A]">Almanya</option>
-                            <option className="bg-[#0B0F1A]">Polonya</option>
-                            <option className="bg-[#0B0F1A]">Litvanya</option>
-                            <option className="bg-[#0B0F1A]">Hollanda</option>
-                            <option className="bg-[#0B0F1A]">Fransa</option>
+                          <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#d69e2e] transition-colors">
+                            <option className="bg-[#0f172a]">Almanya</option>
+                            <option className="bg-[#0f172a]">Polonya</option>
+                            <option className="bg-[#0f172a]">Litvanya</option>
+                            <option className="bg-[#0f172a]">Hollanda</option>
+                            <option className="bg-[#0f172a]">Fransa</option>
                           </select>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">ÇALIŞMAK İSTEDİĞİNİZ ALAN</label>
-                        <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#facc15] text-[#facc15] transition-colors">
-                          <option className="bg-[#0B0F1A]">Tır Şoförlüğü (KOD95)</option>
-                          <option className="bg-[#0B0F1A]">A1 Transfer Süreci</option>
-                          <option className="bg-[#0B0F1A]">Fabrika / Depo / Lojistik</option>
-                          <option className="bg-[#0B0F1A]">Fark Etmez / Danışman Önerisi</option>
+                        <select name="workField" value={formData.workField} onChange={handleInputChange} className="w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate focus:border-[#d69e2e] text-[#d69e2e] transition-colors">
+                          <option className="bg-[#0f172a]">Tır Şoförlüğü (KOD95)</option>
+                          <option className="bg-[#0f172a]">A1 Transfer Süreci</option>
+                          <option className="bg-[#0f172a]">Fabrika / Depo / Lojistik</option>
+                          <option className="bg-[#0f172a]">Fark Etmez / Danışman Önerisi</option>
                         </select>
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black uppercase tracking-widest text-gray-500 ml-2">EK NOT</label>
-                        <textarea name="message" value={formData.message} onChange={handleInputChange} className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.message && !validateMessage(formData.message) ? 'border-red-500 bg-red-500/5' : 'focus:border-[#facc15]'}`} rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
+                        <textarea name="message" value={formData.message} onChange={handleInputChange} className={`w-full bg-white/5 px-8 py-5 text-lg font-bold input-corporate transition-colors ${formData.message && !validateMessage(formData.message) ? 'border-red-500 bg-red-500/5' : 'focus:border-[#d69e2e]'}`} rows="3" placeholder="Tecrübelerinizden bahsedin..."></textarea>
                         {formData.message && !validateMessage(formData.message) && (
                           <p className="text-red-500 text-[10px] font-bold ml-2 animate-pulse">Lütfen daha açıklayıcı bir not yazın (Min 10 karakter).</p>
                         )}
                       </div>
 
                       <div className="flex items-start space-x-3 pt-2 pb-2">
-                        <input type="checkbox" required id="terms" className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#0a66c2] focus:ring-[#0a66c2] cursor-pointer" />
-                        <label htmlFor="terms" className="text-[11px] text-gray-400 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
+                        <input type="checkbox" required id="terms" className="mt-1 w-5 h-5 rounded border-white/20 bg-white/5 text-[#3b82f6] focus:ring-[#3b82f6] cursor-pointer accent-[#d69e2e]" />
+                        <label htmlFor="terms" className="text-[11px] text-gray-300 leading-relaxed cursor-pointer font-medium">Danışmanlık hizmet şartlarını okudum ve vize karar merciinin ilgili Konsolosluklar olduğunu kabul ediyorum.</label>
                       </div>
 
                       <div className="py-2 flex flex-col items-center space-y-4 min-h-[100px]">
@@ -1931,14 +2147,14 @@ return (
                       <button 
                         type="submit" 
                         disabled={!isPhoneValid || !isNameValid || !isTurnstileVerified}
-                        className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid && isNameValid && isTurnstileVerified ? 'bg-[#facc15] text-[#0B0F1A] hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
+                        className={`w-full py-6 btn-corporate font-black text-2xl uppercase italic tracking-tighter transition-all ${isPhoneValid && isNameValid && isTurnstileVerified ? 'bg-[#1e3a8a] text-white hover:scale-[1.02]' : 'bg-gray-800 text-gray-500 cursor-not-allowed grayscale'}`}
                       >
                         {isSubmitting ? 'GÖNDERİLİYOR...' : 'BAŞVURUYU TAMAMLA'}
                       </button>
                     </form>
                   )}
                 </div>
-                <div className="bg-[#facc15] p-8 md:p-10 lg:p-16 text-[#0B0F1A] flex flex-col justify-between relative overflow-hidden group w-full min-h-[400px]">
+                <div className="bg-[#1e3a8a] p-8 md:p-10 lg:p-16 text-white flex flex-col justify-between relative overflow-hidden group w-full min-h-[400px]">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-black/5 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
                   <div className="space-y-10 relative z-10">
                     <h3 className="text-5xl lg:text-7xl font-black italic uppercase leading-[0.85] tracking-tighter">AVRUPA <br /> KAPISI <br /> AÇILIYOR</h3>
@@ -1959,7 +2175,7 @@ return (
                       ))}
                     </div>
 
-                    <div className="bg-black text-[#facc15] py-3 px-6 rounded-lg text-center transform -rotate-1 shadow-xl">
+                    <div className="bg-black text-[#d69e2e] py-3 px-6 rounded-lg text-center transform -rotate-1 shadow-xl">
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">Ücretsiz Ön Değerlendirme • Hızlı Dönüş • Profesyonel Süreç</p>
                     </div>
                   </div>
@@ -1975,11 +2191,11 @@ return (
 
           {/* DYNAMIC MAP SECTION */}
           <section className="py-24 px-6 bg-[#080C14] border-t border-white/5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a66c2]/10 via-[#0B0F1A]/0 to-transparent"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#3b82f6]/10 via-[#0f172a]/0 to-transparent"></div>
             <div className="max-w-7xl mx-auto space-y-16 relative z-10">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Aktif <span className="text-[#facc15]">Avrupa Ağı</span></h2>
-                <p className="text-gray-400 font-medium">Uzmanlık alanımızdaki 5 ülkede kesintisiz hizmet.</p>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Aktif <span className="text-[#d69e2e]">Avrupa Ağı</span></h2>
+                <p className="text-gray-300 font-medium">Uzmanlık alanımızdaki 5 ülkede kesintisiz hizmet.</p>
               </div>
               <div className="flex flex-wrap justify-center gap-6">
                 {[
@@ -1989,11 +2205,11 @@ return (
                   { country: "Hollanda", flag: "🇳🇱", desc: "High-Skilled" },
                   { country: "Fransa", flag: "🇫🇷", desc: "Çalışma İzni" }
                 ].map((item, i) => (
-                  <div key={i} className="glass p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 w-40 hover:scale-105 hover:border-[#facc15]/30 transition-all cursor-pointer group">
+                  <div key={i} className="glass p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 w-40 hover:scale-105 hover:border-[#d69e2e]/30 transition-all cursor-pointer group">
                     <div className="text-4xl group-hover:-translate-y-2 transition-transform drop-shadow-2xl">{item.flag}</div>
                     <div className="text-center">
                       <p className="font-black text-white text-sm uppercase">{item.country}</p>
-                      <p className="text-[10px] text-[#facc15] font-bold mt-1 tracking-widest">{item.desc}</p>
+                      <p className="text-[10px] text-[#d69e2e] font-bold mt-1 tracking-widest">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -2005,16 +2221,16 @@ return (
           <section className="py-24 px-6 border-t border-white/5 bg-white/[0.01]">
             <div className="max-w-4xl mx-auto space-y-10">
               <div className="space-y-6 text-center">
-                <h2 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter text-white">Avrupa Vize ve Oturum Danışmanlığında <br className="hidden md:block" /> <span className="text-[#facc15]">Profesyonel Süreç Yönetimi</span></h2>
-                <div className="w-20 h-1 bg-[#facc15] mx-auto"></div>
+                <h2 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter text-white">Avrupa Vize ve Oturum Danışmanlığında <br className="hidden md:block" /> <span className="text-[#d69e2e]">Profesyonel Süreç Yönetimi</span></h2>
+                <div className="w-20 h-1 bg-[#1e3a8a] mx-auto"></div>
               </div>
               <div className="space-y-6">
                 <p className="text-gray-300 text-lg leading-relaxed font-medium">
                   CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa’da iş, oturum, aile birleşimi ve danışmanlık süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar. Aksaray merkezli yapımız ve Avrupa odaklı danışmanlık modelimizle, süreci daha anlaşılır, planlı ve güvenilir hale getiriyoruz.
                 </p>
-                <div className="glass p-6 rounded-xl border-l-4 border-[#facc15]">
+                <div className="glass p-6 rounded-xl border-l-4 border-[#d69e2e]">
                   <p className="text-xs text-gray-500 font-bold leading-relaxed italic">
-                    <span className="text-[#facc15] uppercase tracking-widest block mb-2 font-black">Yasal Uyarı & Bilgilendirme:</span>
+                    <span className="text-[#d69e2e] uppercase tracking-widest block mb-2 font-black">Yasal Uyarı & Bilgilendirme:</span>
                     CMSVize danışmanlık hizmeti sunar. Nihai karar yetkisi ilgili konsolosluklara, resmi kurumlara ve yetkili mercilere aittir. Başvuru süreci boyunca sunulan her türlü bilgi, ilgili ülkelerin güncel göç yasaları ve resmi prosedürleri çerçevesinde değerlendirilir.
                   </p>
                 </div>
@@ -2030,12 +2246,12 @@ return (
             
             return (
               <div className="animate-fade-up">
-                <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-gray-400 hover:text-[#facc15] mb-8 transition-colors">
+                <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-gray-300 hover:text-[#d69e2e] mb-8 transition-colors">
                   <ArrowLeft size={16} /><span>Blog'a Dön</span>
                 </button>
                 {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8 border border-white/10 shadow-2xl" />}
                 <div className="flex items-center space-x-3 mb-6">
-                  <span className="text-xs font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
+                  <span className="text-xs font-black text-[#d69e2e] bg-[#1e3a8a]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
                   <span className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-8 text-white">{post.title}</h1>
@@ -2046,19 +2262,19 @@ return (
         </div>
       ) : currentPage === 'blog' ? (
         <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
-          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">CMSVize <span className="text-[#facc15]">Blog</span></h2>
+          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">CMSVize <span className="text-[#d69e2e]">Blog</span></h2>
           <div className="grid md:grid-cols-2 gap-8">
             {blogPosts.filter(b => b.is_published).map(post => (
-              <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="glass p-6 rounded-xl hover:border-[#facc15]/50 transition-all cursor-pointer group flex flex-col h-full border border-white/5">
+              <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="glass p-6 rounded-xl hover:border-[#d69e2e]/50 transition-all cursor-pointer group flex flex-col h-full border border-white/5">
                 {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-48 object-cover rounded-lg mb-4 group-hover:scale-[1.02] transition-transform duration-300 shadow-xl" />}
                 <div className="flex-1">
-                  <span className="text-[10px] font-black text-[#facc15] bg-[#facc15]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
-                  <h3 className="text-xl font-black italic mt-3 mb-2 group-hover:text-[#facc15] transition-colors text-white">{post.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{post.summary}</p>
+                  <span className="text-[10px] font-black text-[#d69e2e] bg-[#1e3a8a]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
+                  <h3 className="text-xl font-black italic mt-3 mb-2 group-hover:text-[#d69e2e] transition-colors text-white">{post.title}</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed line-clamp-3">{post.summary}</p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
                   <span className="text-xs text-gray-500">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
-                  <span className="text-xs font-bold text-[#facc15] flex items-center space-x-1"><span>Devamını Oku</span> <ChevronRight size={14} /></span>
+                  <span className="text-xs font-bold text-[#d69e2e] flex items-center space-x-1"><span>Devamını Oku</span> <ChevronRight size={14} /></span>
                 </div>
               </div>
             ))}
@@ -2072,7 +2288,7 @@ return (
         </div>
       ) : currentPage === 'privacy' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Gizlilik <span className="text-[#facc15]">Politikası</span></h1>
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Gizlilik <span className="text-[#d69e2e]">Politikası</span></h1>
           <div className="glass p-10 rounded-3xl space-y-6 text-gray-300 leading-relaxed">
             <p>CMSVize olarak kişisel verilerinizin güvenliğine büyük önem veriyoruz. 6698 sayılı KVKK kapsamında verileriniz sadece danışmanlık süreçlerinizin yürütülmesi amacıyla işlenir.</p>
             <h3 className="text-xl font-bold text-white uppercase italic">Veri Toplama Amacı</h3>
@@ -2086,7 +2302,7 @@ return (
         </div>
       ) : currentPage === 'terms' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Kullanım <span className="text-[#facc15]">Koşulları</span></h1>
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Kullanım <span className="text-[#d69e2e]">Koşulları</span></h1>
           <div className="glass p-10 rounded-3xl space-y-6 text-gray-300 leading-relaxed">
             <p>CMSVize tarafından sunulan hizmetler, danışmanlık ve başvuru takibi kapsamındadır. Vize onay veya red kararı tamamen ilgili konsoloslukların yetkisindedir.</p>
             <h3 className="text-xl font-bold text-white uppercase italic">Sorumluluk Reddi</h3>
@@ -2100,9 +2316,9 @@ return (
         </div>
       ) : currentPage === 'cookies' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Çerez <span className="text-[#facc15]">Politikası</span></h1>
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Çerez <span className="text-[#d69e2e]">Politikası</span></h1>
           <div className="glass p-10 rounded-3xl space-y-8 text-gray-300 leading-relaxed text-sm">
-            <p className="font-bold text-[#facc15]">Son güncelleme: Nisan 2026</p>
+            <p className="font-bold text-[#d69e2e]">Son güncelleme: Nisan 2026</p>
             
             <section className="space-y-4">
               <h3 className="text-xl font-bold text-white uppercase italic">1. Çerezler Nedir?</h3>
@@ -2136,8 +2352,8 @@ return (
       ) : currentPage === 'guides_main' ? (
         <div className="pt-40 pb-32 px-6 max-w-7xl mx-auto space-y-16 animate-fade-up">
           <div className="text-center space-y-4">
-            <h1 className="text-6xl font-black italic uppercase tracking-tighter">Avrupa <span className="text-[#facc15]">Vize Rehberi</span></h1>
-            <p className="text-gray-400 max-w-2xl mx-auto font-medium">Hedeflediğiniz ülkede yaşam, çalışma şartları ve vize süreçleri hakkında en güncel bilgiler.</p>
+            <h1 className="text-6xl font-black italic uppercase tracking-tighter">Avrupa <span className="text-[#d69e2e]">Vize Rehberi</span></h1>
+            <p className="text-gray-300 max-w-2xl mx-auto font-medium">Hedeflediğiniz ülkede yaşam, çalışma şartları ve vize süreçleri hakkında en güncel bilgiler.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -2149,10 +2365,10 @@ return (
               <div key={country.id} className={`glass p-8 rounded-3xl border-t-4 ${country.color} space-y-6 hover:translate-y-[-8px] transition-all duration-300 group`}>
                 <div className="text-5xl">{country.flag}</div>
                 <h3 className="text-2xl font-black italic uppercase tracking-tight text-white">{country.name}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{country.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed">{country.desc}</p>
                 <button 
                   onClick={() => setCurrentPage(`guide_${country.id}`)}
-                  className="w-full btn-corporate glass py-3 rounded-xl font-bold uppercase tracking-widest text-xs group-hover:bg-[#facc15] group-hover:text-black transition-colors"
+                  className="w-full btn-corporate glass py-3 rounded-xl font-bold uppercase tracking-widest text-xs group-hover:bg-[#1e3a8a] group-hover:text-black transition-colors"
                 >
                   Rehberi İncele
                 </button>
@@ -2163,27 +2379,27 @@ return (
       ) : currentPage === 'guide_litvanya' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
           <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
               <ArrowLeft size={20} />
             </button>
             <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Litvanya</span>
           </div>
 
           <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#facc15]">YAŞAM REHBERİ 2026</span></h1>
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#d69e2e]">YAŞAM REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4">
+              <section className="glass p-10 rounded-3xl border-l-4 border-[#d69e2e] space-y-4">
                 <h2 className="text-2xl font-black italic uppercase text-white">Litvanya Hakkında Genel Bilgi</h2>
                 <p>Litvanya, Baltık bölgesinde yer alan AB ve NATO üyesi bir ülkedir. Başkenti Vilnius, nüfusu yaklaşık 2.8 milyon, resmi para birimi Euro'dur. Schengen bölgesinde yer alır.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Litvanya?</h2>
+                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Litvanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['27 Schengen ülkesinde vizesiz seyahat', 'Bati Avrupa\'ya kıyasla %40-50 daha uygun yaşam maliyeti', 'Hızlı büyüyen iş ve teknoloji ekosistemi', 'AB vatandaşlığına giden yol', 'Aile birleşimi hakkı'].map((item, i) => (
                     <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
                   ))}
@@ -2199,7 +2415,7 @@ return (
                     { name: 'Klaipeda', title: 'Liman Şehri', desc: 'Lojistik ve denizcilik sektörü güçlü.' }
                   ].map((city, i) => (
                     <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
-                      <h4 className="text-lg font-black text-[#facc15] italic">{city.name}</h4>
+                      <h4 className="text-lg font-black text-[#d69e2e] italic">{city.name}</h4>
                       <p className="text-[10px] font-black uppercase text-gray-500">{city.title}</p>
                       <p className="text-xs">{city.desc}</p>
                     </div>
@@ -2227,7 +2443,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2255,7 +2471,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2284,19 +2500,19 @@ return (
                   ].map((faq, i) => (
                     <div key={i} className="glass p-6 rounded-2xl space-y-2">
                       <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
               <div className="space-y-2">
                 <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-400 font-medium">Litvanya oturum kartı ve iş imkanları için formu doldurun, sizi arayalım.</p>
+                <p className="text-gray-300 font-medium">Litvanya oturum kartı ve iş imkanları için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
@@ -2305,14 +2521,14 @@ return (
       ) : currentPage === 'guide_almanya' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
           <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
               <ArrowLeft size={20} />
             </button>
             <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Almanya</span>
           </div>
 
           <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#d69e2e]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
               <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4">
@@ -2321,11 +2537,11 @@ return (
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Almanya?</h2>
+                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Almanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en yüksek maaşları', 'Güçlü sosyal haklar ve işçi güvencesi', 'Kaliteli sağlık ve eğitim sistemi', 'Büyük Türk topluluğu (yaklaşık 3 milyon)', 'Yüksek yaşam standardı'].map((item, i) => (
                     <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
                   ))}
@@ -2342,7 +2558,7 @@ return (
                     { name: 'İnşaat', desc: 'Tecrübeli işçilere yüksek ücret ödenmektedir.' }
                   ].map((job, i) => (
                     <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
-                      <h4 className="text-lg font-black text-[#facc15] italic">{job.name}</h4>
+                      <h4 className="text-lg font-black text-[#d69e2e] italic">{job.name}</h4>
                       <p className="text-xs">{job.desc}</p>
                     </div>
                   ))}
@@ -2369,7 +2585,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2377,7 +2593,7 @@ return (
                 </div>
               </section>
 
-              <section className="glass p-10 rounded-3xl border border-[#facc15]/30 space-y-4">
+              <section className="glass p-10 rounded-3xl border border-[#d69e2e]/30 space-y-4">
                 <h2 className="text-2xl font-black italic uppercase text-white">KOD95 Belgesi Nedir?</h2>
                 <p className="text-sm">Avrupa'da ticari araç kullananlar için zorunlu mesleki yeterlilik belgesidir. Ehliyette "95" kodu olarak görünür. CMSVize olarak KOD95 belgesi olan TIR şoförlerine özel işveren eşleştirme yapıyoruz.</p>
               </section>
@@ -2402,7 +2618,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2419,19 +2635,19 @@ return (
                   ].map((faq, i) => (
                     <div key={i} className="glass p-6 rounded-2xl space-y-2">
                       <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
               <div className="space-y-2">
                 <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-400 font-medium">Almanya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+                <p className="text-gray-300 font-medium">Almanya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
@@ -2440,14 +2656,14 @@ return (
       ) : currentPage === 'guide_polonya' ? (
         <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
           <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
               <ArrowLeft size={20} />
             </button>
             <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Polonya</span>
           </div>
 
           <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#d69e2e]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
               <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4">
@@ -2456,11 +2672,11 @@ return (
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Polonya?</h2>
+                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Polonya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en hızlı büyüyen ekonomisi', 'Almanya\'ya kıyasla kolay vize süreci', 'Uygun yaşam maliyeti', 'Güçlü sanayi ve üretim sektörü', 'Türkiye\'ye yakın konum'].map((item, i) => (
                     <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
                   ))}
@@ -2487,7 +2703,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2514,7 +2730,7 @@ return (
                       ].map((row, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2539,42 +2755,42 @@ return (
                   ].map((faq, i) => (
                     <div key={i} className="glass p-6 rounded-2xl space-y-2">
                       <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
               <div className="space-y-2">
                 <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-400 font-medium">Polonya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+                <p className="text-gray-300 font-medium">Polonya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
           </div>
         </div>
       ) : currentPage === 'admin-login' ? (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
-          <div className="max-w-md w-full glass p-10 rounded-2xl border-t-4 border-[#facc15] shadow-2xl">
+        <div className="min-h-screen flex items-center justify-center p-6 bg-[#0f172a]">
+          <div className="max-w-md w-full glass p-10 rounded-2xl border-t-4 border-[#d69e2e] shadow-2xl">
             <div className="flex justify-center mb-10">
               <img src={logoImg} alt="CMSVize Logo" className="h-20 w-auto object-contain brightness-125" />
             </div>
-            <h2 className="text-3xl font-black italic uppercase tracking-tighter text-center mb-2">Admin <span className="text-[#facc15]">Panel</span></h2>
-            <p className="text-gray-400 text-center text-sm mb-8">Yetkili personel girişi gereklidir.</p>
+            <h2 className="text-3xl font-black italic uppercase tracking-tighter text-center mb-2">Admin <span className="text-[#d69e2e]">Panel</span></h2>
+            <p className="text-gray-300 text-center text-sm mb-8">Yetkili personel girişi gereklidir.</p>
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">KULLANICI ADI</label>
-                <input required value={adminUser} onChange={(e) => setAdminUser(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="cms_master_admin" />
+                <input required value={adminUser} onChange={(e) => setAdminUser(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" placeholder="cms_master_admin" />
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">GÜVENLİK ANAHTARI</label>
-                <input required type="password" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" placeholder="••••••••••••" />
+                <input required type="password" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" placeholder="••••••••••••" />
               </div>
-              <button type="button" onClick={handleAdminLogin} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-lg hover:scale-[1.02] transition-transform mt-4">SİSTEME GİRİŞ YAP</button>
+              <button type="button" onClick={handleAdminLogin} className="w-full bg-[#1e3a8a] text-black font-black py-5 rounded-lg text-lg hover:scale-[1.02] transition-transform mt-4">SİSTEME GİRİŞ YAP</button>
             </div>
           </div>
         </div>
@@ -2582,32 +2798,32 @@ return (
         <div className="min-h-screen bg-[#080C14] text-white">
           <div className="flex h-screen">
             {/* Sidebar */}
-            <div className="w-72 bg-[#0B0F1A] border-r border-white/5 p-8 flex flex-col justify-between">
+            <div className="w-72 bg-[#0f172a] border-r border-white/5 p-8 flex flex-col justify-between">
               <div className="space-y-10">
                 <div className="flex items-center space-x-2 px-2">
                   <img src={logoImg} alt="CMSVize Logo" className="h-[32px] w-auto object-contain" />
                   <span className="font-black italic text-xl tracking-tighter text-white opacity-80">ADMIN</span>
                 </div>
                 <nav className="space-y-2">
-                  <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Activity size={18} /> <span>Dashboard</span>
                   </button>
-                  <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Star size={18} /> <span>Dinamik Veriler</span>
                   </button>
-                  <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Users size={18} /> <span>Ekip Yönetimi</span>
                   </button>
-                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
                     <MessageSquare size={18} /> <span>Müşteri Yorumları</span>
                   </button>
-                  <button onClick={() => setAdminTab('blog')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'blog' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('blog')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'blog' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
                     <BookOpen size={18} /> <span>Blog Yazıları</span>
                   </button>
-                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#facc15] text-[#0B0F1A]' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Briefcase size={18} /> <span>Başvurular</span>
                   </button>
-                  <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#facc15] text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Settings size={18} /> <span>Site Ayarları</span>
                   </button>
                 </nav>
@@ -2642,7 +2858,7 @@ return (
                       {adminTab === 'reviews' && 'Müşteri Yorumları'}
                       {adminTab === 'blog' && 'Blog Yönetimi'}
                       {adminTab === 'settings' && 'Site Ayarları'}
-                      <span className="text-[#facc15] ml-2">Paneli</span>
+                      <span className="text-[#d69e2e] ml-2">Paneli</span>
                     </h1>
                   </div>
                 </div>
@@ -2662,11 +2878,11 @@ return (
                   <div className="space-y-8 animate-fade-up">
                     {/* Real-time Data Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      <div className="glass p-6 rounded-xl border-t-4 border-[#facc15] relative overflow-hidden group">
+                      <div className="glass p-6 rounded-xl border-t-4 border-[#d69e2e] relative overflow-hidden group">
                         <Users className="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 group-hover:scale-110 transition-transform" />
                         <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Toplam Başvuru</p>
                         <p className="text-4xl font-black italic mt-2 text-white">{getDashboardStats().total}</p>
-                        <div className="mt-4 flex items-center text-[#facc15] text-xs font-bold">
+                        <div className="mt-4 flex items-center text-[#d69e2e] text-xs font-bold">
                           <span>Bugün: {getDashboardStats().today} Yeni</span>
                         </div>
                       </div>
@@ -2704,13 +2920,13 @@ return (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="glass p-6 rounded-xl space-y-4">
                         <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Popüler Hedef Ülke</p>
-                        <p className="text-2xl font-black italic text-[#facc15]">{getDashboardStats().topCountry}</p>
-                        <p className="text-[10px] text-gray-400 italic">En çok başvuru alan ülke.</p>
+                        <p className="text-2xl font-black italic text-[#d69e2e]">{getDashboardStats().topCountry}</p>
+                        <p className="text-[10px] text-gray-300 italic">En çok başvuru alan ülke.</p>
                       </div>
                       <div className="glass p-6 rounded-xl space-y-4">
                         <p className="text-gray-500 font-black text-[10px] uppercase tracking-widest">Popüler Hizmet Alanı</p>
                         <p className="text-2xl font-black italic text-blue-400">{getDashboardStats().topService}</p>
-                        <p className="text-[10px] text-gray-400 italic">En çok talep gören iş alanı.</p>
+                        <p className="text-[10px] text-gray-300 italic">En çok talep gören iş alanı.</p>
                       </div>
                     </div>
                   </div>
@@ -2725,7 +2941,7 @@ return (
                           type="number" 
                           value={siteContent?.stats?.success || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                       <div className="glass p-8 rounded-xl space-y-4">
@@ -2734,7 +2950,7 @@ return (
                           type="number" 
                           value={siteContent?.stats?.clients || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                       <div className="glass p-8 rounded-xl space-y-4">
@@ -2743,12 +2959,12 @@ return (
                           type="number" 
                           value={siteContent?.stats?.countries || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#facc15] outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                     </div>
                     <div className="flex justify-end pt-4 border-t border-white/5">
-                      <button onClick={() => showToast('İstatistik verileri başarıyla güncellendi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                      <button onClick={() => showToast('İstatistik verileri başarıyla güncellendi!')} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>DEĞİŞİKLİKLERİ KAYDET</span>
                       </button>
                     </div>
@@ -2761,7 +2977,7 @@ return (
                       <button onClick={() => {
                         const newMember = { id: Date.now(), name: "YENİ ÜYE", title: "Unvan", desc: "", isVisible: true, img: "" };
                         setSiteContent({...siteContent, team: [...siteContent.team, newMember]});
-                      }} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                      }} className="bg-white/10 hover:bg-[#1e3a8a] text-white hover:text-white font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
                         <Plus size={16} /> <span>Yeni Üye Ekle</span>
                       </button>
                     </div>
@@ -2773,15 +2989,15 @@ return (
                         <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İSİM SOYİSİM</label>
-                            <input value={member.name} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].name = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            <input value={member.name} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].name = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">UNVAN / POZİSYON</label>
-                            <input value={member.title} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].title = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-[#facc15]" />
+                            <input value={member.title} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].title = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e] text-[#d69e2e]" />
                           </div>
                           <div className="space-y-1 md:col-span-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">KISA AÇIKLAMA (OPSİYONEL)</label>
-                            <input value={member.desc || ''} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].desc = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15]" placeholder="Kişi hakkında kısa bilgi..." />
+                            <input value={member.desc || ''} onChange={(e) => { const newTeam = [...siteContent.team]; newTeam[idx].desc = e.target.value; setSiteContent({...siteContent, team: newTeam}); }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg text-sm text-gray-300 outline-none focus:border-[#d69e2e]" placeholder="Kişi hakkında kısa bilgi..." />
                           </div>
                         </div>
                         <div className="flex items-center space-x-2 shrink-0 pt-4 md:pt-0 w-full md:w-auto justify-end">
@@ -2795,7 +3011,7 @@ return (
                       </div>
                     ))}
                     <div className="flex justify-end pt-4 border-t border-white/5">
-                      <button onClick={() => showToast('Ekip bilgileri güncellendi!')} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                      <button onClick={() => showToast('Ekip bilgileri güncellendi!')} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>DEĞİŞİKLİKLERİ KAYDET</span>
                       </button>
                     </div>
@@ -2813,7 +3029,7 @@ return (
                           placeholder="İsim veya telefon ara..." 
                           value={leadSearch}
                           onChange={(e) => setLeadSearch(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 pl-12 pr-4 py-3 rounded-lg text-sm font-bold outline-none focus:border-[#facc15]" 
+                          className="w-full bg-black/30 border border-white/10 pl-12 pr-4 py-3 rounded-lg text-sm font-bold outline-none focus:border-[#d69e2e]" 
                         />
                       </div>
                       <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -2821,7 +3037,7 @@ return (
                         <select 
                           value={leadStatusFilter}
                           onChange={(e) => setLeadStatusFilter(e.target.value)}
-                          className="flex-1 md:w-48 bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-xs font-bold outline-none focus:border-[#facc15]"
+                          className="flex-1 md:w-48 bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-xs font-bold outline-none focus:border-[#d69e2e]"
                         >
                           <option value="All">Tüm Durumlar</option>
                           <option value="İşlemde">İşlemde</option>
@@ -2847,8 +3063,8 @@ return (
                           {isLoadingLeads && (
                             <tr>
                               <td colSpan="6" className="p-2 text-center">
-                                <div className="absolute inset-0 bg-[#0B0F1A]/50 backdrop-blur-[1px] flex items-center justify-center z-10 py-10">
-                                  <div className="flex items-center space-x-2 text-[#facc15] font-black text-xs uppercase tracking-widest italic animate-pulse">
+                                <div className="absolute inset-0 bg-[#0f172a]/50 backdrop-blur-[1px] flex items-center justify-center z-10 py-10">
+                                  <div className="flex items-center space-x-2 text-[#d69e2e] font-black text-xs uppercase tracking-widest italic animate-pulse">
                                     <Clock size={14} />
                                     <span>Veritabanı Senkronize Ediliyor...</span>
                                   </div>
@@ -2857,20 +3073,20 @@ return (
                             </tr>
                           )}
                           {filteredLeads.length > 0 ? filteredLeads.map((lead) => (
-                            <tr key={lead.id} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${lead.isNew ? 'bg-[#facc15]/5' : ''}`}>
+                            <tr key={lead.id} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${lead.isNew ? 'bg-[#1e3a8a]/5' : ''}`}>
                               <td className="p-4">
                                 <div className="flex items-center space-x-2">
-                                  {lead.isNew && <span className="bg-[#facc15] text-black text-[8px] font-black px-1.5 py-0.5 rounded animate-pulse">YENİ</span>}
+                                  {lead.isNew && <span className="bg-[#1e3a8a] text-black text-[8px] font-black px-1.5 py-0.5 rounded animate-pulse">YENİ</span>}
                                   <p className="font-bold text-white uppercase tracking-tight">{lead.name}</p>
                                 </div>
                                 <div className="flex items-center space-x-2 mt-1">
                                   <p className="text-[10px] text-gray-500 font-mono tracking-tighter">{lead.trackingId || 'ID YOK'}</p>
                                   <span className="text-gray-700">•</span>
-                                  <p className="text-[10px] text-gray-400 font-mono">{lead.phone}</p>
+                                  <p className="text-[10px] text-gray-300 font-mono">{lead.phone}</p>
                                 </div>
                               </td>
                               <td className="p-4">
-                                <p className="text-[#facc15] font-bold text-sm">{lead.service}</p>
+                                <p className="text-[#d69e2e] font-bold text-sm">{lead.service}</p>
                                 <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{lead.country}</p>
                               </td>
                               <td className="p-4">
@@ -2899,14 +3115,14 @@ return (
                                       showToast('Durum güncellenemedi');
                                     }
                                   }}
-                                  className="bg-[#0B0F1A] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#facc15]"
+                                  className="bg-[#0f172a] border border-white/10 text-xs font-bold px-3 py-2 rounded-lg outline-none focus:border-[#d69e2e]"
                                 >
                                   <option value="İşlemde">İşlemde</option>
                                   <option value="Tamamlandı">Tamamlandı</option>
                                   <option value="Reddedildi">Reddedildi</option>
                                 </select>
                               </td>
-                              <td className="p-4 text-[11px] text-gray-400 font-medium">
+                              <td className="p-4 text-[11px] text-gray-300 font-medium">
                                 <div className="flex flex-col">
                                   <span>{lead.date}</span>
                                   <span className="text-[9px] text-gray-600 font-mono uppercase tracking-widest mt-0.5">{lead.time || '--:--'}</span>
@@ -2961,50 +3177,50 @@ return (
                   <div className="space-y-6 animate-fade-up">
                     <div className="flex justify-between items-center mb-4">
                       <p className="text-gray-500 font-medium text-sm">Site üzerindeki müşteri geri bildirimlerini buradan yönetin.</p>
-                      <button onClick={() => setShowNewReviewForm(!showNewReviewForm)} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                      <button onClick={() => setShowNewReviewForm(!showNewReviewForm)} className="bg-white/10 hover:bg-[#1e3a8a] text-white hover:text-white font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
                         <Plus size={16} /> <span>{showNewReviewForm ? 'Formu Kapat' : 'Yeni Yorum Ekle'}</span>
                       </button>
                     </div>
 
                     {showNewReviewForm && (
-                      <div className="glass p-6 rounded-xl space-y-6 border border-[#facc15]/30 mb-8">
-                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#facc15]">Yeni Yorum Ekle</h3>
+                      <div className="glass p-6 rounded-xl space-y-6 border border-[#d69e2e]/30 mb-8">
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#d69e2e]">Yeni Yorum Ekle</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Ad Soyad</label>
-                            <input value={newReviewData.name} onChange={(e) => setNewReviewData({...newReviewData, name: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: Ahmet Yılmaz" />
+                            <input value={newReviewData.name} onChange={(e) => setNewReviewData({...newReviewData, name: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" placeholder="Örn: Ahmet Yılmaz" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Ülke</label>
-                            <select value={newReviewData.country} onChange={(e) => setNewReviewData({...newReviewData, country: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]">
-                              <option className="bg-[#0B0F1A]" value="Almanya">Almanya</option>
-                              <option className="bg-[#0B0F1A]" value="Polonya">Polonya</option>
-                              <option className="bg-[#0B0F1A]" value="Litvanya">Litvanya</option>
-                              <option className="bg-[#0B0F1A]" value="Hollanda">Hollanda</option>
-                              <option className="bg-[#0B0F1A]" value="Belçika">Belçika</option>
-                              <option className="bg-[#0B0F1A]" value="diğer">Diğer</option>
+                            <select value={newReviewData.country} onChange={(e) => setNewReviewData({...newReviewData, country: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]">
+                              <option className="bg-[#0f172a]" value="Almanya">Almanya</option>
+                              <option className="bg-[#0f172a]" value="Polonya">Polonya</option>
+                              <option className="bg-[#0f172a]" value="Litvanya">Litvanya</option>
+                              <option className="bg-[#0f172a]" value="Hollanda">Hollanda</option>
+                              <option className="bg-[#0f172a]" value="Belçika">Belçika</option>
+                              <option className="bg-[#0f172a]" value="diğer">Diğer</option>
                             </select>
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Vize Tipi</label>
-                            <input value={newReviewData.visa_type} onChange={(e) => setNewReviewData({...newReviewData, visa_type: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: D Tipi Ulusal Vize" />
+                            <input value={newReviewData.visa_type} onChange={(e) => setNewReviewData({...newReviewData, visa_type: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" placeholder="Örn: D Tipi Ulusal Vize" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kaç Gün/Hafta Önce</label>
-                            <input value={newReviewData.time_ago} onChange={(e) => setNewReviewData({...newReviewData, time_ago: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" placeholder="Örn: 3 gün önce" />
+                            <input value={newReviewData.time_ago} onChange={(e) => setNewReviewData({...newReviewData, time_ago: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" placeholder="Örn: 3 gün önce" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Beğeni Sayısı</label>
-                            <input type="number" value={newReviewData.likes} onChange={(e) => setNewReviewData({...newReviewData, likes: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            <input type="number" value={newReviewData.likes} onChange={(e) => setNewReviewData({...newReviewData, likes: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Yorum Sayısı</label>
-                            <input type="number" value={newReviewData.comments_count} onChange={(e) => setNewReviewData({...newReviewData, comments_count: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            <input type="number" value={newReviewData.comments_count} onChange={(e) => setNewReviewData({...newReviewData, comments_count: parseInt(e.target.value) || 0})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" />
                           </div>
                         </div>
                         <div className="space-y-1">
                           <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Yorum Metni</label>
-                          <textarea value={newReviewData.comment} onChange={(e) => setNewReviewData({...newReviewData, comment: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[80px]" placeholder="Yorum içeriği..." />
+                          <textarea value={newReviewData.comment} onChange={(e) => setNewReviewData({...newReviewData, comment: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#d69e2e] min-h-[80px]" placeholder="Yorum içeriği..." />
                         </div>
                         <div className="flex justify-end pt-4 border-t border-white/5">
                           <button onClick={async () => {
@@ -3019,7 +3235,7 @@ return (
                               console.error("TESTIMONIALS INSERT ERROR:", err);
                               showToast('Yorum kaydedilirken bir hata oluştu.');
                             }
-                          }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                          }} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                             <Save size={18} /> <span>YORUMLARI YAYINLA</span>
                           </button>
                         </div>
@@ -3035,7 +3251,7 @@ return (
                             <div className="flex justify-between items-start">
                               <div>
                                 <h4 className="text-lg font-black text-white">{review.name}</h4>
-                                <p className="text-xs text-[#facc15] font-bold">{review.visa_type} - {review.country}</p>
+                                <p className="text-xs text-[#d69e2e] font-bold">{review.visa_type} - {review.country}</p>
                               </div>
                               <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${review.is_active ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
                                 {review.is_active ? 'Yayında' : 'Gizli'}
@@ -3089,27 +3305,27 @@ return (
                   <div className="space-y-6 animate-fade-up">
                     <div className="flex justify-between items-center mb-4">
                       <p className="text-gray-500 font-medium text-sm">Blog içeriklerinizi buradan yönetin.</p>
-                      <button onClick={() => setShowNewBlogForm(!showNewBlogForm)} className="bg-white/10 hover:bg-[#facc15] text-white hover:text-[#0B0F1A] font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
+                      <button onClick={() => setShowNewBlogForm(!showNewBlogForm)} className="bg-white/10 hover:bg-[#1e3a8a] text-white hover:text-white font-bold px-4 py-2 rounded-lg flex items-center space-x-2 transition-all">
                         <Plus size={16} /> <span>{showNewBlogForm ? 'Formu Kapat' : 'Yeni Yazı Ekle'}</span>
                       </button>
                     </div>
 
                     {showNewBlogForm && (
-                      <div className="glass p-6 rounded-xl space-y-6 border border-[#facc15]/30 mb-8">
-                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#facc15]">Yeni Yazı</h3>
+                      <div className="glass p-6 rounded-xl space-y-6 border border-[#d69e2e]/30 mb-8">
+                        <h3 className="text-xl font-black italic uppercase tracking-tighter text-[#d69e2e]">Yeni Yazı</h3>
                         <div className="grid grid-cols-1 gap-6">
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Başlık</label>
-                            <input value={newBlogData.title} onChange={(e) => setNewBlogData({...newBlogData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                            <input value={newBlogData.title} onChange={(e) => setNewBlogData({...newBlogData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" />
                           </div>
                           <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-1">
                               <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Slug (URL)</label>
-                              <input value={newBlogData.slug} onChange={(e) => setNewBlogData({...newBlogData, slug: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-gray-400" />
+                              <input value={newBlogData.slug} onChange={(e) => setNewBlogData({...newBlogData, slug: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e] text-gray-300" />
                             </div>
                             <div className="space-y-1">
                               <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Kategori</label>
-                              <input value={newBlogData.category} onChange={(e) => setNewBlogData({...newBlogData, category: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15]" />
+                              <input value={newBlogData.category} onChange={(e) => setNewBlogData({...newBlogData, category: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e]" />
                             </div>
                           </div>
                           <div className="space-y-1">
@@ -3128,19 +3344,19 @@ return (
                                 console.error('IMAGE UPLOAD ERROR:', err);
                                 showToast('Görsel yüklenirken hata oluştu.');
                               }
-                            }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#facc15] text-gray-300" />
+                            }} className="w-full bg-black/50 border border-white/10 px-4 py-2 rounded-lg font-bold outline-none focus:border-[#d69e2e] text-gray-300" />
                             {newBlogData.cover_image && <div className="mt-2 text-xs text-green-400 font-bold flex items-center space-x-1"><span>✓ Görsel Yüklendi:</span> <a href={newBlogData.cover_image} target="_blank" rel="noreferrer" className="underline truncate block max-w-xs">{newBlogData.cover_image}</a></div>}
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Özet</label>
-                            <textarea value={newBlogData.summary} onChange={(e) => setNewBlogData({...newBlogData, summary: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[60px]" />
+                            <textarea value={newBlogData.summary} onChange={(e) => setNewBlogData({...newBlogData, summary: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#d69e2e] min-h-[60px]" />
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">İçerik</label>
-                            <textarea value={newBlogData.content} onChange={(e) => setNewBlogData({...newBlogData, content: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#facc15] min-h-[200px]" />
+                            <textarea value={newBlogData.content} onChange={(e) => setNewBlogData({...newBlogData, content: e.target.value})} className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg text-sm text-gray-300 outline-none focus:border-[#d69e2e] min-h-[200px]" />
                           </div>
                           <div className="flex items-center space-x-3">
-                            <input type="checkbox" id="is_pub" checked={newBlogData.is_published} onChange={(e) => setNewBlogData({...newBlogData, is_published: e.target.checked})} className="w-4 h-4 accent-[#facc15]" />
+                            <input type="checkbox" id="is_pub" checked={newBlogData.is_published} onChange={(e) => setNewBlogData({...newBlogData, is_published: e.target.checked})} className="w-4 h-4 accent-[#d69e2e]" />
                             <label htmlFor="is_pub" className="text-sm font-bold text-white cursor-pointer">Yayınla (Aktif)</label>
                           </div>
                         </div>
@@ -3157,7 +3373,7 @@ return (
                               console.error("BLOG INSERT ERROR:", err);
                               showToast('Blog eklenirken hata oluştu.');
                             }
-                          }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                          }} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                             <Save size={18} /> <span>YAZIYI KAYDET</span>
                           </button>
                         </div>
@@ -3173,7 +3389,7 @@ return (
                             <div className="flex justify-between items-start">
                               <div>
                                 <h4 className="text-lg font-black text-white">{post.title}</h4>
-                                <p className="text-xs text-[#facc15] font-bold">/{post.slug}</p>
+                                <p className="text-xs text-[#d69e2e] font-bold">/{post.slug}</p>
                               </div>
                               <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${post.is_published ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
                                 {post.is_published ? 'Yayında' : 'Taslak'}
@@ -3226,7 +3442,7 @@ return (
                         <input 
                           value={siteSettings?.title || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, title: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                       <div className="space-y-2">
@@ -3234,7 +3450,7 @@ return (
                         <input 
                           value={siteSettings?.phone || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, phone: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                       <div className="space-y-2">
@@ -3242,7 +3458,7 @@ return (
                         <input 
                           value={siteSettings?.whatsapp || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, whatsapp: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#facc15]"
+                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
                         />
                       </div>
                     </div>
@@ -3262,7 +3478,7 @@ return (
                           console.error(err);
                           showToast('Ayarlar kaydedilirken hata oluştu.');
                         }
-                      }} className="bg-[#facc15] text-[#0B0F1A] font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                      }} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>AYARLARI KAYDET</span>
                       </button>
                     </div>
@@ -3275,11 +3491,11 @@ return (
         </div>
       ) : currentPage === 'portal' ? (
         <div className="pt-40 pb-32 px-6 max-w-xl mx-auto min-h-screen flex flex-col items-center justify-center">
-          <div className="glass p-12 rounded-2xl w-full text-center space-y-8 border-t-4 border-[#facc15]">
-            <Lock className="text-[#facc15] w-16 h-16 mx-auto" />
+          <div className="glass p-12 rounded-2xl w-full text-center space-y-8 border-t-4 border-[#d69e2e]">
+            <Lock className="text-[#d69e2e] w-16 h-16 mx-auto" />
             <div>
-              <h2 className="text-3xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#facc15]">Portalı</span></h2>
-              <p className="text-gray-400 mt-2 text-sm">Vize başvuru sürecinizi adım adım takip edin.</p>
+              <h2 className="text-3xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#d69e2e]">Portalı</span></h2>
+              <p className="text-gray-300 mt-2 text-sm">Vize başvuru sürecinizi adım adım takip edin.</p>
             </div>
             {!portalLoggedIn ? (
               <form onSubmit={handlePortalLogin} className="space-y-4">
@@ -3288,7 +3504,7 @@ return (
                   placeholder="T.C. Kimlik / Pasaport No" 
                   value={portalUser}
                   onChange={(e) => setPortalUser(e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" 
+                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" 
                 />
                 <input 
                   required 
@@ -3296,9 +3512,9 @@ return (
                   placeholder="Şifre" 
                   value={portalPass}
                   onChange={(e) => setPortalPass(e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none" 
+                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" 
                 />
-                <button type="submit" className="w-full bg-[#facc15] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
+                <button type="submit" className="w-full bg-[#1e3a8a] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
               </form>
             ) : (
               <div className="space-y-8 text-left bg-black/40 p-6 rounded-xl border border-white/5">
@@ -3316,8 +3532,8 @@ return (
                     <div className="flex-1"><p className="text-sm font-bold">2. Tercümeler ve Noter</p><p className="text-xs text-gray-500">Tamamlandı</p></div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <div className="w-6 h-6 rounded-full border-2 border-[#facc15] flex items-center justify-center bg-[#facc15]/20 animate-pulse"></div>
-                    <div className="flex-1"><p className="text-sm font-bold text-[#facc15]">3. Konsolosluk Randevusu</p><p className="text-xs text-gray-500">Bekleniyor (Tahmini: 14 Gün)</p></div>
+                    <div className="w-6 h-6 rounded-full border-2 border-[#d69e2e] flex items-center justify-center bg-[#1e3a8a]/20 animate-pulse"></div>
+                    <div className="flex-1"><p className="text-sm font-bold text-[#d69e2e]">3. Konsolosluk Randevusu</p><p className="text-xs text-gray-500">Bekleniyor (Tahmini: 14 Gün)</p></div>
                   </div>
                 </div>
               </div>
@@ -3329,7 +3545,7 @@ return (
       {/* WHATSAPP FLOAT */}
       {!currentPage.startsWith('admin') && (
         <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center">
-          <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200 relative pointer-events-none">
+          <div className="mr-4 bg-white text-white px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200 relative pointer-events-none">
             Size nasıl yardımcı olabiliriz?
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
           </div>
@@ -3352,7 +3568,7 @@ return (
       {/* LEAD DETAILS MODAL */}
       {selectedLead && (
         <div className="fixed inset-0 z-[110] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 animate-fade-in">
-          <div className="bg-[#0B0F1A] border border-white/10 p-10 rounded-2xl w-full max-w-lg relative shadow-2xl animate-scale-up">
+          <div className="bg-[#0f172a] border border-white/10 p-10 rounded-2xl w-full max-w-lg relative shadow-2xl animate-scale-up">
             <X size={24} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white" onClick={() => setSelectedLead(null)} />
             <div className="space-y-8">
               <div>
@@ -3361,10 +3577,10 @@ return (
                     {getLeadQuality(selectedLead).label}
                   </span>
                   <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">ID: {selectedLead.trackingId || `#${selectedLead.id}`}</span>
-                  <span className="bg-white/5 text-gray-400 text-[9px] px-2 py-1 rounded uppercase tracking-widest font-black">{selectedLead.source || 'BİLİNMİYOR'}</span>
+                  <span className="bg-white/5 text-gray-300 text-[9px] px-2 py-1 rounded uppercase tracking-widest font-black">{selectedLead.source || 'BİLİNMİYOR'}</span>
                 </div>
                 <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">{selectedLead.name}</h3>
-                <p className="text-[#facc15] font-bold text-lg">{selectedLead.service} - {selectedLead.country}</p>
+                <p className="text-[#d69e2e] font-bold text-lg">{selectedLead.service} - {selectedLead.country}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-8 border-t border-white/5 pt-8">
@@ -3380,13 +3596,13 @@ return (
 
               <div className="space-y-1">
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Müşteri Notu</p>
-                <div className="bg-white/5 p-4 rounded-xl text-gray-400 text-sm italic border border-white/5">
+                <div className="bg-white/5 p-4 rounded-xl text-gray-300 text-sm italic border border-white/5">
                   {selectedLead.note || "Herhangi bir not eklenmemiş."}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-4">
-                <a href={`tel:${selectedLead.phone}`} className="bg-white/5 border border-white/10 hover:border-[#facc15] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all">
+                <a href={`tel:${selectedLead.phone}`} className="bg-white/5 border border-white/10 hover:border-[#d69e2e] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 transition-all">
                   <Phone size={18} /> <span>HEMEN ARA</span>
                 </a>
                 <a href={`https://wa.me/${selectedLead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Merhaba ${selectedLead.name}, CMSVize'den ulaşıyoruz.`)}`} target="_blank" rel="noreferrer" className="bg-[#25D366] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center space-x-2 hover:scale-[1.02] transition-transform">
@@ -3401,7 +3617,7 @@ return (
       {/* FAKE LIVE POPUP */}
       {!currentPage.startsWith('admin') && (
         <div className={`fixed bottom-10 left-10 z-50 glass px-8 py-5 rounded-lg flex items-center space-x-5 transition-all duration-700 shadow-2xl border border-white/10 ${showPopup ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
-          <div className="w-12 h-12 bg-[#facc15]/20 rounded-md flex items-center justify-center text-[#facc15]"><Users size={24} /></div>
+          <div className="w-12 h-12 bg-[#1e3a8a]/20 rounded-md flex items-center justify-center text-[#d69e2e]"><Users size={24} /></div>
           <div>
             <p className="text-base font-black italic tracking-tighter">{popupContent}</p>
             <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mt-1">Hızlı Başvuru</p>
@@ -3413,15 +3629,15 @@ return (
       {/* WIZARD MODAL (UYGUNLUK TESTİ) */}
       {!currentPage.startsWith('admin') && (
         <div className={`fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 transition-all duration-500 ${showWizard ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-          <div className={`bg-[#0B0F1A] border border-white/10 p-10 lg:p-16 rounded-2xl w-full max-w-2xl relative shadow-2xl transition-all duration-500 delay-100 ${showWizard ? 'scale-100 translate-y-0' : 'scale-95 translate-y-10'}`}>
+          <div className={`bg-[#0f172a] border border-white/10 p-10 lg:p-16 rounded-2xl w-full max-w-2xl relative shadow-2xl transition-all duration-500 delay-100 ${showWizard ? 'scale-100 translate-y-0' : 'scale-95 translate-y-10'}`}>
             <X size={32} className="absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-white transition-colors" onClick={() => setShowWizard(false)} />
 
             <div className="mb-10">
-              <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#facc15]">Avrupa Uygunluk Testi</h3>
-              <p className="text-gray-400 mt-2 font-medium">Sadece 3 adımda size en uygun vize rotasını çizelim.</p>
+              <h3 className="text-3xl font-black italic uppercase tracking-tighter text-[#d69e2e]">Avrupa Uygunluk Testi</h3>
+              <p className="text-gray-300 mt-2 font-medium">Sadece 3 adımda size en uygun vize rotasını çizelim.</p>
               <div className="flex space-x-2 mt-6">
                 {[1, 2, 3].map(step => (
-                  <div key={step} className={`h-2 flex-1 rounded-full transition-all duration-500 ${wizardStep >= step ? 'bg-[#facc15]' : 'bg-white/10'}`}></div>
+                  <div key={step} className={`h-2 flex-1 rounded-full transition-all duration-500 ${wizardStep >= step ? 'bg-[#1e3a8a]' : 'bg-white/10'}`}></div>
                 ))}
               </div>
             </div>
@@ -3431,7 +3647,7 @@ return (
                 <h4 className="text-xl font-bold">1. Mesleğiniz veya uzmanlığınız nedir?</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {['Tır Şoförü', 'Fabrika / Üretim', 'Depo / Lojistik', 'Diğer (Belirtiniz)'].map(job => (
-                    <button key={job} onClick={() => { setWizardData({ ...wizardData, job }); setWizardStep(2); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{job}</button>
+                    <button key={job} onClick={() => { setWizardData({ ...wizardData, job }); setWizardStep(2); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#1e3a8a] hover:text-black hover:border-[#d69e2e] transition-all text-sm">{job}</button>
                   ))}
                 </div>
               </div>
@@ -3442,7 +3658,7 @@ return (
                 <h4 className="text-xl font-bold">2. Hangi ülkeyi hedefliyorsunuz?</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {['Almanya', 'Polonya', 'Litvanya', 'Hollanda', 'Fransa'].map(country => (
-                    <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#facc15] hover:text-black hover:border-[#facc15] transition-all text-sm">{country}</button>
+                    <button key={country} onClick={() => { setWizardData({ ...wizardData, country }); setWizardStep(3); }} className="glass border border-white/10 py-6 rounded-lg font-bold hover:bg-[#1e3a8a] hover:text-black hover:border-[#d69e2e] transition-all text-sm">{country}</button>
                   ))}
                 </div>
               </div>
@@ -3451,10 +3667,10 @@ return (
             {wizardStep === 3 && (
               <div className="space-y-6 animate-fade-up">
                 <h4 className="text-xl font-bold">3. Raporunuz hazırlandı!</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">Size özel ücretsiz değerlendirme sonucunu iletebilmemiz ve uzmanlarımızın incelemesi için lütfen bilgilerinizi girin.</p>
+                <p className="text-gray-300 text-sm leading-relaxed">Size özel ücretsiz değerlendirme sonucunu iletebilmemiz ve uzmanlarımızın incelemesi için lütfen bilgilerinizi girin.</p>
                 <div className="space-y-4">
-                  <input placeholder="Adınız Soyadınız" onChange={(e) => setWizardData({ ...wizardData, name: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
-                  <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
+                  <input placeholder="Adınız Soyadınız" onChange={(e) => setWizardData({ ...wizardData, name: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none transition-colors" />
+                  <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none transition-colors" />
                   <button onClick={() => {
                     setShowWizard(false); setWizardStep(1);
                     
@@ -3478,7 +3694,7 @@ return (
                     setWizardStep(1);
                     setFormSuccess(true); // Wizard sonrası da başarı ekranına gitsin veya form success göstersin
                     scrollToForm();
-                  }} className="w-full bg-[#facc15] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
+                  }} className="w-full bg-[#1e3a8a] text-black font-black py-5 rounded-lg text-xl hover:scale-[1.02] transition-transform flex items-center justify-center space-x-2 mt-4">
                     <span>SONUCU İSTE</span>
                     <ChevronRight size={24} />
                   </button>
@@ -3495,7 +3711,7 @@ return (
 
       {/* TRACKING MODAL */}
       {showTrackingModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0B0F1A]/90 backdrop-blur-xl animate-fade-in">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0f172a]/90 backdrop-blur-xl animate-fade-in">
           <div className="glass max-w-lg w-full p-8 lg:p-12 rounded-3xl border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] relative animate-fade-up">
             <button 
               onClick={() => { setShowTrackingModal(false); setTrackingResult(null); setTrackingError(false); setTrackingCode(''); }}
@@ -3506,9 +3722,9 @@ return (
 
             <div className="space-y-8">
               <div className="text-center space-y-2">
-                <Search className="w-12 h-12 text-[#facc15] mx-auto mb-4" />
-                <h3 className="text-3xl font-black italic uppercase tracking-tighter">Başvuru <span className="text-[#facc15]">Sorgulama</span></h3>
-                <p className="text-gray-400 text-sm">Pasaport numaranız veya takip kodunuzu girin.</p>
+                <Search className="w-12 h-12 text-[#d69e2e] mx-auto mb-4" />
+                <h3 className="text-3xl font-black italic uppercase tracking-tighter">Başvuru <span className="text-[#d69e2e]">Sorgulama</span></h3>
+                <p className="text-gray-300 text-sm">Pasaport numaranız veya takip kodunuzu girin.</p>
               </div>
 
               {!trackingResult && !trackingError ? (
@@ -3518,16 +3734,16 @@ return (
                     placeholder="Örn: 545... veya Takip No" 
                     value={trackingCode}
                     onChange={(e) => setTrackingCode(e.target.value)}
-                    className="w-full bg-black/50 border-2 border-white/10 px-6 py-5 rounded-xl font-bold text-xl focus:border-[#facc15] outline-none transition-all placeholder:text-gray-700"
+                    className="w-full bg-black/50 border-2 border-white/10 px-6 py-5 rounded-xl font-bold text-xl focus:border-[#d69e2e] outline-none transition-all placeholder:text-gray-700"
                   />
-                  <button type="submit" className="w-full bg-[#facc15] text-black font-black py-5 rounded-xl text-lg hover:scale-[1.02] transition-transform">SORGULA</button>
+                  <button type="submit" className="w-full bg-[#1e3a8a] text-black font-black py-5 rounded-xl text-lg hover:scale-[1.02] transition-transform">SORGULA</button>
                 </form>
               ) : trackingResult ? (
                 <div className="space-y-8 animate-fade-up">
                   <div className="bg-black/40 p-6 rounded-2xl border border-white/5 space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Müşteri</span>
-                      <span className="text-[#facc15] font-black text-xs uppercase italic">{trackingResult.name}</span>
+                      <span className="text-[#d69e2e] font-black text-xs uppercase italic">{trackingResult.name}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Güncel Durum</span>
@@ -3536,13 +3752,13 @@ return (
                     
                     {/* Progress Bar */}
                     <div className="pt-4 space-y-3">
-                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-300">
                         <span>Süreç İlerlemesi</span>
                         <span>%{getStatusProgress(trackingResult.status)}</span>
                       </div>
                       <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
                         <div 
-                          className="h-full bg-gradient-to-r from-[#facc15] to-yellow-600 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(250,204,21,0.5)]"
+                          className="h-full bg-gradient-to-r from-[#1e3a8a] to-yellow-600 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(250,204,21,0.5)]"
                           style={{ width: `${getStatusProgress(trackingResult.status)}%` }}
                         ></div>
                       </div>
@@ -3593,54 +3809,54 @@ return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
               <div className="space-y-8">
                 <img src={logoImg} alt="CMSVize Logo" className="footer-logo h-16 w-auto" loading="lazy" decoding="async" />
-                <p className="text-gray-400 text-sm leading-relaxed font-medium">
+                <p className="text-gray-300 text-sm leading-relaxed font-medium">
                   Avrupa vizeleri ve oturum izinleri konusunda profesyonel çözüm ortağınız.
                 </p>
                 <div className="flex space-x-4">
-                  <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-400 hover:text-[#facc15] transition-colors"><InstagramIcon size={18} /></a>
-                  <a href="#" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-400 hover:text-[#facc15] transition-colors"><Globe size={18} /></a>
+                  <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-300 hover:text-[#d69e2e] transition-colors"><InstagramIcon size={18} /></a>
+                  <a href="#" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-300 hover:text-[#d69e2e] transition-colors"><Globe size={18} /></a>
                 </div>
               </div>
 
               <div className="space-y-8">
-                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">Türkiye Ofisi</h4>
-                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#d69e2e] pl-4">Türkiye Ofisi</h4>
+                <div className="space-y-4 text-sm text-gray-300 font-bold">
                   <div className="flex items-start space-x-3">
-                    <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
+                    <MapPin size={18} className="text-[#d69e2e] mt-1 flex-shrink-0" />
                     <p className="md:hidden">Bankalar Cad. No:12, Aksaray</p>
                     <p className="hidden md:block">Zafer Mahallesi, Bankalar Caddesi No:12 Kat:3 Merkez / Aksaray</p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Phone size={16} className="text-[#facc15]" />
+                    <Phone size={16} className="text-[#d69e2e]" />
                     <p>+90 545 991 82 68</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-8">
-                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">Avrupa Ofisi</h4>
-                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#d69e2e] pl-4">Avrupa Ofisi</h4>
+                <div className="space-y-4 text-sm text-gray-300 font-bold">
                   <div className="flex items-start space-x-3">
-                    <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
+                    <MapPin size={18} className="text-[#d69e2e] mt-1 flex-shrink-0" />
                     <p className="md:hidden">Gedimino pr. 20, Vilnius</p>
                     <p className="hidden md:block">Gedimino pr. 20, Vilnius 01103 Lietuva (Litvanya)</p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Phone size={16} className="text-[#facc15]" />
+                    <Phone size={16} className="text-[#d69e2e]" />
                     <p>+370 600 12345</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-8">
-                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">İletişim & Mesai</h4>
-                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#d69e2e] pl-4">İletişim & Mesai</h4>
+                <div className="space-y-4 text-sm text-gray-300 font-bold">
                   <div className="flex items-center space-x-3">
-                    <Mail size={16} className="text-[#facc15]" />
+                    <Mail size={16} className="text-[#d69e2e]" />
                     <p>info@cmsvize.com</p>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Clock size={16} className="text-[#facc15]" />
+                    <Clock size={16} className="text-[#d69e2e]" />
                     <p>Pzt-Cum: 09:00 - 18:00</p>
                   </div>
                 </div>
@@ -3649,15 +3865,15 @@ return (
 
             <div className="flex flex-col md:flex-row justify-between items-center py-12 border-y border-white/5 gap-8 mb-12">
               <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-                <span className="flex items-center space-x-2"><Lock size={14} className="text-[#facc15]" /> <span>SSL GÜVENLİ</span></span>
-                <span className="flex items-center space-x-2"><CheckCircle2 size={14} className="text-[#facc15]" /> <span>KVKK UYUMLU</span></span>
-                <span className="flex items-center space-x-2"><ShieldCheck size={14} className="text-[#facc15]" /> <span>RESMİ DANIŞMANLIK</span></span>
-                <span className="flex items-center space-x-2"><Users size={14} className="text-[#facc15]" /> <span>500+ BAŞARILI BAŞVURU</span></span>
+                <span className="flex items-center space-x-2"><Lock size={14} className="text-[#d69e2e]" /> <span>SSL GÜVENLİ</span></span>
+                <span className="flex items-center space-x-2"><CheckCircle2 size={14} className="text-[#d69e2e]" /> <span>KVKK UYUMLU</span></span>
+                <span className="flex items-center space-x-2"><ShieldCheck size={14} className="text-[#d69e2e]" /> <span>RESMİ DANIŞMANLIK</span></span>
+                <span className="flex items-center space-x-2"><Users size={14} className="text-[#d69e2e]" /> <span>500+ BAŞARILI BAŞVURU</span></span>
               </div>
-              <div className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                <button onClick={() => setCurrentPage('privacy')} className="hover:text-[#facc15] transition-colors">GİZLİLİK POLİTİKASI</button>
-                <button onClick={() => setCurrentPage('terms')} className="hover:text-[#facc15] transition-colors">KULLANIM KOŞULLARI</button>
-                <button onClick={() => setCurrentPage('cookies')} className="hover:text-[#facc15] transition-colors">ÇEREZ POLİTİKASI</button>
+              <div className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-300">
+                <button onClick={() => setCurrentPage('privacy')} className="hover:text-[#d69e2e] transition-colors">GİZLİLİK POLİTİKASI</button>
+                <button onClick={() => setCurrentPage('terms')} className="hover:text-[#d69e2e] transition-colors">KULLANIM KOŞULLARI</button>
+                <button onClick={() => setCurrentPage('cookies')} className="hover:text-[#d69e2e] transition-colors">ÇEREZ POLİTİKASI</button>
               </div>
             </div>
 
@@ -3671,11 +3887,11 @@ return (
       {/* COOKIE CONSENT BANNER */}
       {!cookieConsent && (
         <div className="fixed bottom-6 left-6 right-6 md:right-auto md:left-10 md:w-[400px] z-[100] animate-fade-up">
-          <div className="glass p-6 rounded-2xl border border-[#facc15]/30 shadow-2xl space-y-4">
+          <div className="glass p-6 rounded-2xl border border-[#d69e2e]/30 shadow-2xl space-y-4">
             <div className="flex items-start space-x-3">
               <span className="text-2xl">🍪</span>
               <p className="text-xs text-gray-300 leading-relaxed">
-                Bu site daha iyi bir deneyim sunmak için çerez kullanmaktadır. Çerezler hakkında detaylı bilgi için <button onClick={() => setCurrentPage('cookies')} className="text-[#facc15] hover:underline">Çerez Politikası</button> sayfamızı ziyaret edebilirsiniz.
+                Bu site daha iyi bir deneyim sunmak için çerez kullanmaktadır. Çerezler hakkında detaylı bilgi için <button onClick={() => setCurrentPage('cookies')} className="text-[#d69e2e] hover:underline">Çerez Politikası</button> sayfamızı ziyaret edebilirsiniz.
               </p>
             </div>
             <div className="flex gap-3">
@@ -3684,7 +3900,7 @@ return (
                   localStorage.setItem('cookieConsent', 'accepted');
                   setCookieConsent('accepted');
                 }}
-                className="flex-1 bg-[#facc15] text-black text-[10px] font-black uppercase py-2.5 rounded-lg hover:scale-[1.02] transition-transform"
+                className="flex-1 bg-[#1e3a8a] text-black text-[10px] font-black uppercase py-2.5 rounded-lg hover:scale-[1.02] transition-transform"
               >
                 Kabul Et
               </button>
