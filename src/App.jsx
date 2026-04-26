@@ -185,6 +185,7 @@ const App = () => {
   const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState(null);
   const [submittedTrackingId, setSubmittedTrackingId] = useState('');
+  const [cookieConsent, setCookieConsent] = useState(() => localStorage.getItem('cookieConsent'));
 
   // --- EFFECTS ---
   useEffect(() => {
@@ -343,6 +344,8 @@ const App = () => {
     } else if (path.startsWith('/blog/')) {
       setCurrentPage('blog_detail');
       setSelectedBlogSlug(path.replace('/blog/', ''));
+    } else if (path === '/cerez-politikasi') {
+      setCurrentPage('cookies');
     }
   }, []);
 
@@ -355,7 +358,8 @@ const App = () => {
       privacy: "Gizlilik Politikası | CMSVize",
       terms: "Kullanım Şartları | CMSVize",
       blog: "Vize Rehberi & Blog | CMSVize",
-      portal: "Müşteri Portalı | CMSVize"
+      portal: "Müşteri Portalı | CMSVize",
+      cookies: "Çerez Politikası | CMSVize"
     };
     document.title = titles[currentPage] || "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı";
   }, [currentPage]);
@@ -1900,6 +1904,41 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <span>ANA SAYFAYA DÖN</span>
           </button>
         </div>
+      ) : currentPage === 'cookies' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Çerez <span className="text-[#facc15]">Politikası</span></h1>
+          <div className="glass p-10 rounded-3xl space-y-8 text-gray-300 leading-relaxed text-sm">
+            <p className="font-bold text-[#facc15]">Son güncelleme: Nisan 2026</p>
+            
+            <section className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase italic">1. Çerezler Nedir?</h3>
+              <p>Çerezler, web sitemizi ziyaret ettiğinizde tarayıcınıza kaydedilen küçük metin dosyalarıdır.</p>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase italic">2. Hangi Çerezleri Kullanıyoruz?</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><span className="text-white font-bold">Zorunlu Çerezler:</span> Sitenin düzgün çalışması için gereklidir.</li>
+                <li><span className="text-white font-bold">Analitik Çerezler:</span> Ziyaretçi istatistikleri için kullanılır (Google Analytics).</li>
+                <li><span className="text-white font-bold">Güvenlik Çerezler:</span> Bot koruması için Cloudflare Turnstile tarafından kullanılır.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase italic">3. Çerezleri Nasıl Kontrol Edebilirsiniz?</h3>
+              <p>Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz. Ancak bu durumda sitenin bazı özellikleri çalışmayabilir.</p>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-xl font-bold text-white uppercase italic">4. İletişim</h3>
+              <p>Çerez politikamız hakkında sorularınız için: <span className="text-white font-bold">info@cmsvize.com</span></p>
+            </section>
+          </div>
+          <button onClick={() => setCurrentPage('home')} className="btn-corporate glass px-8 py-4 rounded-xl font-bold flex items-center space-x-2">
+            <ArrowLeft size={18} />
+            <span>ANA SAYFAYA DÖN</span>
+          </button>
+        </div>
       ) : currentPage === 'admin-login' ? (
         <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
           <div className="max-w-md w-full glass p-10 rounded-2xl border-t-4 border-[#facc15] shadow-2xl">
@@ -2995,6 +3034,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 <button onClick={() => setCurrentPage('privacy')} className="hover:text-[#facc15] transition-colors">GİZLİLİK POLİTİKASI</button>
                 <button onClick={() => setCurrentPage('terms')} className="hover:text-[#facc15] transition-colors">KULLANIM KOŞULLARI</button>
+                <button onClick={() => setCurrentPage('cookies')} className="hover:text-[#facc15] transition-colors">ÇEREZ POLİTİKASI</button>
               </div>
             </div>
 
@@ -3003,6 +3043,40 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             </div>
           </div>
         </footer>
+      )}
+
+      {/* COOKIE CONSENT BANNER */}
+      {!cookieConsent && (
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:w-[400px] z-[100] animate-fade-up">
+          <div className="glass p-6 rounded-2xl border border-[#facc15]/30 shadow-2xl space-y-4">
+            <div className="flex items-start space-x-3">
+              <span className="text-2xl">🍪</span>
+              <p className="text-xs text-gray-300 leading-relaxed">
+                Bu site daha iyi bir deneyim sunmak için çerez kullanmaktadır. Çerezler hakkında detaylı bilgi için <button onClick={() => setCurrentPage('cookies')} className="text-[#facc15] hover:underline">Çerez Politikası</button> sayfamızı ziyaret edebilirsiniz.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => {
+                  localStorage.setItem('cookieConsent', 'accepted');
+                  setCookieConsent('accepted');
+                }}
+                className="flex-1 bg-[#facc15] text-black text-[10px] font-black uppercase py-2.5 rounded-lg hover:scale-[1.02] transition-transform"
+              >
+                Kabul Et
+              </button>
+              <button 
+                onClick={() => {
+                  localStorage.setItem('cookieConsent', 'rejected');
+                  setCookieConsent('rejected');
+                }}
+                className="flex-1 glass text-white text-[10px] font-black uppercase py-2.5 rounded-lg hover:bg-white/5 transition-colors"
+              >
+                Reddet
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       </div>
   );
