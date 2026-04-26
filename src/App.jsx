@@ -101,6 +101,23 @@ const App = () => {
   const [isPdfSubmitting, setIsPdfSubmitting] = useState(false);
   const [pdfFormSuccess, setPdfFormSuccess] = useState(false);
 
+  // Counter State
+  const [counts, setCounts] = useState({ success: 0, approval: 0, years: 0, privacy: 0 });
+
+  useEffect(() => {
+    if (currentPage === 'home') {
+      const timer = setInterval(() => {
+        setCounts(prev => ({
+          success: Math.min(prev.success + 11, 500),
+          approval: Math.min(prev.approval + 2, 95),
+          years: Math.min(prev.years + 1, 3),
+          privacy: Math.min(prev.privacy + 5, 100)
+        }));
+      }, 30);
+      return () => clearInterval(timer);
+    }
+  }, [currentPage]);
+
   // New States for Features
   const [showWizard, setShowWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState(1);
@@ -912,23 +929,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {/* TOP CONTACT BAR */}
       {!currentPage.startsWith('admin') && (
         <div className="fixed top-0 left-0 w-full z-[60] bg-[#05070A] border-b border-white/5 h-10 flex items-center overflow-hidden px-6">
-          <div className="max-w-7xl mx-auto w-full flex justify-between items-center text-[10px] md:text-xs font-bold tracking-[0.1em] text-gray-400">
-            <div className="flex items-center space-x-6">
-              <a href="tel:+905459918268" className="flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
-                <Phone size={12} className="text-[#facc15] group-hover:scale-110 transition-transform" />
-                <span className="hidden xs:inline">+90 545 991 82 68</span>
-                <span className="xs:hidden">Ara</span>
-              </a>
-              <a href="mailto:bilgi@cmsvize.com" className="hidden sm:flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
-                <Mail size={12} className="text-[#facc15] group-hover:scale-110 transition-transform" />
-                <span>bilgi@cmsvize.com</span>
-              </a>
+          <div className="max-w-7xl mx-auto w-full flex justify-between items-center text-[9px] md:text-xs font-bold tracking-[0.05em] text-gray-300">
+            <div className="flex items-center space-x-3 md:space-x-6">
+              <span className="flex items-center space-x-1"><Phone size={12} className="text-[#facc15]" /> <span>+90 545 991 82 68</span></span>
+              <span className="hidden sm:flex items-center space-x-1"><Mail size={12} className="text-[#facc15]" /> <span>info@cmsvize.com</span></span>
+              <span className="hidden lg:flex items-center space-x-1"><Clock size={12} className="text-[#facc15]" /> <span>Pzt-Cum 09:00-18:00</span></span>
             </div>
-            <div className="flex items-center space-x-6">
-              <a href="https://instagram.com/cmsprime" target="_blank" rel="noreferrer" className="flex items-center space-x-2 hover:text-[#facc15] transition-colors group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="text-[#facc15] group-hover:scale-110 transition-transform"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                <span>@cmsprime</span>
-              </a>
+            <div className="flex items-center space-x-3 md:space-x-6">
+              <span className="flex items-center space-x-1"><MapPin size={12} className="text-[#facc15]" /> <span>TR Ofis: Aksaray</span></span>
+              <span className="hidden xs:flex items-center space-x-1"><MapPin size={12} className="text-[#facc15]" /> <span>LT Ofis: Vilnius</span></span>
             </div>
           </div>
         </div>
@@ -1080,6 +1089,57 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* GÜVEN İSTATİSTİKLERİ */}
+          <section className="py-20 bg-black border-y border-white/5 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div className="space-y-2">
+                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.success}+</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Başarılı <br />Başvuru</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">%{counts.approval}+</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Onay <br />Oranı</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.years}+ YIL</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Sektör <br />Deneyimi</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-5xl lg:text-7xl font-black text-[#facc15] tracking-tighter italic">{counts.privacy}%</p>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-white">Gizlilik <br />Güvencesi</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* NEDEN BİZ? */}
+          <section className="py-24 px-6 bg-[#0B0F1A]">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16 space-y-4">
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
+                <div className="w-20 h-1.5 bg-[#facc15] mx-auto rounded-full"></div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {[
+                  "Türkiye & Litvanya'da Fiziksel Ofis",
+                  "%95+ Onay Oranı ile Kanıtlanmış Başarı",
+                  "Anahtar Teslim Süreç Yönetimi",
+                  "7/24 WhatsApp Destek Hattı",
+                  "KVKK Uyumlu Veri Güvenliği",
+                  "Uzman Hukuki Danışmanlık Desteği"
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center space-x-4 glass p-6 rounded-2xl border border-white/5 hover:border-[#facc15]/30 transition-all">
+                    <div className="w-10 h-10 bg-[#facc15]/20 rounded-full flex items-center justify-center text-[#facc15] flex-shrink-0">
+                      <CheckCircle2 size={24} />
+                    </div>
+                    <span className="font-bold text-gray-200">{item}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -1344,6 +1404,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   { icon: <span className="text-3xl">🇵🇱</span>, title: "Polonya Çalışma İzni", desc: "Fabrika, depo ve lojistik alanlarında Polonya çalışma izni başvurularını hızla sonuçlandırıp iş yerleşiminizi sağlıyoruz." },
                   { icon: <span className="text-3xl">🇳🇱</span>, title: "Hollanda Nitelikli Göçmen", desc: "Hollanda yüksek nitelikli çalışan vizelerinde eksiksiz danışmanlık ve başvuru takibi sağlıyoruz." },
                   { icon: <span className="text-3xl">🇫🇷</span>, title: "Fransa Çalışma Vizesi", desc: "Fransa'da uzun dönem çalışma vizesi ve oturum izinleri için resmi kurumlar nezdinde profesyonel destek sunuyoruz." },
+                  { icon: <Users size={32} />, title: "Aile Birleşimi", desc: "Avrupa'daki yakınınızın yanına yerleşmek için gereken tüm vize ve oturum süreçlerini uzmanlıkla yönetiyoruz." },
+                  { icon: <Star size={32} />, title: "AB Mavi Kart", desc: "Yüksek nitelikli çalışanlar için Avrupa Birliği Mavi Kart başvuru sürecinde teknik ve idari destek sağlıyoruz." },
+                  { icon: <Briefcase size={32} />, title: "Şirket Kurulumu & Yatırımcı", desc: "Avrupa'da şirket kurmak, şube açmak veya yatırım yoluyla oturum almak isteyen iş insanlarına rehberlik ediyoruz." },
+                  { icon: <ShieldCheck size={32} />, title: "Hukuki Danışmanlık & İtiraz", desc: "Vize reddi durumlarında itiraz süreçleri ve resmi makamlarla olan tüm hukuki yazışmalarınızı yürütüyoruz." },
                   { icon: <ShieldCheck size={32} />, title: "Tam Kapsamlı Destek", desc: "Hangi ülkeyi seçerseniz seçin, dosya hazırlığından konsolosluk mülakatına kadar her adımda yanınızdayız." }
                 ].map((item, i) => (
                   <GlowCard 
@@ -1811,6 +1875,34 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="col-span-full text-center text-gray-500 py-12 animate-pulse">Yazılar Yükleniyor...</div>
             )}
           </div>
+        </div>
+      ) : currentPage === 'privacy' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Gizlilik <span className="text-[#facc15]">Politikası</span></h1>
+          <div className="glass p-10 rounded-3xl space-y-6 text-gray-300 leading-relaxed">
+            <p>CMSVize olarak kişisel verilerinizin güvenliğine büyük önem veriyoruz. 6698 sayılı KVKK kapsamında verileriniz sadece danışmanlık süreçlerinizin yürütülmesi amacıyla işlenir.</p>
+            <h3 className="text-xl font-bold text-white uppercase italic">Veri Toplama Amacı</h3>
+            <p>Vize başvurularınızın gerçekleştirilmesi, randevu alımı ve konsolosluk işlemlerinin takibi için gerekli olan bilgileriniz güvenli sunucularımızda saklanmaktadır.</p>
+            <p>Verileriniz üçüncü şahıslarla ticari amaçla asla paylaşılmaz, sadece yasal süreçler kapsamında yetkili makamlara iletilir.</p>
+          </div>
+          <button onClick={() => setCurrentPage('home')} className="btn-corporate glass px-8 py-4 rounded-xl font-bold flex items-center space-x-2">
+            <ArrowLeft size={18} />
+            <span>ANA SAYFAYA DÖN</span>
+          </button>
+        </div>
+      ) : currentPage === 'terms' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter">Kullanım <span className="text-[#facc15]">Koşulları</span></h1>
+          <div className="glass p-10 rounded-3xl space-y-6 text-gray-300 leading-relaxed">
+            <p>CMSVize tarafından sunulan hizmetler, danışmanlık ve başvuru takibi kapsamındadır. Vize onay veya red kararı tamamen ilgili konsoloslukların yetkisindedir.</p>
+            <h3 className="text-xl font-bold text-white uppercase italic">Sorumluluk Reddi</h3>
+            <p>Danışmanlık ücreti hizmet bedeli olup, vize sonucundan bağımsız olarak tahsil edilir. Yanlış veya eksik beyanlardan doğacak sorumluluk kullanıcıya aittir.</p>
+            <p>Sitemizdeki bilgiler güncel mevzuata göre hazırlanmış olup bilgilendirme amaçlıdır.</p>
+          </div>
+          <button onClick={() => setCurrentPage('home')} className="btn-corporate glass px-8 py-4 rounded-xl font-bold flex items-center space-x-2">
+            <ArrowLeft size={18} />
+            <span>ANA SAYFAYA DÖN</span>
+          </button>
         </div>
       ) : currentPage === 'admin-login' ? (
         <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
@@ -2579,66 +2671,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             )}
           </div>
         </div>
-      ) : (
-        <LegalPage
-          title={LegalContent[currentPage].title}
-          content={LegalContent[currentPage].content}
-        />
-      )}
-
-      {/* FOOTER */}
-      {!currentPage.startsWith('admin') && (
-        <footer className="py-24 border-t border-white/5 bg-[#0B0F1A]">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-16">
-              <div className="space-y-6">
-                <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-                  {logoImg ? <img src={logoImg} alt="Logo" className="h-[42px] w-auto object-contain" /> : <span>CMSVize</span>}
-                </div>
-                <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xs uppercase tracking-tighter italic">
-                  {siteSettings?.desc || "Avrupa'da kariyer ve yaşam için profesyonel vize ve danışmanlık köprünüz."}
-                </p>
-                <div className="flex space-x-4 pt-4">
-                  <a href={`https://www.instagram.com/${siteSettings?.instagram || "cmsprime"}/`} target="_blank" rel="noreferrer" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#0B0F1A] hover:bg-[#facc15] hover:border-[#facc15] transition-all group">
-                    <Camera size={18} className="text-[#facc15] group-hover:text-[#0B0F1A]" />
-                  </a>
-                  <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Globe size={18} /></a>
-                  <a href="#" className="w-10 h-10 glass flex items-center justify-center rounded-lg hover:text-[#facc15] transition-all"><Share2 size={18} /></a>
-                </div>
-              </div>
-              <div className="space-y-6">
-                <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Hızlı Bağlantılar</h4>
-                <ul className="space-y-4 font-bold text-sm text-gray-400">
-                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Hizmetlerimiz</button></li>
-                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('surec')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Süreç Yönetimi</button></li>
-                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Başarı Hikayeleri</button></li>
-                  <li><button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('sss')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-white transition-colors">Sıkça Sorulan Sorular</button></li>
-                </ul>
-              </div>
-              <div className="space-y-6">
-                <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">Yasal</h4>
-                <ul className="space-y-4 font-bold text-sm text-gray-400">
-                  <li><button onClick={() => setCurrentPage('kvkk')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">KVKK Aydınlatma Metni</button></li>
-                  <li><button onClick={() => setCurrentPage('privacy')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Gizlilik Politikası</button></li>
-                  <li><button onClick={() => setCurrentPage('terms')} className="hover:text-white transition-colors uppercase tracking-tighter italic text-left">Kullanım Şartları</button></li>
-                </ul>
-              </div>
-              <div className="space-y-6">
-                <h4 className="text-[#facc15] font-black text-xs tracking-[0.2em] uppercase">İletişim</h4>
-                <ul className="space-y-4 font-bold text-sm text-gray-400">
-                  <li className="flex items-center space-x-2"><Phone size={14} /> <span>+90 545 991 82 68</span></li>
-                  <li className="flex items-center space-x-2"><Mail size={14} /> <span>bilgi@cmsvize.com</span></li>
-                  <li className="flex items-center space-x-2"><MapPin size={14} /> <span>Aksaray, Türkiye</span></li>
-                </ul>
-              </div>
-            </div>
-            <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 CMSVize Danışmanlık. Tüm hakları saklıdır.</p>
-              <div className="flex space-x-6 text-[10px] font-black text-gray-600 uppercase tracking-widest"><span>Designed for Excellence</span></div>
-            </div>
-          </div>
-        </footer>
-      )}
+        ) : null}
 
       {/* WHATSAPP FLOAT - ENHANCED */}
       {!currentPage.startsWith('admin') && (
@@ -2896,7 +2929,86 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </div>
         </div>
       )}
-    </div>
+
+      {/* FOOTER */}
+      {!currentPage.startsWith('admin') && (
+        <footer className="bg-[#05070A] pt-32 pb-16 px-6 border-t border-white/5 mt-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
+              <div className="space-y-8">
+                <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto" />
+                <p className="text-gray-400 text-sm leading-relaxed font-medium">
+                  Avrupa vizeleri ve oturum izinleri konusunda profesyonel çözüm ortağınız.
+                </p>
+                <div className="flex space-x-4">
+                  <a href="#" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-400 hover:text-[#facc15] transition-colors"><Instagram size={18} /></a>
+                  <a href="#" className="w-10 h-10 glass rounded-full flex items-center justify-center text-gray-400 hover:text-[#facc15] transition-colors"><Globe size={18} /></a>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">Türkiye Ofisi</h4>
+                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                  <div className="flex items-start space-x-3">
+                    <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
+                    <p>Zafer Mahallesi, Bankalar Caddesi No:12 Kat:3 Merkez / Aksaray</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone size={16} className="text-[#facc15]" />
+                    <p>+90 545 991 82 68</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">Avrupa Ofisi</h4>
+                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                  <div className="flex items-start space-x-3">
+                    <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
+                    <p>Gedimino pr. 20, Vilnius 01103 Lietuva (Litvanya)</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone size={16} className="text-[#facc15]" />
+                    <p>+370 600 12345</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <h4 className="text-lg font-black italic uppercase tracking-widest border-l-4 border-[#facc15] pl-4">İletişim & Mesai</h4>
+                <div className="space-y-4 text-sm text-gray-400 font-bold">
+                  <div className="flex items-center space-x-3">
+                    <Mail size={16} className="text-[#facc15]" />
+                    <p>info@cmsvize.com</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Clock size={16} className="text-[#facc15]" />
+                    <p>Pzt-Cum: 09:00 - 18:00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row justify-between items-center py-12 border-y border-white/5 gap-8 mb-12">
+              <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+                <span className="flex items-center space-x-2"><Lock size={14} className="text-[#facc15]" /> <span>SSL GÜVENLİ</span></span>
+                <span className="flex items-center space-x-2"><CheckCircle2 size={14} className="text-[#facc15]" /> <span>KVKK UYUMLU</span></span>
+                <span className="flex items-center space-x-2"><ShieldCheck size={14} className="text-[#facc15]" /> <span>RESMİ DANIŞMANLIK</span></span>
+                <span className="flex items-center space-x-2"><Users size={14} className="text-[#facc15]" /> <span>500+ BAŞARILI BAŞVURU</span></span>
+              </div>
+              <div className="flex space-x-8 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <button onClick={() => setCurrentPage('privacy')} className="hover:text-[#facc15] transition-colors">GİZLİLİK POLİTİKASI</button>
+                <button onClick={() => setCurrentPage('terms')} className="hover:text-[#facc15] transition-colors">KULLANIM KOŞULLARI</button>
+              </div>
+            </div>
+
+            <div className="text-center text-[10px] font-bold text-gray-600 tracking-[0.3em] uppercase">
+              © 2026 CMSVIZE GLOBAL CONSULTANCY. TÜM HAKLARI SAKLIDIR.
+            </div>
+          </div>
+        </footer>
+      )}
+      </div>
   );
 };
 
