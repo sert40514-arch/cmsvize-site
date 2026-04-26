@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* ============================================
+   CMS-MARQUEE — Sarı Kayan Bant Animasyonu
+   ============================================ */
+@keyframes cms-marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.cms-marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cms-marquee-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: cms-marquee-left 24s linear infinite;
+}
+
+.cms-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.cms-marquee-item {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 768px) {
+  .cms-marquee-track {
+    animation-duration: 18s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cms-marquee-track {
+    animation: none;
+  }
+}
+
+/* ============================================
+   WHATSAPP PULSE — Yeşil Titreşim Animasyonu
+   ============================================ */
+@keyframes cms-whatsapp-pulse {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(37, 211, 102, 0.7); }
+  70%  { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);   }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(37, 211, 102, 0);   }
+}
+
+.cms-whatsapp-pulse {
+  animation: cms-whatsapp-pulse 2s infinite !important;
+  animation-play-state: running !important;
+}

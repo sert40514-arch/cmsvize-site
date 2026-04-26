@@ -1038,39 +1038,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* Pulse Animation for WhatsApp */
-        @keyframes pulse-intense { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
-        .animate-pulse-whatsapp { animation: pulse-intense 2s infinite; }
-
-        /* Scroll Ticker Animation - Seamless Loop */
-        @keyframes cms-marquee-left {
-          0% { transform: translate3d(0, 0, 0); }
-          100% { transform: translate3d(-50%, 0, 0); }
-        }
-        .cms-marquee-wrapper {
-          width: 100%;
-          overflow: hidden;
-          white-space: nowrap;
-        }
-        .cms-marquee-track {
-          display: flex;
-          width: max-content;
-          min-width: 200%;
-          will-change: transform;
-          animation: cms-marquee-left 24s linear infinite !important;
-          animation-play-state: running !important;
-        }
-        .cms-marquee-item { flex: 0 0 auto; }
-        .cms-marquee-track:hover { animation-play-state: paused !important; }
-
-        @media (max-width: 768px) {
-          .cms-marquee-track { animation-duration: 18s !important; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .cms-marquee-track { animation: none !important; }
-        }
 
         /* Scroll Reveal */
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -1094,8 +1061,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
           .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
           .shimmer { animation: none !important; }
-          /* WhatsApp pulse intentionally kept active on mobile */
-          .animate-pulse-whatsapp { animation: pulse-intense 2s infinite !important; animation-play-state: running !important; }
+
           
           /* GlowCard (Spotlight) Aggressive Mobile Disable */
           [data-glow] {
@@ -3417,7 +3383,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       {/* WHATSAPP FLOAT - ENHANCED */}
       {!currentPage.startsWith('admin') && (
-        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center animate-pulse-whatsapp transition-transform hover:scale-110">
+        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center cms-whatsapp-pulse transition-transform hover:scale-110">
           <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
             Size nasıl yardımcı olabiliriz?
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
