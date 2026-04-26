@@ -66,6 +66,7 @@ import insta2Img from './assets/insta2.png';
 import insta3Img from './assets/insta3.png';
 import insta4Img from './assets/insta4.png';
 import logoImg from './assets/logo.png';
+import logo2Img from './assets/logo2.png';
 import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
 import litvanyaPdf from './assets/CMSVize_Litvanya_Rehberi_2026_PRO.pdf';
@@ -1333,7 +1334,7 @@ return (
         <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0f172a]/90 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="nav-logo-container flex items-center group cursor-pointer">
-              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="nav-logo h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
+              <img src={logo2Img} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="nav-logo h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -3370,21 +3371,21 @@ return (
           </div>
         </div>
       ) : currentPage === 'portal' ? (
-        <div className="pt-40 pb-32 px-6 max-w-xl mx-auto min-h-screen flex flex-col items-center justify-center">
-          <div className="glass p-12 rounded-2xl w-full text-center space-y-8 border-t-4 border-[#d69e2e]">
-            <Lock className="text-[#d69e2e] w-16 h-16 mx-auto" />
+        <div className="pt-40 pb-32 px-6 max-w-xl mx-auto min-h-screen flex flex-col items-center justify-center bg-gray">
+          <div className="bg-white p-12 rounded-xl w-full text-center space-y-8 border-t-4 border-gold shadow-lg">
+            <Lock className="text-gold w-16 h-16 mx-auto" />
             <div>
-              <h2 className="text-3xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#d69e2e]">Portalı</span></h2>
-              <p className="text-gray-300 mt-2 text-sm">Vize başvuru sürecinizi adım adım takip edin.</p>
+              <h2 className="text-4xl font-title text-primary uppercase">MÜŞTERİ <span className="text-gold">PORTALI</span></h2>
+              <p className="text-text-light mt-3 text-sm font-medium">Vize başvuru sürecinizi adım adım takip edin.</p>
             </div>
             {!portalLoggedIn ? (
-              <form onSubmit={handlePortalLogin} className="space-y-4">
+              <form onSubmit={handlePortalLogin} className="space-y-5">
                 <input 
                   required 
                   placeholder="T.C. Kimlik / Pasaport No" 
                   value={portalUser}
                   onChange={(e) => setPortalUser(e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" 
+                  className="w-full bg-gray border border-border px-6 py-4 rounded-lg font-medium text-primary focus:border-gold outline-none transition-colors" 
                 />
                 <input 
                   required 
@@ -3392,28 +3393,28 @@ return (
                   placeholder="Şifre" 
                   value={portalPass}
                   onChange={(e) => setPortalPass(e.target.value)}
-                  className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#d69e2e] outline-none" 
+                  className="w-full bg-gray border border-border px-6 py-4 rounded-lg font-medium text-primary focus:border-gold outline-none transition-colors" 
                 />
-                <button type="submit" className="w-full bg-[#1e3a8a] text-black font-black py-4 rounded-lg text-lg hover:scale-[1.02] transition-transform">GİRİŞ YAP</button>
+                <button type="submit" className="w-full btn-gold py-4 rounded-lg font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg transition-all flex justify-center items-center">GİRİŞ YAP</button>
               </form>
             ) : (
-              <div className="space-y-8 text-left bg-black/40 p-6 rounded-xl border border-white/5">
-                <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <h3 className="font-black text-lg">Sn. Ahmet Yılmaz</h3>
-                  <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-bold uppercase">Aktif Dosya</span>
+              <div className="space-y-6 text-left bg-gray p-8 rounded-lg border border-border shadow-sm">
+                <div className="flex justify-between items-center border-b border-border pb-4">
+                  <h3 className="font-bold text-xl text-primary font-title">Sn. Ahmet Yılmaz</h3>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase">Aktif Dosya</span>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="flex items-center space-x-4">
-                    <CheckCircle2 className="text-green-500" />
-                    <div className="flex-1"><p className="text-sm font-bold">1. Evraklar Toplandı</p><p className="text-xs text-gray-500">Tamamlandı</p></div>
+                    <CheckCircle2 className="text-green-600 flex-shrink-0" size={24} />
+                    <div className="flex-1"><p className="text-sm font-bold text-primary">1. Evraklar Toplandı</p><p className="text-xs text-text-light">Tamamlandı</p></div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <CheckCircle2 className="text-green-500" />
-                    <div className="flex-1"><p className="text-sm font-bold">2. Tercümeler ve Noter</p><p className="text-xs text-gray-500">Tamamlandı</p></div>
+                    <CheckCircle2 className="text-green-600 flex-shrink-0" size={24} />
+                    <div className="flex-1"><p className="text-sm font-bold text-primary">2. Tercümeler ve Noter</p><p className="text-xs text-text-light">Tamamlandı</p></div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <div className="w-6 h-6 rounded-full border-2 border-[#d69e2e] flex items-center justify-center bg-[#1e3a8a]/20 animate-pulse"></div>
-                    <div className="flex-1"><p className="text-sm font-bold text-[#d69e2e]">3. Konsolosluk Randevusu</p><p className="text-xs text-gray-500">Bekleniyor (Tahmini: 14 Gün)</p></div>
+                    <div className="w-6 h-6 rounded-full border-2 border-gold flex items-center justify-center bg-gold/10 animate-pulse flex-shrink-0"></div>
+                    <div className="flex-1"><p className="text-sm font-bold text-gold">3. Konsolosluk Randevusu</p><p className="text-xs text-text-light">Bekleniyor (Tahmini: 14 Gün)</p></div>
                   </div>
                 </div>
               </div>
