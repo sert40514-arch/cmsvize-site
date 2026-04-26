@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Turnstile } from "react-turnstile";
 import { supabase } from './lib/supabase';
 import {
@@ -1886,13 +1886,39 @@ return (
                 {/* Sol Kolon: Form */}
                 <div className="p-10 lg:p-16 bg-white">
                   {formSuccess ? (
-                    <div className="text-center py-12">
-                      <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle2 size={40} />
+                    <div className="min-h-[400px] flex items-center justify-center">
+                      <div className="text-center space-y-8 w-full max-w-md mx-auto">
+                        <div className="w-20 h-20 bg-gold/10 border-2 border-gold rounded-full flex items-center justify-center mx-auto">
+                          <CheckCircle2 size={40} className="text-gold" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-title text-primary mb-3">Başvurunuz Başarıyla Alındı</h3>
+                          <p className="text-text-light text-sm">Sayın <strong className="text-primary">{formData.name || 'Değerli Müşterimiz'}</strong>,</p>
+                          <p className="text-text-light text-sm mt-1">Başvurunuz sistemimize kaydedilmiştir.</p>
+                          <p className="text-text-light text-sm">Uzman danışmanımız en kısa sürede sizinle iletişime geçecektir.</p>
+                        </div>
+                        {submittedTrackingId && (
+                          <div className="bg-gray rounded-lg p-6 border border-border">
+                            <p className="text-xs font-bold text-text-light uppercase tracking-widest mb-2">Takip Kodunuz</p>
+                            <button
+                              onClick={() => { navigator.clipboard?.writeText(submittedTrackingId); showToast('Takip kodu kopyalandı!'); }}
+                              className="text-2xl font-title text-gold tracking-widest hover:text-gold-light transition-colors"
+                              title="Kopyalamak için tıklayın"
+                            >
+                              {submittedTrackingId}
+                            </button>
+                            <p className="text-[10px] text-text-light mt-2">Kopyalamak için üstüne tıklayın</p>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-center space-x-2 text-xs text-text-light">
+                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                          <span>Ortalama Dönüş Süresi: <strong>15-30 dakika</strong></span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <button onClick={resetForm} className="bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary-light transition-colors text-sm">YENİ BAŞVURU YAP</button>
+                          <a href={`https://wa.me/905459918268?text=${encodeURIComponent('Merhaba, yeni başvuru yaptım. Takip kodum: ' + (submittedTrackingId || ''))}`} target="_blank" rel="noreferrer" className="bg-[#25D366] text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm flex items-center justify-center">WHATSAPP'TAN ULAŞ</a>
+                        </div>
                       </div>
-                      <h3 className="text-3xl font-title text-primary mb-4">Başvurunuz Alındı!</h3>
-                      <p className="text-text-light mb-8">Uzmanlarımız en kısa sürede sizinle iletişime geçecektir.</p>
-                      <button onClick={resetForm} className="btn-gold px-8 py-3">YENİ BAŞVURU</button>
                     </div>
                   ) : (
                     <>
@@ -1961,8 +1987,13 @@ return (
 
                         <button 
                           type="submit" 
-                          disabled={isSubmitting || !isTurnstileVerified}
-                          className="w-full btn-gold py-5 text-xl disabled:opacity-50"
+                          disabled={isSubmitting}
+                          onClick={() => {
+                            if (!isTurnstileVerified && !turnstileToken) {
+                              showToast('Güvenlik doğrulaması yükleniyor, lütfen bekleyin veya sayfayı yenileyin.');
+                            }
+                          }}
+                          className="w-full btn-gold py-5 text-xl disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSubmitting ? 'GÖNDERİLİYOR...' : 'BAŞVURUYU TAMAMLA'}
                         </button>
@@ -2024,23 +2055,35 @@ return (
             </div>
           </section>
 
-          {/* SEO / GÜVEN İÇERİĞİ */}
-          <section className="py-24 px-6 border-t border-white/5 bg-white/[0.01]">
-            <div className="max-w-4xl mx-auto space-y-10">
-              <div className="space-y-6 text-center">
-                <h2 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter text-white">Avrupa Vize ve Oturum Danışmanlığında <br className="hidden md:block" /> <span className="text-[#d69e2e]">Profesyonel Süreç Yönetimi</span></h2>
-                <div className="w-20 h-1 bg-[#1e3a8a] mx-auto"></div>
+          {/* SÜREÇ YÖNETİMİ */}
+          <section className="py-24 px-6 bg-white border-t border-border">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl lg:text-4xl font-title text-primary uppercase">Avrupa Vize ve Oturum Danışmanlığ305nda <br className="hidden md:block" /> Profesyonel Süreç Yönetimi</h2>
+                <p className="text-text-light mt-4 max-w-2xl mx-auto">CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa'da iş, oturum ve aile birleşimi süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar.</p>
               </div>
-              <div className="space-y-6">
-                <p className="text-gray-300 text-lg leading-relaxed font-medium">
-                  CMSVize; Almanya, Polonya ve Litvanya başta olmak üzere Avrupa’da iş, oturum, aile birleşimi ve danışmanlık süreçlerinde başvuru sahiplerine profesyonel yol haritası sunar. Aksaray merkezli yapımız ve Avrupa odaklı danışmanlık modelimizle, süreci daha anlaşılır, planlı ve güvenilir hale getiriyoruz.
-                </p>
-                <div className="glass p-6 rounded-xl border-l-4 border-[#d69e2e]">
-                  <p className="text-xs text-gray-500 font-bold leading-relaxed italic">
-                    <span className="text-[#d69e2e] uppercase tracking-widest block mb-2 font-black">Yasal Uyarı & Bilgilendirme:</span>
-                    CMSVize danışmanlık hizmeti sunar. Nihai karar yetkisi ilgili konsolosluklara, resmi kurumlara ve yetkili mercilere aittir. Başvuru süreci boyunca sunulan her türlü bilgi, ilgili ülkelerin güncel göç yasaları ve resmi prosedürleri çerçevesinde değerlendirilir.
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
+                  <div className="text-5xl mb-4">📋</div>
+                  <h3 className="text-xl font-title text-gold">Belge Hazırlığı</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">Tüm evrakları sizin için eksiksiz hazırlıyor, kontrollerini yapıyoruz.</p>
                 </div>
+                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
+                  <div className="text-5xl mb-4">✈️</div>
+                  <h3 className="text-xl font-title text-gold">Başvuru Yönetimi</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">Resmi makamlara eksiksiz iletiyor, sürecin her adımını takip ediyoruz.</p>
+                </div>
+                <div className="bg-primary text-white p-10 rounded-lg text-center space-y-4">
+                  <div className="text-5xl mb-4">🏆</div>
+                  <h3 className="text-xl font-title text-gold">Sonuç Garantisi</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">%95+ onay oranıyla yanınızdayız. Ret durumunda ücretsiz itiraz desteği.</p>
+                </div>
+              </div>
+              <div className="mt-12 p-6 rounded-lg border-l-4 border-gold bg-gray">
+                <p className="text-xs text-text-light leading-relaxed">
+                  <span className="text-primary font-bold uppercase tracking-widest block mb-1">Yasal Uyarı &amp; Bilgilendirme:</span>
+                  CMSVize danışmanlık hizmeti sunar. Nihai karar yetkisi ilgili konsolosluklara aittir.
+                </p>
               </div>
             </div>
           </section>
@@ -3585,17 +3628,21 @@ return (
 
       {/* FOOTER */}
       {!currentPage.startsWith('admin') && (
-        <footer className="bg-dark pt-32 pb-16 px-6 border-t border-white/5">
+        <footer className="bg-dark pt-16 pb-10 px-6 border-t border-white/5">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-              <div className="space-y-8">
-                <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+              <div className="space-y-6">
+                <img src={logoImg} alt="CMSVize Logo" className="h-14 w-auto" />
                 <p className="text-gray-400 text-sm leading-relaxed">
                   Avrupa vizeleri ve oturum izinleri konusunda profesyonel çözüm ortağınız.
                 </p>
-                <div className="flex space-x-4">
-                  <a href="https://www.instagram.com/cmsprime/" target="_blank" rel="noreferrer" className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-gold transition-colors"><InstagramIcon size={18} /></a>
-                  <a href="#" className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-gold transition-colors"><Globe size={18} /></a>
+                <div className="flex space-x-3">
+                  <a href="https://www.instagram.com/cmsvize/" target="_blank" rel="noreferrer" className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-gold transition-colors">
+                    <InstagramIcon size={18} />
+                  </a>
+                  <a href="#" className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-gold transition-colors">
+                    <Globe size={18} />
+                  </a>
                 </div>
               </div>
 
