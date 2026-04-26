@@ -1053,12 +1053,28 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             animation-iteration-count: 1 !important;
             transition-duration: 0.1s !important;
           }
-          .glass { backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
+          .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
           .reveal-on-scroll, .reveal-left { transition: opacity 0.5s ease-out !important; transform: none !important; }
           .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
           .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
           .shimmer, .animate-pulse-whatsapp { animation: none !important; }
-          [data-glow]::before, [data-glow]::after { display: none !important; } /* Disable GlowCard effects on mobile */
+          
+          /* GlowCard (Spotlight) Aggressive Mobile Disable */
+          [data-glow] {
+            background-image: none !important;
+            background-attachment: initial !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+          }
+          [data-glow]::before,
+          [data-glow]::after {
+            display: none !important;
+          }
+          [data-glow] [data-glow] {
+            display: none !important;
+          }
+
           * { background-attachment: scroll !important; }
         }
 
