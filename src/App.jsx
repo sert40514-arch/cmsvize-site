@@ -1372,12 +1372,14 @@ return (
                 <div className="lg:col-span-7">
                   <span className="hero-tag">🏆 TÜRKİYE'NİN ÖNCÜ VİZE DANIŞMANLIĞI</span>
                   <h1 className="hero-title">
-                    Avrupa'da<br />
-                    <span>Yeni Bir Hayat</span><br />
-                    Kurun
+                    2 Yıllık Litvanya<br />
+                    <span>Oturum Kartı</span> ile<br />
+                    Avrupa'da Çalış
                   </h1>
                   <p className="hero-subtitle">
-                    Litvanya, Almanya ve Polonya vize ve oturum izni süreçlerinde 500+ başarılı başvuruyla yanınızdayız.
+                    Dil bilmeden Avrupa'da çalışma fırsatı. Almanya,<br />
+                    Polonya ve Litvanya süreçlerinde 500+ başarılı<br />
+                    başvuruyla profesyonel ekibimiz yanınızda.
                   </p>
                   
                   <div className="flex flex-wrap gap-4 mb-12">
@@ -1464,6 +1466,38 @@ return (
               </div>
             </div>
           </section>
+
+          {/* GÜVEN LOGOLARI */}
+          <div className="bg-[#F4F6FA] border-y border-[#E2E8F0] py-4">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center gap-4 md:gap-10 text-[12px] font-medium text-[#6B7280]">
+                <div className="flex items-center space-x-2 justify-center md:justify-start">
+                  <span className="text-[20px] leading-none">🇹🇷</span>
+                  <span>T.C. Onaylı Danışmanlık</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
+                <div className="flex items-center space-x-2 justify-center md:justify-start">
+                  <span className="text-[20px] leading-none">🇪🇺</span>
+                  <span>AB Schengen Bölgesi</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
+                <div className="flex items-center space-x-2 justify-center md:justify-start col-span-2 md:col-span-1">
+                  <span className="text-[20px] leading-none">🇱🇹</span>
+                  <span>Litvanya Göçmenlik Dairesi</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
+                <div className="flex items-center space-x-2 justify-center md:justify-start">
+                  <span className="text-[20px] leading-none">🔒</span>
+                  <span>KVKK Uyumlu</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
+                <div className="flex items-center space-x-2 justify-center md:justify-start">
+                  <span className="text-[20px] leading-none">⭐</span>
+                  <span>%95+ Onay Oranı</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* İSTATİSTİKLER BÖLÜMÜ */}
           <section className="stats-section" id="stats-section">
