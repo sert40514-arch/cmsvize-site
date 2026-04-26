@@ -346,6 +346,14 @@ const App = () => {
       setSelectedBlogSlug(path.replace('/blog/', ''));
     } else if (path === '/cerez-politikasi') {
       setCurrentPage('cookies');
+    } else if (path === '/rehberler') {
+      setCurrentPage('guides_main');
+    } else if (path === '/rehberler/litvanya') {
+      setCurrentPage('guide_litvanya');
+    } else if (path === '/rehberler/almanya') {
+      setCurrentPage('guide_almanya');
+    } else if (path === '/rehberler/polonya') {
+      setCurrentPage('guide_polonya');
     }
   }, []);
 
@@ -359,7 +367,11 @@ const App = () => {
       terms: "Kullanım Şartları | CMSVize",
       blog: "Vize Rehberi & Blog | CMSVize",
       portal: "Müşteri Portalı | CMSVize",
-      cookies: "Çerez Politikası | CMSVize"
+      cookies: "Çerez Politikası | CMSVize",
+      guides_main: "Ülke Rehberleri | CMSVize",
+      guide_litvanya: "Litvanya Yaşam ve Çalışma Rehberi 2026 | CMSVize",
+      guide_almanya: "Almanya Çalışma Rehberi 2026 | CMSVize",
+      guide_polonya: "Polonya Çalışma Rehberi 2026 | CMSVize"
     };
     document.title = titles[currentPage] || "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı";
   }, [currentPage]);
@@ -954,7 +966,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
               <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">HİZMETLER</button>
               <button onClick={() => { setCurrentPage('home'); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="hover:text-[#facc15] transition-colors uppercase tracking-widest">REFERANSLAR</button>
-              <button onClick={() => setCurrentPage('blog')} className={`hover:text-[#facc15] transition-colors uppercase tracking-widest ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
+              <button onClick={() => setCurrentPage('guides_main')} className={`hover:text-[#facc15] transition-colors uppercase tracking-widest ${['guides_main', 'guide_litvanya', 'guide_almanya', 'guide_polonya'].includes(currentPage) ? 'text-[#facc15]' : ''}`}>VİZE REHBERİ</button>
               <button onClick={() => setCurrentPage('portal')} className={`hover:text-[#facc15] transition-colors flex items-center space-x-1 uppercase tracking-widest ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={14} /><span>PORTAL</span></button>
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#131926]">
@@ -1938,6 +1950,430 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <ArrowLeft size={18} />
             <span>ANA SAYFAYA DÖN</span>
           </button>
+        </div>
+      ) : currentPage === 'guides_main' ? (
+        <div className="pt-40 pb-32 px-6 max-w-7xl mx-auto space-y-16 animate-fade-up">
+          <div className="text-center space-y-4">
+            <h1 className="text-6xl font-black italic uppercase tracking-tighter">Avrupa <span className="text-[#facc15]">Vize Rehberi</span></h1>
+            <p className="text-gray-400 max-w-2xl mx-auto font-medium">Hedeflediğiniz ülkede yaşam, çalışma şartları ve vize süreçleri hakkında en güncel bilgiler.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { id: 'litvanya', name: 'LİTVANYA', flag: '🇱🇹', desc: 'Düşük yaşam maliyeti ve hızlı vize süreciyle Avrupa\'nın parlayan yıldızı.', color: 'border-yellow-600' },
+              { id: 'almanya', name: 'ALMANYA', flag: '🇩🇪', desc: 'Avrupa\'nın en büyük ekonomisi, yüksek maaşlar ve güçlü sosyal haklar.', color: 'border-red-600' },
+              { id: 'polonya', name: 'POLONYA', flag: '🇵🇱', desc: 'Hızlı büyüyen ekonomi ve kolay vize süreçleriyle Türk çalışanlar için ideal.', color: 'border-white' }
+            ].map(country => (
+              <div key={country.id} className={`glass p-8 rounded-3xl border-t-4 ${country.color} space-y-6 hover:translate-y-[-8px] transition-all duration-300 group`}>
+                <div className="text-5xl">{country.flag}</div>
+                <h3 className="text-2xl font-black italic uppercase tracking-tight text-white">{country.name}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{country.desc}</p>
+                <button 
+                  onClick={() => setCurrentPage(`guide_${country.id}`)}
+                  className="w-full btn-corporate glass py-3 rounded-xl font-bold uppercase tracking-widest text-xs group-hover:bg-[#facc15] group-hover:text-black transition-colors"
+                >
+                  Rehberi İncele
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : currentPage === 'guide_litvanya' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <div className="flex items-center space-x-4 mb-8">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Litvanya</span>
+          </div>
+
+          <div className="space-y-12">
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#facc15]">YAŞAM REHBERİ 2026</span></h1>
+            
+            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
+              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4">
+                <h2 className="text-2xl font-black italic uppercase text-white">Litvanya Hakkında Genel Bilgi</h2>
+                <p>Litvanya, Baltık bölgesinde yer alan AB ve NATO üyesi bir ülkedir. Başkenti Vilnius, nüfusu yaklaşık 2.8 milyon, resmi para birimi Euro'dur. Schengen bölgesinde yer alır.</p>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Litvanya?</h2>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
+                  {['27 Schengen ülkesinde vizesiz seyahat', 'Bati Avrupa\'ya kıyasla %40-50 daha uygun yaşam maliyeti', 'Hızlı büyüyen iş ve teknoloji ekosistemi', 'AB vatandaşlığına giden yol', 'Aile birleşimi hakkı'].map((item, i) => (
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <span className="text-sm font-bold">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Şehirler</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    { name: 'Vilnius', title: 'Başkent', desc: 'Kuzey\'in Silicon Valley\'i olarak anılır.' },
+                    { name: 'Kaunas', title: 'Sanayi Merkezi', desc: 'Yaşam maliyeti daha uygundur.' },
+                    { name: 'Klaipeda', title: 'Liman Şehri', desc: 'Lojistik ve denizcilik sektörü güçlü.' }
+                  ].map((city, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
+                      <h4 className="text-lg font-black text-[#facc15] italic">{city.name}</h4>
+                      <p className="text-[10px] font-black uppercase text-gray-500">{city.title}</p>
+                      <p className="text-xs">{city.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Kalem</th>
+                        <th className="px-6 py-4">Tahmini Maliyet</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'Tek kişilik daire kirası', v: '400-700 EUR/ay' },
+                        { k: 'Market alışverişi', v: '200-350 EUR/ay' },
+                        { k: 'Ulaşım (aylık)', v: '30-50 EUR' },
+                        { k: 'Sağlık sigortası', v: '20-40 EUR/ay' },
+                        { k: 'Ortalama toplam', v: '700-1200 EUR/ay' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Sektör</th>
+                        <th className="px-6 py-4">Aylık Maaş</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'TIR Şoförü (KOD95)', v: '1.800-2.500 EUR' },
+                        { k: 'Fabrika İşçisi', v: '1.000-1.400 EUR' },
+                        { k: 'İnşaat', v: '1.200-1.800 EUR' },
+                        { k: 'BT Uzmanı', v: '2.500-4.000 EUR' },
+                        { k: 'Asgari Ücret', v: '~1.038 EUR' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                <div className="glass p-8 rounded-3xl space-y-4">
+                  <h3 className="text-xl font-black italic uppercase text-white">Konaklama</h3>
+                  <p className="text-sm">Litvanya'da konaklama bulmak görece kolaydır. Kira sözleşmesi oturum kartı başvurusu için zorunludur. CMSVize olarak konaklama bulma sürecinde de destek sağlıyoruz.</p>
+                </div>
+                <div className="glass p-8 rounded-3xl space-y-4">
+                  <h3 className="text-xl font-black italic uppercase text-white">Sağlık & Ulaşım</h3>
+                  <p className="text-sm">Çalışanlar işveren aracılığıyla devlet sağlık sistemine dahil olur. Şehir içi ve şehirler arası ulaşım ağı oldukça gelişmiş ve ekonomiktir.</p>
+                </div>
+              </div>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <div className="space-y-4">
+                  {[
+                    { q: 'Litvanya\'da çalışmak için dil şartı var mı?', a: 'Çoğu sektörde dil şartı yoktur. İngilizce bilen işverenler yaygındır.' },
+                    { q: 'Litvanya\'dan diğer AB ülkelerine geçiş yapabilir miyim?', a: 'Evet, Schengen vizesiyle 27 ülkede serbestçe seyahat edebilirsiniz.' },
+                    { q: 'Aile birleşimi için ne kadar beklenir?', a: 'Oturum kartınızı aldıktan sonra aile birleşimi başvurusu yapılabilir. Ortalama 2-3 ay sürer.' }
+                  ].map((faq, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
+                      <p className="font-black text-white text-sm">S: {faq.q}</p>
+                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+              <div className="space-y-2">
+                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-400 font-medium">Litvanya oturum kartı ve iş imkanları için formu doldurun, sizi arayalım.</p>
+              </div>
+              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+                ÜCRETSİZ BAŞVURU BAŞLAT
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : currentPage === 'guide_almanya' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <div className="flex items-center space-x-4 mb-8">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Almanya</span>
+          </div>
+
+          <div className="space-y-12">
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
+            
+            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
+              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4">
+                <h2 className="text-2xl font-black italic uppercase text-white">Almanya Hakkında Genel Bilgi</h2>
+                <p>Almanya, Avrupa'nın en büyük ekonomisi ve Türk göçmenler için en popüler destinasyondur. Başkenti Berlin, nüfusu ~84 milyon, para birimi Euro'dur.</p>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Almanya?</h2>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
+                  {['Avrupa\'nın en yüksek maaşları', 'Güçlü sosyal haklar ve işçi güvencesi', 'Kaliteli sağlık ve eğitim sistemi', 'Büyük Türk topluluğu (yaklaşık 3 milyon)', 'Yüksek yaşam standardı'].map((item, i) => (
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <span className="text-sm font-bold">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Popüler İş Alanları</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    { name: 'TIR Şoförlüğü', desc: 'KOD95 belgesi zorunludur. Maaşlar 2.500-3.500 EUR arasındadır.' },
+                    { name: 'Depo & Lojistik', desc: 'Amazon, DHL, DPD gibi büyük firmalarda yaygındır.' },
+                    { name: 'Fabrika & Üretim', desc: 'Otomotiv (BMW, Mercedes) sektöründe alım fazladır.' },
+                    { name: 'İnşaat', desc: 'Tecrübeli işçilere yüksek ücret ödenmektedir.' }
+                  ].map((job, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
+                      <h4 className="text-lg font-black text-[#facc15] italic">{job.name}</h4>
+                      <p className="text-xs">{job.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Pozisyon</th>
+                        <th className="px-6 py-4">Aylık Maaş (Brüt)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'TIR Şoförü', v: '2.500-3.500 EUR' },
+                        { k: 'Depo İşçisi', v: '1.800-2.200 EUR' },
+                        { k: 'Fabrika İşçisi', v: '2.000-2.800 EUR' },
+                        { k: 'İnşaat İşçisi', v: '2.200-3.000 EUR' },
+                        { k: 'Asgari Ücret', v: '~1.700 EUR' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="glass p-10 rounded-3xl border border-[#facc15]/30 space-y-4">
+                <h2 className="text-2xl font-black italic uppercase text-white">KOD95 Belgesi Nedir?</h2>
+                <p className="text-sm">Avrupa'da ticari araç kullananlar için zorunlu mesleki yeterlilik belgesidir. Ehliyette "95" kodu olarak görünür. CMSVize olarak KOD95 belgesi olan TIR şoförlerine özel işveren eşleştirme yapıyoruz.</p>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Kalem</th>
+                        <th className="px-6 py-4">Tahmini Maliyet</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'Tek kişilik daire', v: '800-1.500 EUR/ay' },
+                        { k: 'Market alışverişi', v: '300-500 EUR/ay' },
+                        { k: 'Ulaşım (aylık)', v: '80-100 EUR' },
+                        { k: 'Sağlık sigortası', v: 'İşveren Öder' },
+                        { k: 'Ortalama toplam', v: '1.300-2.200 EUR/ay' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <div className="space-y-4">
+                  {[
+                    { q: 'Almancam olmadan çalışabilir miyim?', a: 'TIR şoförlüğü ve bazı fabrika işlerinde Almanca şartı aranmaz. Ancak öğrenmek kariyer için önemlidir.' },
+                    { q: 'Almanya\'da oturum izninden vatandaşlığa geçiş ne kadar sürer?', a: 'Genellikle 5-8 yıl yasal ikamet ve dil şartı (B1) gerekmektedir.' }
+                  ].map((faq, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
+                      <p className="font-black text-white text-sm">S: {faq.q}</p>
+                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+              <div className="space-y-2">
+                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-400 font-medium">Almanya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+              </div>
+              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+                ÜCRETSİZ BAŞVURU BAŞLAT
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : currentPage === 'guide_polonya' ? (
+        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
+          <div className="flex items-center space-x-4 mb-8">
+            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Polonya</span>
+          </div>
+
+          <div className="space-y-12">
+            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
+            
+            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
+              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4">
+                <h2 className="text-2xl font-black italic uppercase text-white">Polonya Hakkında Genel Bilgi</h2>
+                <p>Polonya, Orta Avrupa'nın en hızlı büyüyen ekonomilerinden biridir. Başkenti Varşova, nüfusu ~38 milyon, para birimi Zloti (PLN)'dir.</p>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Polonya?</h2>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
+                  {['Avrupa\'nın en hızlı büyüyen ekonomisi', 'Almanya\'ya kıyasla kolay vize süreci', 'Uygun yaşam maliyeti', 'Güçlü sanayi ve üretim sektörü', 'Türkiye\'ye yakın konum'].map((item, i) => (
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
+                      <span className="text-sm font-bold">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Pozisyon</th>
+                        <th className="px-6 py-4">Aylık Maaş</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'Fabrika İşçisi', v: '700-1.000 EUR' },
+                        { k: 'Depo İşçisi', v: '700-900 EUR' },
+                        { k: 'İnşaat İşçisi', v: '900-1.400 EUR' },
+                        { k: 'TIR Şoförü', v: '1.500-2.200 EUR' },
+                        { k: 'Asgari Ücret', v: '~900 EUR' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                      <tr>
+                        <th className="px-6 py-4">Kalem</th>
+                        <th className="px-6 py-4">Tahmini Maliyet</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {[
+                        { k: 'Tek kişilik daire', v: '300-600 EUR/ay' },
+                        { k: 'Market alışverişi', v: '150-250 EUR/ay' },
+                        { k: 'Ulaşım', v: '30-50 EUR/ay' },
+                        { k: 'Toplam', v: '550-950 EUR/ay' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium">{row.k}</td>
+                          <td className="px-6 py-4 text-[#facc15] font-black">{row.v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Vize Süreci</h2>
+                <div className="glass p-10 rounded-3xl space-y-4">
+                  <p>Polonya'da çalışmak için D tipi ulusal vize gereklidir. İşveren daveti veya iş sözleşmesi ile başvuru yapılır. Onay süresi 2-4 haftadır, bu da Almanya'ya göre çok daha hızlı bir seçenektir.</p>
+                </div>
+              </section>
+
+              <section className="space-y-6">
+                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <div className="space-y-4">
+                  {[
+                    { q: 'Polonya\'dan diğer Schengen ülkelerine geçiş yapabilir miyim?', a: 'Evet, Polonya Schengen üyesidir. Oturum izniyle 27 ülkede seyahat edebilirsiniz.' },
+                    { q: 'Polonya vizesi ne kadar sürede çıkar?', a: 'Ortalama 2-4 hafta. Almanya\'ya göre çok daha hızlı.' },
+                    { q: 'Polonya\'da dil şartı var mı?', a: 'Fabrika işlerinde genellikle aranmaz. Temel İngilizce veya Rusça bilen işverenler yaygındır.' }
+                  ].map((faq, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
+                      <p className="font-black text-white text-sm">S: {faq.q}</p>
+                      <p className="text-gray-400 text-sm italic">C: {faq.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="mt-20 p-12 rounded-3xl glass border border-[#facc15]/30 text-center space-y-8">
+              <div className="space-y-2">
+                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-400 font-medium">Polonya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+              </div>
+              <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+                ÜCRETSİZ BAŞVURU BAŞLAT
+              </button>
+            </div>
+          </div>
         </div>
       ) : currentPage === 'admin-login' ? (
         <div className="min-h-screen flex items-center justify-center p-6 bg-[#0B0F1A]">
