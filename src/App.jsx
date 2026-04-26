@@ -1334,18 +1334,23 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
 
           {/* STATS TICKER */}
-          <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl cms-marquee-wrapper">
-            <div className="cms-marquee-track">
-              {[1, 2].map(i => (
-                <div key={i} className="cms-marquee-item flex items-center">
-                  <div className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
-                    <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
-                    <span>A1 Transfer & Sigorta</span> <Star size={24} fill="currentColor" />
-                    <span>Fabrika & Depo İşleri</span> <Star size={24} fill="currentColor" />
-                    <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+          <div className="bg-[#facc15] border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl">
+            <div style={{ overflow: 'hidden', width: '100%', padding: '20px 0' }}>
+              <div
+                className="cms-marquee-track"
+                style={{ animation: 'cms-marquee-left 24s linear infinite', display: 'flex', width: 'max-content' }}
+              >
+                {[1, 2].map(i => (
+                  <div key={i} style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
+                    <div className="flex items-center space-x-12 px-6 text-[#0B0F1A] font-black italic text-2xl uppercase tracking-tighter">
+                      <span>Avrupa'da Kariyer</span> <Star size={24} fill="currentColor" />
+                      <span>A1 Transfer &amp; Sigorta</span> <Star size={24} fill="currentColor" />
+                      <span>Fabrika &amp; Depo İşleri</span> <Star size={24} fill="currentColor" />
+                      <span>2 Yıllık Oturum Kartı</span> <Star size={24} fill="currentColor" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -3381,14 +3386,19 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </div>
         ) : null}
 
-      {/* WHATSAPP FLOAT - ENHANCED */}
+      {/* WHATSAPP FLOAT */}
       {!currentPage.startsWith('admin') && (
-        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center cms-whatsapp-pulse transition-transform hover:scale-110">
-          <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
+        <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center">
+          <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200 relative">
             Size nasıl yardımcı olabiliriz?
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
           </div>
-          <div className="relative transition-transform duration-300 group-hover:scale-[1.05]">
+          <a
+            href={getWhatsAppURL()}
+            target="_blank"
+            rel="noreferrer"
+            className="cms-whatsapp-pulse relative block"
+          >
             <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-125"></div>
             <div className="relative bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="text-white">
@@ -3396,8 +3406,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               </svg>
               <span className="text-white font-black italic tracking-wide">Danışmana Yaz</span>
             </div>
-          </div>
-        </a>
+          </a>
+        </div>
       )}
 
       {/* LEAD DETAILS MODAL */}
