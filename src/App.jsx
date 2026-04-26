@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Turnstile } from "react-turnstile";
-import { analyticsService } from './analyticsService';
 import { supabase } from './lib/supabase';
 import {
   ChevronRight,
@@ -23,7 +22,6 @@ import {
   User,
   ChevronDown,
   MapPin,
-  Share2,
   Lock,
   Settings,
   Briefcase,
@@ -70,7 +68,6 @@ import insta4Img from './assets/insta4.png';
 import logoImg from './assets/logo.png';
 import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
-import heroImg from './assets/hero.png';
 import litvanyaPdf from './assets/CMSVize_Litvanya_Rehberi_2026_PRO.pdf';
 import { GlowCard } from './components/ui/spotlight-card';
 
@@ -78,7 +75,6 @@ import { GlowCard } from './components/ui/spotlight-card';
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
   ? import.meta.env.VITE_WHATSAPP_NUMBER 
   : "905459918268";
-const WHATSAPP_NUMBER = WHATSAPP_NUMBER_SAFE;
 const STATS_DEFAULTS = { success: 98, clients: 2500, countries: 15 };
 const darkBg = "#0B0F1A";
 
@@ -110,7 +106,6 @@ const POPUPS = [
 
 const App = () => {
   // --- CORE STATES ---
-  const isMobile = window.innerWidth < 768;
   const [currentPage, setCurrentPage] = useState(() => {
     if (window.location.pathname === '/admin-panel-cms') return 'admin-login';
     return 'home';
@@ -128,7 +123,6 @@ const App = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeViewers, setActiveViewers] = useState(14);
   const [activeFaq, setActiveFaq] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
@@ -192,7 +186,6 @@ const App = () => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
   };
-  const [totalViews, setTotalViews] = useState(12450);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
@@ -242,10 +235,6 @@ const App = () => {
     document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, [currentPage]);
-
-  useEffect(() => {
-    setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
-  }, []);
 
   // Fetch data from Supabase
   const fetchAllData = async () => {
@@ -328,6 +317,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchAllData();
   }, []);
 
@@ -535,14 +525,6 @@ const App = () => {
 
     return () => clearInterval(interval);
   }, [currentPage, siteContent.stats]);
-
-  // Logic Preserved
-  useEffect(() => {
-    const vInterval = setInterval(() => {
-      setActiveViewers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
-    }, 5000);
-    return () => clearInterval(vInterval);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -905,135 +887,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     return steps[status] || 0;
   };
 
-  // --- LEGAL PAGE COMPONENT ---
-  const LegalPage = ({ title, content }) => (
-    <div className="min-h-screen bg-[#0B0F1A] pt-32 pb-24 px-6 animate-fade-up">
-      <div className="max-w-4xl mx-auto space-y-12">
-        <nav className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-gray-500">
-          <button onClick={() => setCurrentPage('home')} className="hover:text-[#facc15] transition-colors">ANA SAYFA</button>
-          <span>/</span>
-          <span className="text-gray-300">{title}</span>
-        </nav>
-
-        <button
-          onClick={() => setCurrentPage('home')}
-          className="btn-corporate glass px-6 py-3 flex items-center space-x-3 text-[#facc15] font-black uppercase italic tracking-widest text-xs"
-        >
-          <ArrowLeft size={16} />
-          <span>Geri Dön</span>
-        </button>
-
-        <div className="linkedin-faq p-10 rounded-2xl shadow-2xl border border-white/5 bg-[#1B1F23]/50 backdrop-blur-sm">
-          <h1 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-[#facc15] mb-10 border-b border-white/10 pb-8">
-            {title}
-          </h1>
-          <div className="prose prose-invert max-w-none text-gray-400 font-medium leading-relaxed space-y-8">
-            {content}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center space-y-6 pt-12">
-          <p className="text-sm font-black italic text-gray-500 uppercase tracking-widest">Sorularınız mı var?</p>
-          <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-4 font-black text-sm">BİZE ULAŞIN</button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const LegalContent = {
-    kvkk: {
-      title: "6698 Sayılı KVKK Aydınlatma Metni",
-      content: (
-        <>
-          <p><strong>CMSVize</strong> ("Şirket") olarak, hizmetlerimizden faydalanan danışanlarımızın kişisel verilerinin korunmasına ve güvenliğine büyük önem vermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, "Veri Sorumlu" sıfatıyla, kişisel verilerinizi aşağıda açıklanan çerçevede işlemekteyiz.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Sorumlusu</h3>
-          <p>KVKK uyarınca kişisel verileriniz; veri sorumlusu olarak CMSVize tarafından, işbu Aydınlatma Metni’nde belirtilen amaçlar kapsamında işlenebilecektir.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. İşlenen Kişisel Veri Kategorileri</h3>
-          <p>Vize danışmanlık süreçlerinin yürütülmesi amacıyla aşağıdaki veri kategorileri işlenmektedir:</p>
-          <ul className="list-disc ml-6 space-y-2">
-            <li><strong>Kimlik Bilgileri:</strong> Ad, soyad, T.C. kimlik numarası, doğum tarihi, pasaport numarası ve pasaport geçerlilik tarihi.</li>
-            <li><strong>İletişim Bilgileri:</strong> Telefon numarası, e-posta adresi, ikametgah adresi.</li>
-            <li><strong>Mesleki Bilgiler:</strong> Mevcut iş durumu, mesleki tecrübe ve yetkinlik belgeleri.</li>
-          </ul>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Kişisel Verilerin İşlenme Amaçları</h3>
-          <p>Kişisel verileriniz, aşağıdaki amaçlar doğrultusunda işlenmektedir:</p>
-          <ul className="list-disc ml-6 space-y-2">
-            <li>Avrupa ülkeleri (Litvanya, Almanya, Polonya vb.) vize başvuru süreçlerinin takibi ve yönetimi,</li>
-            <li>Konsolosluk ve aracı kurumlardan randevu alımı,</li>
-            <li>A1 transfer ve çalışma izni süreçlerinin yürütülmesi,</li>
-            <li>Hizmetlerimize ilişkin bilgilendirme ve danışmanlık süreçlerinin yürütülmesi,</li>
-            <li>Yasal yükümlülüklerin yerine getirilmesi.</li>
-          </ul>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Verilerin Saklanma Süresi</h3>
-          <p>Kişisel verileriniz, vize danışmanlık hizmetinin devamı süresince ve hizmet sona erdikten sonra yasal zaman aşımı süreleri (genellikle 10 yıl) veya ilgili mevzuatta öngörülen süreler boyunca saklanır. Süre sona erdiğinde verileriniz KVKK uyarınca silinir veya anonim hale getirilir.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. Veri Sahibi Hakları (Madde 11)</h3>
-          <p>KVKK’nın 11. maddesi uyarınca CMSVize'ye başvurarak aşağıdaki haklarınızı kullanabilirsiniz:</p>
-          <ul className="list-disc ml-6 space-y-2">
-            <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme,</li>
-            <li>İşlenmişse buna ilişkin bilgi talep etme,</li>
-            <li>İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme,</li>
-            <li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme,</li>
-            <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme,</li>
-            <li>KVKK çerçevesinde silinmesini veya yok edilmesini isteme,</li>
-            <li>İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme.</li>
-          </ul>
-        </>
-      )
-    },
-    privacy: {
-      title: "Gizlilik Politikası",
-      content: (
-        <>
-          <p>CMSVize olarak, kullanıcılarımızın gizliliğine ve verilerinin korunmasına sarsılmaz bir bağlılık duyuyoruz. İşbu Gizlilik Politikası, web sitemizi ziyaret ettiğinizde veya hizmetlerimizden yararlandığınızda verilerinizin nasıl işlendiğini şeffaf bir şekilde açıklar.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Veri Güvenliği ve SSL Sertifikasyonu</h3>
-          <p>Verilerinizin güvenliği, CMSVize'nin en üst önceliğidir. Web sitemiz üzerinden iletilen tüm bilgiler, endüstri standardı olan <strong>256-bit SSL (Secure Sockets Layer)</strong> şifreleme teknolojisi ile korunmaktadır. Sunucularımızda saklanan verileriniz, yetkisiz erişime karşı güçlü güvenlik duvarları ve modern şifreleme protokolleri ile güvence altına alınmıştır.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. Üçüncü Taraflarla Veri Paylaşımı</h3>
-          <p>Kişisel verileriniz, yalnızca vize başvurunuzun ve çalışma izni süreçlerinizin tamamlanabilmesi amacıyla; ilgili <strong>Büyükelçilikler, Konsolosluklar, Vize Aracı Kurumları (VFS Global, iDATA vb.)</strong> ve resmi makamlarla, hizmetin gerektirdiği ölçüde sınırlı olarak paylaşılır.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Ticari Amaçla Satış Garantisi</h3>
-          <p><strong>Kurumsal Garanti:</strong> CMSVize, danışanlarına ait hiçbir veriyi üçüncü şahıslara veya kurumlara reklam, pazarlama ya da ticari kazanç amacıyla <u>asla satmaz, kiralamaz ve takas etmez.</u> Verileriniz yalnızca sizin onay verdiğiniz vize süreçleri için kullanılır.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Çerez (Cookie) Kullanımı</h3>
-          <p>Sitemizde, kullanıcı deneyimini optimize etmek, site trafiğini analiz etmek ve hizmetlerimizi iyileştirmek amacıyla teknik çerezler kullanılmaktadır. Bu çerezler kişisel kimlik bilgilerini içermez ve tarayıcı ayarlarınız üzerinden istediğiniz zaman devre dışı bırakılabilir.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. Politika Güncellemeleri</h3>
-          <p>Teknolojik gelişmelere ve yasal değişikliklere uyum sağlamak amacıyla bu politikada zaman zaman güncellemeler yapabiliriz. Güncel sürüm her zaman web sitemizde yayınlanacaktır.</p>
-        </>
-      )
-    },
-    terms: {
-      title: "Kullanım Şartları",
-      content: (
-        <>
-          <p>İşbu Kullanım Şartları, CMSVize web sitesinin ve sunulan danışmanlık hizmetlerinin kullanımına ilişkin kuralları belirlemektedir. Sitemizi ziyaret ederek veya hizmet alarak bu şartları kayıtsız şartsız kabul etmiş sayılırsınız.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">1. Hizmet Kapsamı ve Sınırları</h3>
-          <p>CMSVize, Avrupa vize başvuruları, çalışma izinleri ve iş yerleştirme süreçlerinde profesyonel danışmanlık ve dosya hazırlama desteği sunmaktadır. <strong>Kritik Bilgi:</strong> Vize başvuruları hakkındaki nihai karar verme yetkisi tamamen ilgili ülkenin Büyükelçilikleri, Konsoloslukları ve Göç İdarelerine aittir. CMSVize, vize onayına dair %100 garanti vermez; ancak dosyanın en doğru şekilde hazırlanması ve başarının maksimize edilmesi için uzmanlık sunar.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">2. Fikri Mülkiyet Hakları</h3>
-          <p>Web sitesinde yer alan tüm tasarım, logo, metin, grafik ve görsel içeriklerin mülkiyeti CMSVize'ye aittir. Bu içeriklerin CMSVize'nin yazılı izni olmaksızın kopyalanması, çoğaltılması veya ticari amaçla kullanılması yasaktır ve yasal işlem başlatılmasına neden olabilir.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">3. Sorumluluk Reddi Beyanı</h3>
-          <p>CMSVize, sitede yer alan bilgilerin güncelliği ve doğruluğu için azami gayret göstermektedir. Ancak, vize mevzuatları ve ülkelerin göç politikaları anlık olarak değişebilmektedir. Resmi makamlarca yapılan ani mevzuat değişikliklerinden veya kullanıcı tarafından hatalı beyan edilen bilgilerden kaynaklanan gecikme ve ret durumlarından CMSVize sorumlu tutulamaz.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">4. Kullanım Kuralları</h3>
-          <p>Kullanıcılar, site üzerindeki formları doldururken doğru ve güncel bilgi vermeyi taahhüt ederler. Yanıltıcı bilgi verilmesi durumunda danışmanlık hizmeti tek taraflı olarak askıya alınabilir.</p>
-
-          <h3 className="text-[#facc15] text-2xl font-black italic uppercase mt-12 mb-4 tracking-tighter">5. İletişim ve Uyuşmazlıklar</h3>
-          <p>Kullanım şartlarına ilişkin her türlü soru ve uyuşmazlık durumunda Türkiye Cumhuriyeti yasaları ve ilgili mahkemeler yetkilidir.</p>
-        </>
-      )
-    }
-  };
-
-  return (
+return (
     <div className="min-h-screen text-white font-sans selection:bg-yellow-400 selection:text-black overflow-x-hidden" style={{ backgroundColor: darkBg }}>
       {/* Visual Layout Surgeon - Enhanced CSS */}
       <style>{`
@@ -2075,13 +1929,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           {(() => {
             const post = blogPosts.find(b => b.slug === selectedBlogSlug);
             if (!post) return <div className="text-white text-center py-20 animate-pulse">Blog yazısı yükleniyor...</div>;
-            
-            // SEO update
-            document.title = `${post.title} | CMSVize`;
-            let metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) {
-              metaDesc.content = post.summary;
-            }
             
             return (
               <div className="animate-fade-up">
@@ -3392,10 +3239,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             href={getWhatsAppURL()}
             target="_blank"
             rel="noreferrer"
-            className="cms-whatsapp-pulse relative block"
+            className="relative block transition-transform hover:scale-110"
           >
-            <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-25 scale-125"></div>
-            <div className="relative bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
+            <div className="bg-[#25D366] px-6 py-4 rounded-full shadow-[0_10px_40px_rgba(37,211,102,0.5)] flex items-center space-x-3">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="text-white">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
               </svg>
