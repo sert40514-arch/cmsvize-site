@@ -392,15 +392,101 @@ const App = () => {
       kvkk: "KVKK Aydınlatma Metni | CMSVize",
       privacy: "Gizlilik Politikası | CMSVize",
       terms: "Kullanım Şartları | CMSVize",
-      blog: "Vize Rehberi & Blog | CMSVize",
+      blog: "Vize Rehberi & Blog | Avrupa İş İlanları 2026",
       portal: "Müşteri Portalı | CMSVize",
       cookies: "Çerez Politikası | CMSVize",
-      guides_main: "Ülke Rehberleri | CMSVize",
-      guide_litvanya: "Litvanya Yaşam ve Çalışma Rehberi 2026 | CMSVize",
-      guide_almanya: "Almanya Çalışma Rehberi 2026 | CMSVize",
-      guide_polonya: "Polonya Çalışma Rehberi 2026 | CMSVize"
+      guides_main: "Avrupa Ülke Rehberleri | Yaşam ve Çalışma Şartları 2026",
+      guide_litvanya: "Litvanya Yaşam Rehberi & İş İlanları 2026 | CMSVize",
+      guide_almanya: "Almanya Çalışma Rehberi & KOD95 Vizesi 2026 | CMSVize",
+      guide_polonya: "Polonya Çalışma Rehberi & D Tipi Vize 2026 | CMSVize"
     };
+
+    const descriptions = {
+      home: "CMSVize ile Avrupa'da yeni bir hayat! Litvanya, Polonya, Almanya ve Fransa vize süreçleri, çalışma izinleri ve oturum kartı başvurularında profesyonel danışmanlık.",
+      guide_litvanya: "2026 Litvanya yaşam maliyetleri, maaşlar ve 2 yıllık oturum kartı süreci hakkında her şey. Litvanya'da çalışmak ve yaşamak için rehberimizi inceleyin.",
+      guide_almanya: "Almanya'da tır şoförlüğü, KOD95 belgesi ve nitelikli çalışan vizesi süreci. 2026 Almanya maaşları ve yaşam şartları güncel rehber.",
+      guide_polonya: "Polonya D tipi ulusal vize, çalışma izinleri ve iş ilanları. 2026 Polonya yaşam maliyeti ve vize başvuru adımları.",
+      blog: "Avrupa vize süreçleri, Litvanya oturum kartı güncel mevzuatları ve yurtdışı iş ilanları hakkında en güncel blog yazıları."
+    };
+
+    const keywords = {
+      home: "vize danışmanlığı, avrupa iş ilanları, litvanya oturum kartı, polonya çalışma izni, almanya tır şoförü vizesi, schengen vizesi",
+      guide_litvanya: "litvanya iş ilanları, litvanya oturum izni, litvanya maaşlar 2026, litvanya yaşam maliyeti, vilnius iş imkanları",
+      guide_almanya: "almanya tır şoförü maaşları, almanya kod95 vizesi, almanya çalışma izni, almanya nitelikli çalışan vizesi",
+      guide_polonya: "polonya çalışma vizesi, polonya d tipi vize, polonya iş ilanları 2026, polonya oturum izni"
+    };
+
     document.title = titles[currentPage] || "CMSVize | Almanya, Polonya, Litvanya, Hollanda ve Fransa Vize Uzmanı";
+    
+    // Dynamic Meta Tags
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = descriptions[currentPage] || descriptions.home;
+
+    let metaKeys = document.querySelector('meta[name="keywords"]');
+    if (!metaKeys) {
+      metaKeys = document.createElement('meta');
+      metaKeys.name = "keywords";
+      document.head.appendChild(metaKeys);
+    }
+    metaKeys.content = keywords[currentPage] || keywords.home;
+
+    // Canonical Link
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = window.location.origin + (currentPage === 'home' ? '' : `/${currentPage.replace('_', '/')}`);
+
+    // JSON-LD Schema Injection
+    const schemaData = {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "CMSVize Danışmanlık",
+      "image": window.location.origin + "/assets/logo.png",
+      "url": window.location.origin,
+      "telephone": "+905459918268",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Zafer Mahallesi, Bankalar Caddesi No:12",
+        "addressLocality": "Aksaray",
+        "addressCountry": "TR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 38.3687,
+        "longitude": 34.0254
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "sameAs": [
+        "https://www.instagram.com/cmsprime/"
+      ]
+    };
+
+    if (currentPage === 'home') {
+      schemaData.description = descriptions.home;
+    }
+
+    let schemaScript = document.getElementById('json-ld-schema');
+    if (!schemaScript) {
+      schemaScript = document.createElement('script');
+      schemaScript.id = 'json-ld-schema';
+      schemaScript.type = 'application/ld+json';
+      document.head.appendChild(schemaScript);
+    }
+    schemaScript.text = JSON.stringify(schemaData);
+
   }, [currentPage]);
 
   // Stats Counter Logic
@@ -1009,7 +1095,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0B0F1A]/80 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
-              <img src={logoImg} alt="CMSVize Logo" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
+              <img src={logoImg} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
             </div>
 
             <div className="hidden lg:flex items-center space-x-10 font-bold text-xs tracking-[0.15em]">
@@ -1043,7 +1129,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <X size={40} className="absolute top-6 right-6 cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
             
             <div className="mb-4">
-              <img src={logoImg} alt="CMSVize Logo" className="h-16 w-auto object-contain" />
+              <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-16 w-auto object-contain" />
             </div>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
             <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
@@ -1131,6 +1217,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         controls 
                         playsInline
                         poster={SupportingImg}
+                        title="CMSVize Litvanya Operasyon Süreci ve Başarı Hikayeleri"
                       >
                         <source src={cmsVideo} type="video/mp4" />
                         Tarayıcınız video etiketini desteklemiyor.
@@ -1421,7 +1508,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(testimonials.filter(t => t.is_active) || []).map((ref, idx) => (
                   <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
-                    <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform">
+                    <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform" title={ref.country}>
                       {ref.country === 'Almanya' ? '🇩🇪' : ref.country === 'Polonya' ? '🇵🇱' : ref.country === 'Litvanya' ? '🇱🇹' : ref.country === 'Hollanda' ? '🇳🇱' : ref.country === 'Belçika' ? '🇧🇪' : '🌍'}
                     </div>
                     <div className="flex justify-between items-start">
