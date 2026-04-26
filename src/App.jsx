@@ -71,7 +71,6 @@ import logoImg from './assets/logo.png';
 import muratImg from './assets/murat.png';
 import halilImg from './assets/halil.png';
 import heroImg from './assets/hero.png';
-import cmsVideo from './assets/Cms.mp4';
 import litvanyaPdf from './assets/CMSVize_Litvanya_Rehberi_2026_PRO.pdf';
 import { GlowCard } from './components/ui/spotlight-card';
 
