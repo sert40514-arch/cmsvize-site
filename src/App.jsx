@@ -101,6 +101,7 @@ const SITE_DATABASE = {
 
 const App = () => {
   // --- CORE STATES ---
+  const isMobile = window.innerWidth < 768;
   const [currentPage, setCurrentPage] = useState(() => {
     if (window.location.pathname === '/admin-panel-cms') return 'admin-login';
     return 'home';
@@ -210,7 +211,7 @@ const App = () => {
   // Navbar Scroll Effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -1045,6 +1046,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .hero-slide-in { opacity: 0; transform: translateX(-30px); animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
 
+        /* Mobile Performance Optimization */
+        @media (max-width: 768px) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.1s !important;
+          }
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
         .hero-img-container:hover { border-color: rgba(250, 204, 21, 0.4); box-shadow: 0 0 70px rgba(250, 204, 21, 0.2); }
         .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
@@ -1204,8 +1216,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
                       <video 
                         className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
-                        controls 
+                        autoPlay={!isMobile}
+                        muted 
+                        loop 
                         playsInline
+                        preload="none"
                         poster={SupportingImg}
                         title="CMSVize Litvanya Operasyon Süreci ve Başarı Hikayeleri"
                       >
