@@ -1062,10 +1062,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         /* Mobile Performance Optimization - Critical Fixes */
         @media (max-width: 768px) {
           * {
+            animation: none !important;
+            transition: none !important;
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.1s !important;
           }
+          body { overflow-x: hidden; }
+          img, video { max-width: 100%; height: auto; }
+          .container { padding: 0 16px; }
+          section { padding: 40px 16px; }
+
+          .top-bar { display: none !important; }
           .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
           .reveal-on-scroll, .reveal-left { transition: opacity 0.5s ease-out !important; transform: none !important; }
           .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
@@ -1089,6 +1097,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           }
 
           * { background-attachment: scroll !important; }
+          
+          .hero-title { font-size: clamp(28px, 8vw, 48px) !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1120,7 +1130,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       {/* TOP CONTACT BAR */}
       {!currentPage.startsWith('admin') && (
-        <div className="fixed top-0 left-0 w-full z-[60] bg-[#05070A] border-b border-white/5 h-10 flex items-center overflow-hidden px-6">
+        <div className="top-bar fixed top-0 left-0 w-full z-[60] bg-[#05070A] border-b border-white/5 h-10 flex items-center overflow-hidden px-6">
           <div className="max-w-7xl mx-auto w-full flex justify-between items-center text-[9px] md:text-xs font-bold tracking-[0.05em] text-gray-300">
             <div className="flex items-center space-x-3 md:space-x-6">
               <span className="flex items-center space-x-1"><Phone size={12} className="text-[#facc15]" /> <span>+90 545 991 82 68</span></span>
@@ -1167,26 +1177,33 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         </nav>
       )}
 
-      {/* MOBILE MENU */}
-      {!currentPage.startsWith('admin') && mobileMenuOpen && (
-        <div className={`lg:hidden fixed inset-0 bg-[#0B0F1A]/98 backdrop-blur-2xl z-[60] transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-          <div className="flex flex-col items-center justify-center h-full space-y-8 p-10 relative">
-            <X size={40} className="absolute top-6 right-6 cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
-            
-            <div className="mb-4">
-              <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-16 w-auto object-contain" loading="lazy" decoding="async" />
-            </div>
-            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">HİZMETLER</button>
-            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-4xl font-black italic tracking-tighter">REFERANSLAR</button>
-            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter ${currentPage === 'blog' || currentPage === 'blog_detail' ? 'text-[#facc15]' : ''}`}>BLOG</button>
-            <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className={`text-4xl font-black italic tracking-tighter flex items-center space-x-3 ${currentPage === 'portal' ? 'text-[#facc15]' : ''}`}><User size={30} /><span>PORTAL</span></button>
-            <div className="w-full space-y-4 pt-4 border-t border-white/10">
-              <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="w-full glass border border-white/10 py-5 rounded-lg btn-corporate font-black text-xl flex justify-center items-center space-x-2 text-gray-300">
-                <Search size={24} className="text-[#0a66c2]" />
-                <span>BAŞVURU TAKİP</span>
-              </button>
-              <button onClick={scrollToForm} className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-lg btn-corporate font-black text-2xl">ÜCRETSİZ BAŞVURU BAŞLAT</button>
-            </div>
+      {/* MOBILE MENU OVERLAY */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] bg-[#0B0F1A] flex flex-col p-8 md:p-12 animate-fade-in lg:hidden overflow-y-auto">
+          <div className="flex justify-between items-center mb-12">
+            <img src={logoImg} alt="CMSVize - Mobil Menü" className="h-12 w-auto object-contain" />
+            <X size={32} className="cursor-pointer text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)} />
+          </div>
+
+          <div className="flex flex-col space-y-6 flex-grow">
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('hizmetler')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">HİZMETLER</button>
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('referanslar')?.scrollIntoView({ behavior: 'smooth' }), 100); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">REFERANSLAR</button>
+            <button onClick={() => { setCurrentPage('guides_main'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">VİZE REHBERİ</button>
+            <button onClick={() => { setCurrentPage('blog'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">BLOG</button>
+            <button onClick={() => { setCurrentPage('portal'); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4">PORTAL</button>
+            <button onClick={() => { setShowTrackingModal(true); setMobileMenuOpen(false); }} className="text-3xl font-black italic tracking-tighter text-left hover:text-[#facc15] transition-colors border-b border-white/5 pb-4 flex items-center space-x-2">
+              <Search size={28} className="text-[#0a66c2]" />
+              <span>BAŞVURU TAKİP</span>
+            </button>
+          </div>
+          
+          <div className="mt-12">
+            <button 
+              onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); setTimeout(() => document.getElementById('basvuru')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+              className="w-full bg-[#facc15] text-[#0B0F1A] py-6 rounded-xl font-black italic text-2xl uppercase tracking-tighter shadow-xl"
+            >
+              BAŞVURU BAŞLAT
+            </button>
           </div>
         </div>
       )}
@@ -1195,15 +1212,15 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {currentPage === 'home' ? (
         <>
           {/* HERO SECTION */}
-          <section className="relative pt-32 lg:pt-48 pb-24 lg:pb-32 px-6 overflow-hidden">
+          <section className="relative pt-32 lg:pt-48 pb-16 lg:pb-32 px-4 md:px-6 overflow-hidden">
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#0a66c2]/5 rounded-full blur-[120px] -z-10"></div>
             
             <div className="max-w-7xl mx-auto">
-              <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+              <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
                 {/* Sol Kolon: İçerik */}
-                <div className="lg:col-span-7 space-y-10">
-                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner hero-slide-in">
+                <div className="lg:col-span-7 space-y-8 md:space-y-10">
+                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-[10px] md:text-xs tracking-widest uppercase shadow-inner hero-slide-in">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#facc15]"></span>
@@ -1212,22 +1229,22 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>
 
                   <div className="space-y-6">
-                    <h1 className="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase hero-slide-in" style={{ animationDelay: '0.3s' }}>
+                    <h1 className="hero-title text-4xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase hero-slide-in" style={{ animationDelay: '0.3s' }}>
                       2 Yıllık Litvanya <br />
                       <span className="text-[#facc15]">Oturum Kartı</span> <br />
-                      <span className="text-3xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa’da Çalışma Fırsatı</span>
+                      <span className="text-2xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa’da Çalışma Fırsatı</span>
                     </h1>
-                    <p className="text-xl lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium hero-slide-in" style={{ animationDelay: '0.6s' }}>
+                    <p className="text-lg lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium hero-slide-in" style={{ animationDelay: '0.6s' }}>
                       Dil bilmeden Avrupa’da çalışma fırsatı. Tüm süreci uzman ekibimiz yönetir, siz sadece yola çıkarsınız.
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-5 hero-slide-in" style={{ animationDelay: '0.9s' }}>
-                    <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-5 font-black text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(250,204,21,0.2)]">
+                  <div className="flex flex-col sm:flex-row gap-4 hero-slide-in" style={{ animationDelay: '0.9s' }}>
+                    <button onClick={scrollToForm} className="w-full sm:w-auto btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-5 font-black text-lg md:text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(250,204,21,0.2)]">
                       <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
                       <ChevronRight className="group-hover:translate-x-2 transition-transform" />
                     </button>
-                    <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-10 py-5 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
+                    <button onClick={() => setShowWizard(true)} className="w-full sm:w-auto btn-corporate glass px-10 py-5 font-black text-lg md:text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                       <BookOpen className="text-[#facc15]" />
                       <span>UYGUNLUK TESTİ</span>
@@ -1235,7 +1252,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>
 
                   {/* Güven Rakamları / Metrics */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t border-white/5">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-white/5">
                     {[
                       { label: "2 Yıl", text: "Oturum Kartı" },
                       { label: "6–12 Hf", text: "Ortalama Süre" },
@@ -1251,20 +1268,11 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
 
                 {/* Sağ Kolon: Video / Görsel Alanı */}
-                <div className="lg:col-span-5 flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
+                <div className="hidden lg:flex lg:col-span-5 justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
                   <div className="w-full max-w-[500px] relative group">
-                    {/* Arka plan glow efekti */}
                     <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
                     <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
-                      <img 
-                        src={SupportingImg} 
-                        alt="CMSVize Hero" 
-                        className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl rounded-2xl"
-                        loading="lazy"
-                      />
-                      
-                      {/* Video üzerine overlay badge */}
+                      <img src={SupportingImg} alt="CMSVize Hero" className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl rounded-2xl" loading="lazy" />
                       <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none group-hover:translate-y-[-5px] transition-transform duration-500">
                         <div>
                           <p className="text-[10px] font-black uppercase tracking-widest text-[#facc15]">Resmi Süreç</p>
@@ -1653,9 +1661,14 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                       
                       {/* Ok İşareti (Desktop) */}
                       {i < 4 && (
-                        <div className="hidden lg:flex absolute top-1/2 -right-10 -translate-y-1/2 z-20 text-[#facc15]/20 group-hover:text-[#facc15] group-hover:translate-x-2 transition-all duration-700">
-                          <ChevronRight size={32} strokeWidth={3} />
-                        </div>
+                        <>
+                          <div className="hidden lg:flex absolute top-1/2 -right-10 -translate-y-1/2 z-20 text-[#facc15]/20 group-hover:text-[#facc15] group-hover:translate-x-2 transition-all duration-700">
+                            <ChevronRight size={32} strokeWidth={3} />
+                          </div>
+                          <div className="flex lg:hidden justify-center items-center py-4 text-[#facc15]/40 animate-pulse">
+                            <ChevronDown size={32} strokeWidth={3} />
+                          </div>
+                        </>
                       )}
                     </div>
                   ))}
@@ -3656,7 +3669,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <div className="space-y-4 text-sm text-gray-400 font-bold">
                   <div className="flex items-start space-x-3">
                     <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
-                    <p>Zafer Mahallesi, Bankalar Caddesi No:12 Kat:3 Merkez / Aksaray</p>
+                    <p className="md:hidden">Bankalar Cad. No:12, Aksaray</p>
+                    <p className="hidden md:block">Zafer Mahallesi, Bankalar Caddesi No:12 Kat:3 Merkez / Aksaray</p>
                   </div>
                   <div className="flex items-center space-x-3">
                     <Phone size={16} className="text-[#facc15]" />
@@ -3670,7 +3684,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <div className="space-y-4 text-sm text-gray-400 font-bold">
                   <div className="flex items-start space-x-3">
                     <MapPin size={18} className="text-[#facc15] mt-1 flex-shrink-0" />
-                    <p>Gedimino pr. 20, Vilnius 01103 Lietuva (Litvanya)</p>
+                    <p className="md:hidden">Gedimino pr. 20, Vilnius</p>
+                    <p className="hidden md:block">Gedimino pr. 20, Vilnius 01103 Lietuva (Litvanya)</p>
                   </div>
                   <div className="flex items-center space-x-3">
                     <Phone size={16} className="text-[#facc15]" />
