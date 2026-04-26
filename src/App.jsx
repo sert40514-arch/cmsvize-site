@@ -49,6 +49,7 @@ import halilImg from './assets/halil.png';
 import heroImg from './assets/hero.png';
 import cmsVideo from './assets/Cms.mp4';
 import litvanyaPdf from './assets/CMSVize_Litvanya_Rehberi_2026_PRO.pdf';
+import { GlowCard } from './components/ui/spotlight-card';
 
 // --- CONFIG & DATABASE ---
 const WHATSAPP_NUMBER_SAFE = typeof import.meta !== "undefined" && import.meta.env?.VITE_WHATSAPP_NUMBER 
@@ -1301,14 +1302,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   { icon: <span className="text-3xl">🇫🇷</span>, title: "Fransa Çalışma Vizesi", desc: "Fransa'da uzun dönem çalışma vizesi ve oturum izinleri için resmi kurumlar nezdinde profesyonel destek sunuyoruz." },
                   { icon: <ShieldCheck size={32} />, title: "Tam Kapsamlı Destek", desc: "Hangi ülkeyi seçerseniz seçin, dosya hazırlığından konsolosluk mülakatına kadar her adımda yanınızdayız." }
                 ].map((item, i) => (
-                  <div key={i} className="glass p-8 rounded-xl group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden">
+                  <GlowCard 
+                    key={i} 
+                    customSize={true} 
+                    className="group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden"
+                  >
                     <div className="w-16 h-16 bg-[#facc15]/10 rounded-full flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all border border-white/5">{item.icon}</div>
                     <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
                     <p className="text-gray-400 font-medium leading-relaxed mb-6">{item.desc}</p>
                     <button onClick={scrollToForm} className="mt-auto flex items-center space-x-2 text-[#facc15] font-black text-sm uppercase tracking-widest group">
                       <span>Detaylar</span> <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </button>
-                  </div>
+                  </GlowCard>
                 ))}
               </div>
             </div>
@@ -1322,18 +1327,18 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="glass p-5 rounded-xl shadow-2xl">
+                <GlowCard customSize={true} className="p-5 shadow-2xl">
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40 p-4 text-center flex items-center justify-center">
                     <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
                   </div>
                   <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Resmi Oturum & Çalışma Kartı</p>
-                </div>
-                <div className="glass p-5 rounded-xl shadow-2xl">
+                </GlowCard>
+                <GlowCard customSize={true} className="p-5 shadow-2xl">
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40">
                     <img src={TirImg} className="w-full h-full object-cover" alt="Tır Operasyonları" />
                   </div>
                   <p className="mt-4 px-3 text-lg font-black italic uppercase text-center">Uluslararası Lojistik Ağı</p>
-                </div>
+                </GlowCard>
               </div>
             </div>
           </section>
