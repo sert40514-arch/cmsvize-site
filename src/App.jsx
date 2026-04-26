@@ -761,18 +761,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       console.log("APPLICATION INSERT SUCCESS");
       console.log("SHOWING SUCCESS SCREEN");
 
-      // Set success first
-      setFormSuccess(true);
-      setIsSubmitting(false);
-
-      // Restore history
-      if (!window.cms_sub_history) window.cms_sub_history = [];
-      window.cms_sub_history.push(Date.now());
-      window.cms_sub_history = window.cms_sub_history.slice(-10);
-
-      playNotificationSound();
-      showToast('Başvurunuz başarıyla alındı!');
-
       // Scroll to form to ensure success message is visible
       if (formRef.current) {
         formRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -784,6 +772,10 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       } catch (f) {
         console.warn("Background fetch failed:", f);
       }
+
+      // Finally set success state at the very end to avoid premature unmounting
+      setFormSuccess(true);
+      setIsSubmitting(false);
     } catch (error) {
       console.error("SUPABASE INSERT ERROR:", error);
       setIsSubmitting(false);
@@ -1057,13 +1049,19 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           0% { transform: translate3d(0, 0, 0); }
           100% { transform: translate3d(-50%, 0, 0); }
         }
-        .cms-marquee-wrapper { overflow: hidden; white-space: nowrap; }
+        .cms-marquee-wrapper {
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+        }
         .cms-marquee-track {
           display: flex;
           width: max-content;
+          min-width: 200%;
           will-change: transform;
-          animation: cms-marquee-left 22s linear infinite !important;
+          animation: cms-marquee-left 24s linear infinite !important;
           animation-play-state: running !important;
+          transform: translate3d(0, 0, 0);
         }
         .cms-marquee-item { flex: 0 0 auto; }
         .cms-marquee-track:hover { animation-play-state: paused !important; }
