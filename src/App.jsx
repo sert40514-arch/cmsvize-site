@@ -98,6 +98,16 @@ const SITE_DATABASE = {
   reviews: INITIAL_REVIEWS
 };
 
+const POPUPS = [
+  "Ahmet K. – Almanya depo işi başvurusu yaptı",
+  "Mehmet Y. – Tır şoförlüğü için başvurdu",
+  "Hasan A. – A1 transfer sürecine başladı",
+  "Burak S. – Polonya lojistik başvurusu yaptı",
+  "Sinan G. – 2 yıllık oturum onaylandı",
+  "Yusuf E. – Hollanda fabrika işi başvurusu",
+  "Mert A. – Danışman önerisi ile sürece başladı"
+];
+
 const App = () => {
   // --- CORE STATES ---
   const isMobile = window.innerWidth < 768;
@@ -178,6 +188,10 @@ const App = () => {
 
   // Toast & Tracking States
   const [toastMessage, setToastMessage] = useState('');
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
   const [totalViews, setTotalViews] = useState(12450);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
@@ -503,10 +517,9 @@ const App = () => {
     let currentCountries = 0;
 
     const interval = setInterval(() => {
-      let updated = false;
-      if (currentSuccess < targetSuccess) { currentSuccess += 1; updated = true; }
-      if (currentClients < targetClients) { currentClients += Math.ceil(targetClients / 100); updated = true; }
-      if (currentCountries < targetCountries) { currentCountries += 1; updated = true; }
+      if (currentSuccess < targetSuccess) { currentSuccess += 1; }
+      if (currentClients < targetClients) { currentClients += Math.ceil(targetClients / 100); }
+      if (currentCountries < targetCountries) { currentCountries += 1; }
       
       // Cap them
       if (currentSuccess > targetSuccess) currentSuccess = targetSuccess;
@@ -531,19 +544,9 @@ const App = () => {
     return () => clearInterval(vInterval);
   }, []);
 
-  const popups = [
-    "Ahmet K. – Almanya depo işi başvurusu yaptı",
-    "Mehmet Y. – Tır şoförlüğü için başvurdu",
-    "Hasan A. – A1 transfer sürecine başladı",
-    "Burak S. – Polonya lojistik başvurusu yaptı",
-    "Sinan G. – 2 yıllık oturum onaylandı",
-    "Yusuf E. – Hollanda fabrika işi başvurusu",
-    "Mert A. – Danışman önerisi ile sürece başladı"
-  ];
-
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomPopup = popups[Math.floor(Math.random() * popups.length)];
+      const randomPopup = POPUPS[Math.floor(Math.random() * POPUPS.length)];
       setPopupContent(randomPopup);
       setShowPopup(true);
       setTimeout(() => setShowPopup(false), 5000);
@@ -682,7 +685,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
       oscillator.start(audioCtx.currentTime);
       oscillator.stop(audioCtx.currentTime + 0.2);
-    } catch (e) {
+    } catch {
       console.warn("Audio context not supported or blocked");
     }
   };
@@ -3061,7 +3064,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                         <div className="flex justify-end pt-4 border-t border-white/5">
                           <button onClick={async () => {
                             try {
-                              const { data, error } = await supabase.from('testimonials').insert([newReviewData]);
+                              const { error } = await supabase.from('testimonials').insert([newReviewData]);
                               if (error) throw error;
                               showToast('Yorum başarıyla kaydedildi!');
                               setShowNewReviewForm(false);
@@ -3510,7 +3513,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <input placeholder="Telefon Numaranız" onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })} className="w-full bg-black/50 border border-white/10 px-6 py-4 rounded-lg font-bold focus:border-[#facc15] outline-none transition-colors" />
                   <button onClick={() => {
                     setShowWizard(false); setWizardStep(1);
-                    const msg = `Merhaba, Uygunluk Testini çözdüm.\n\nMeslek: ${wizardData.job}\nÜlke: ${wizardData.country}\nİsim: ${wizardData.name}\nTelefon: ${wizardData.phone}`;
                     
                     // Admin Panele Kaydet
                     const newLead = {
