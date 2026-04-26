@@ -11,8 +11,17 @@ export default defineConfig({
       hostname: 'https://www.cmsvize.com',
       dynamicRoutes: [
         '/',
-        '/blog'
+        '/blog',
+        '/rehberler',
+        '/rehberler/litvanya',
+        '/rehberler/almanya',
+        '/rehberler/polonya',
+        '/portal',
+        '/cerez-politikasi'
       ]
     })
   ],
+  build: {
+    chunkSizeWarningLimit: 600
+  }
 })

@@ -323,7 +323,9 @@ const App = () => {
 
   const handlePortalLogin = (e) => {
     e.preventDefault();
-    if (portalUser === 'cmsvize' && portalPass === 'cms2026cms681001') {
+    const portalUserEnv = import.meta.env.VITE_PORTAL_USER || 'cmsvize';
+    const portalPassEnv = import.meta.env.VITE_PORTAL_PASS || 'cms2026cms681001';
+    if (portalUser === portalUserEnv && portalPass === portalPassEnv) {
       setPortalLoggedIn(true);
     } else {
       alert('Hatalı Bilgi');
@@ -342,7 +344,9 @@ const App = () => {
 
   const handleAdminLogin = (e) => {
     if(e) e.preventDefault();
-    if (adminUser === 'cms_master_admin' && adminPass === 'CMS_vize_2026_@Admin_!Secure') {
+    const adminUserEnv = import.meta.env.VITE_ADMIN_USER || 'cms_master_admin';
+    const adminPassEnv = import.meta.env.VITE_ADMIN_PASS || 'CMS_vize_2026_@Admin_!Secure';
+    if (adminUser === adminUserEnv && adminPass === adminPassEnv) {
       localStorage.setItem('adminAuth', 'true');
       setAdminLoggedIn(true);
       setCurrentPage('admin-dashboard');
@@ -857,20 +861,37 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
     setMobileMenuOpen(false);
   };
 
-  const handleTrack = (e) => {
+  const handleTrack = async (e) => {
     e.preventDefault();
     setTrackingError(false);
     setTrackingResult(null);
     
-    const found = leads.find(l => 
-      l.phone?.includes(trackingCode) || 
-      l.id.toString() === trackingCode || 
-      l.name?.toLowerCase().includes(trackingCode.toLowerCase())
-    );
-
-    if (found) {
-      setTrackingResult(found);
-    } else {
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .or(`tracking_code.ilike.%${trackingCode}%,phone.ilike.%${trackingCode}%,full_name.ilike.%${trackingCode}%`)
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) throw error;
+      
+      if (data) {
+        setTrackingResult({
+          id: data.id,
+          trackingId: data.tracking_code || `CMS-${data.id}`,
+          name: data.full_name || '---',
+          phone: data.phone || '---',
+          country: data.target_country || '---',
+          service: data.service_type || '---',
+          status: data.status || 'Yeni Başvuru',
+          date: data.created_at ? new Date(data.created_at).toISOString().split('T')[0] : '---',
+        });
+      } else {
+        setTrackingError(true);
+      }
+    } catch (err) {
+      console.error("Tracking error:", err);
       setTrackingError(true);
     }
   };
