@@ -186,10 +186,12 @@ const App = () => {
   const [turnstileToken, setTurnstileToken] = useState(null);
   const [submittedTrackingId, setSubmittedTrackingId] = useState('');
   const [cookieConsent, setCookieConsent] = useState(() => localStorage.getItem('cookieConsent'));
+  const [scrolled, setScrolled] = useState(false);
+  const [statsVisible, setStatsVisible] = useState(false);
 
   // --- EFFECTS ---
   useEffect(() => {
-    if (currentPage === 'home') {
+    if (currentPage === 'home' && statsVisible) {
       const timer = setInterval(() => {
         setCounts(prev => ({
           success: Math.min(prev.success + 11, 500),
@@ -200,6 +202,28 @@ const App = () => {
       }, 30);
       return () => clearInterval(timer);
     }
+  }, [currentPage, statsVisible]);
+
+  // Navbar Scroll Effect
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Intersection Observer for Scroll Reveal
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-active');
+          if (entry.target.id === 'stats-section') setStatsVisible(true);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
   }, [currentPage]);
 
   useEffect(() => {
@@ -918,8 +942,30 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
-        .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
+        
+        /* Pulse Animation for WhatsApp */
+        @keyframes pulse-intense { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+        .animate-pulse-whatsapp { animation: pulse-intense 2s infinite; }
+
+        /* Scroll Reveal */
+        .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-left { opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-active { opacity: 1 !important; transform: translate(0, 0) !important; }
+        
+        /* Hero Sequence */
+        .hero-slide-in { opacity: 0; transform: translateX(-30px); animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+          .reveal-on-scroll, .animate-fade-up, .animate-pulse-whatsapp, .hero-slide-in { 
+            animation: none !important; 
+            transition: none !important; 
+            opacity: 1 !important; 
+            transform: none !important; 
+          }
+        }
+
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
         .hero-img-container:hover { border-color: rgba(250, 204, 21, 0.4); box-shadow: 0 0 70px rgba(250, 204, 21, 0.2); }
         .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
@@ -957,7 +1003,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       {/* NAVBAR */}
       {!currentPage.startsWith('admin') && (
-        <nav className="fixed top-10 left-0 w-full z-50 glass border-b border-white/5 h-20 flex items-center transition-all duration-300">
+        <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0B0F1A]/80 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="flex items-center space-x-3 group cursor-pointer">
               <img src={logoImg} alt="CMSVize Logo" className="h-[50px] w-auto object-contain transition-transform group-hover:scale-105" />
@@ -1022,8 +1068,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
                 {/* Sol Kolon: İçerik */}
-                <div className="lg:col-span-7 space-y-10 animate-fade-up">
-                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
+                <div className="lg:col-span-7 space-y-10">
+                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner hero-slide-in">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#facc15]"></span>
@@ -1032,17 +1078,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   </div>
 
                   <div className="space-y-6">
-                    <h1 className="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase">
+                    <h1 className="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase hero-slide-in" style={{ animationDelay: '0.3s' }}>
                       2 Yıllık Litvanya <br />
                       <span className="text-[#facc15]">Oturum Kartı</span> <br />
                       <span className="text-3xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa’da Çalışma Fırsatı</span>
                     </h1>
-                    <p className="text-xl lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium">
+                    <p className="text-xl lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium hero-slide-in" style={{ animationDelay: '0.6s' }}>
                       Dil bilmeden Avrupa’da çalışma fırsatı. Tüm süreci uzman ekibimiz yönetir, siz sadece yola çıkarsınız.
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-5">
+                  <div className="flex flex-col sm:flex-row gap-5 hero-slide-in" style={{ animationDelay: '0.9s' }}>
                     <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-5 font-black text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(250,204,21,0.2)]">
                       <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
                       <ChevronRight className="group-hover:translate-x-2 transition-transform" />
@@ -1106,7 +1152,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* GÜVEN İSTATİSTİKLERİ */}
-          <section className="py-20 bg-black border-y border-white/5 relative overflow-hidden">
+          <section id="stats-section" className="py-20 bg-black border-y border-white/5 relative overflow-hidden reveal-on-scroll">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                 <div className="space-y-2">
@@ -1130,7 +1176,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* NEDEN BİZ? */}
-          <section className="py-24 px-6 bg-[#0B0F1A]">
+          <section className="py-24 px-6 bg-[#0B0F1A] reveal-on-scroll">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16 space-y-4">
                 <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Neden <span className="text-[#facc15]">CMSVize?</span></h2>
@@ -1340,7 +1386,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           )}
 
           {/* İSTATİSTİK */}
-          <section id="istatistik" className="py-24 bg-white/[0.02]">
+          <section id="istatistik" className="py-24 bg-white/[0.02] reveal-on-scroll">
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="text-center space-y-4">
@@ -1363,7 +1409,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* MÜŞTERİ GÖRÜŞLERİ */}
-          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A]">
+          <section id="referanslar" className="py-32 px-6 bg-[#0B0F1A] reveal-on-scroll">
             <div className="max-w-6xl mx-auto space-y-16">
               <div className="text-center space-y-4">
                 <h2 className="text-4xl lg:text-6xl font-black italic uppercase tracking-tighter">Müşteri <span className="text-[#0a66c2]">Görüşleri</span></h2>
@@ -1403,7 +1449,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* HİZMETLER */}
-          <section id="hizmetler" className="py-32 lg:py-48 px-6">
+          <section id="hizmetler" className="py-32 lg:py-48 px-6 reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-20">
               <div className="text-center space-y-6 max-w-3xl mx-auto">
                 <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Genişletilmiş <br /> <span className="text-[#facc15]">Hizmetlerimiz</span></h2>
@@ -1425,7 +1471,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                   <GlowCard 
                     key={i} 
                     customSize={true} 
-                    className="group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden"
+                    className="group hover:border-[#facc15]/30 transition-all duration-500 shadow-2xl flex flex-col relative overflow-hidden hover:-translate-y-2"
                   >
                     <div className="w-16 h-16 bg-[#facc15]/10 rounded-full flex items-center justify-center text-[#facc15] mb-8 group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all border border-white/5">{item.icon}</div>
                     <h3 className="text-2xl font-black italic uppercase mb-4">{item.title}</h3>
@@ -1440,7 +1486,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* SÜREÇTEN KESİTLER */}
-          <section id="surec" className="py-32 px-6 bg-white/[0.01]">
+          <section id="surec" className="py-32 px-6 bg-white/[0.01] reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-20">
               <div className="text-center space-y-6 max-w-3xl mx-auto">
                 <h2 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter">Görsel <span className="text-[#facc15]">Sürecimiz</span></h2>
@@ -1464,7 +1510,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
           </section>
 
           {/* INSTAGRAM VİTRİNİ */}
-          <section className="py-24 px-6 bg-white/[0.02] border-y border-white/5">
+          <section className="py-24 px-6 bg-white/[0.02] border-y border-white/5 reveal-on-scroll">
             <div className="max-w-7xl mx-auto space-y-12">
               <div className="flex flex-col items-center justify-center text-center space-y-4">
                 <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center mb-2 border border-[#facc15]/20">
@@ -1991,16 +2037,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#facc15]">YAŞAM REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4">
+              <section className="glass p-10 rounded-3xl border-l-4 border-[#facc15] space-y-4 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Litvanya Hakkında Genel Bilgi</h2>
                 <p>Litvanya, Baltık bölgesinde yer alan AB ve NATO üyesi bir ülkedir. Başkenti Vilnius, nüfusu yaklaşık 2.8 milyon, resmi para birimi Euro'dur. Schengen bölgesinde yer alır.</p>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Litvanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['27 Schengen ülkesinde vizesiz seyahat', 'Bati Avrupa\'ya kıyasla %40-50 daha uygun yaşam maliyeti', 'Hızlı büyüyen iş ve teknoloji ekosistemi', 'AB vatandaşlığına giden yol', 'Aile birleşimi hakkı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2008,7 +2054,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Şehirler</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
@@ -2016,7 +2062,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     { name: 'Kaunas', title: 'Sanayi Merkezi', desc: 'Yaşam maliyeti daha uygundur.' },
                     { name: 'Klaipeda', title: 'Liman Şehri', desc: 'Lojistik ve denizcilik sektörü güçlü.' }
                   ].map((city, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5 reveal-left">
                       <h4 className="text-lg font-black text-[#facc15] italic">{city.name}</h4>
                       <p className="text-[10px] font-black uppercase text-gray-500">{city.title}</p>
                       <p className="text-xs">{city.desc}</p>
@@ -2025,9 +2071,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
@@ -2133,16 +2179,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4">
+              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Almanya Hakkında Genel Bilgi</h2>
                 <p>Almanya, Avrupa'nın en büyük ekonomisi ve Türk göçmenler için en popüler destinasyondur. Başkenti Berlin, nüfusu ~84 milyon, para birimi Euro'dur.</p>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Almanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en yüksek maaşları', 'Güçlü sosyal haklar ve işçi güvencesi', 'Kaliteli sağlık ve eğitim sistemi', 'Büyük Türk topluluğu (yaklaşık 3 milyon)', 'Yüksek yaşam standardı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2150,7 +2196,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Popüler İş Alanları</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -2159,7 +2205,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     { name: 'Fabrika & Üretim', desc: 'Otomotiv (BMW, Mercedes) sektöründe alım fazladır.' },
                     { name: 'İnşaat', desc: 'Tecrübeli işçilere yüksek ücret ödenmektedir.' }
                   ].map((job, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
+                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5 reveal-left">
                       <h4 className="text-lg font-black text-[#facc15] italic">{job.name}</h4>
                       <p className="text-xs">{job.desc}</p>
                     </div>
@@ -2167,9 +2213,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </div>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
@@ -2268,16 +2314,16 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
             <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#facc15]">ÇALIŞMA REHBERİ 2026</span></h1>
             
             <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4">
+              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Polonya Hakkında Genel Bilgi</h2>
                 <p>Polonya, Orta Avrupa'nın en hızlı büyüyen ekonomilerinden biridir. Başkenti Varşova, nüfusu ~38 milyon, para birimi Zloti (PLN)'dir.</p>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-[#facc15]">Neden Polonya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en hızlı büyüyen ekonomisi', 'Almanya\'ya kıyasla kolay vize süreci', 'Uygun yaşam maliyeti', 'Güçlü sanayi ve üretim sektörü', 'Türkiye\'ye yakın konum'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
+                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3 reveal-left">
                       <CheckCircle2 size={18} className="text-[#facc15] flex-shrink-0" />
                       <span className="text-sm font-bold">{item}</span>
                     </li>
@@ -2285,9 +2331,9 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 </ul>
               </section>
 
-              <section className="space-y-6">
+              <section className="space-y-6 reveal-on-scroll">
                 <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <div className="overflow-hidden rounded-2xl glass border border-white/5 reveal-left">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
                       <tr>
@@ -3146,7 +3192,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       {/* WHATSAPP FLOAT - ENHANCED */}
       {!currentPage.startsWith('admin') && (
-        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center">
+        <a href={getWhatsAppURL()} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 group flex items-center animate-pulse-whatsapp transition-transform hover:scale-110">
           <div className="mr-4 bg-white text-[#0B0F1A] px-4 py-2 rounded-lg shadow-2xl font-black text-sm italic tracking-tight opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 border border-gray-200">
             Size nasıl yardımcı olabiliriz?
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-l-[8px] border-l-white border-b-[6px] border-b-transparent"></div>
