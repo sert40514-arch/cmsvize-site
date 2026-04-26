@@ -1029,7 +1029,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       <style>{`
         @keyframes fade-up { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         /* Pulse Animation for WhatsApp */
@@ -1044,16 +1044,6 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         /* Hero Sequence */
         .hero-slide-in { opacity: 0; transform: translateX(-30px); animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-
-        /* Reduced Motion */
-        @media (prefers-reduced-motion: reduce) {
-          .reveal-on-scroll, .animate-fade-up, .animate-pulse-whatsapp, .hero-slide-in { 
-            animation: none !important; 
-            transition: none !important; 
-            opacity: 1 !important; 
-            transform: none !important; 
-          }
-        }
 
         .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
         .hero-img-container:hover { border-color: rgba(250, 204, 21, 0.4); box-shadow: 0 0 70px rgba(250, 204, 21, 0.2); }
@@ -1506,7 +1496,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-gray-400 font-medium text-lg">Profesyonel hizmetimizle vizesine kavuşan danışanlarımız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(testimonials.filter(t => t.is_active) || []).map((ref, idx) => (
+                {((testimonials || []).filter(t => t.is_active)).map((ref, idx) => (
                   <div key={ref.id || idx} className="linkedin-card p-5 space-y-4 shadow-xl border border-white/5 hover:border-[#0a66c2]/30 transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute top-5 right-5 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-xl border border-white/10 shadow-lg group-hover:scale-125 transition-transform" title={ref.country}>
                       {ref.country === 'Almanya' ? '🇩🇪' : ref.country === 'Polonya' ? '🇵🇱' : ref.country === 'Litvanya' ? '🇱🇹' : ref.country === 'Hollanda' ? '🇳🇱' : ref.country === 'Belçika' ? '🇧🇪' : '🌍'}
@@ -1599,21 +1589,21 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     { num: "05", icon: <Globe size={32} />, title: "AVRUPA'YA UÇUŞ! 🎉", desc: "Vizeniz/kartınız onaylanır. Avrupa maceranız başlıyor!" }
                   ].map((step, i) => (
                     <div key={i} className="group relative">
-                      <div className="glass p-8 rounded-3xl border border-white/5 hover:border-[#facc15]/40 transition-all duration-500 h-full flex flex-col items-center text-center space-y-6 hover:shadow-[0_0_30px_rgba(250,204,21,0.1)] group-hover:-translate-y-2">
-                        <div className="absolute -top-4 -right-4 bg-[#facc15] text-[#0B0F1A] w-10 h-10 rounded-xl font-black flex items-center justify-center text-sm shadow-xl group-hover:scale-110 transition-transform">
+                      <div className="glass p-10 rounded-[2.5rem] border border-white/5 hover:border-[#facc15]/60 transition-all duration-700 h-full flex flex-col items-center text-center space-y-8 hover:shadow-[0_20px_50px_rgba(250,204,21,0.15)] group-hover:-translate-y-4">
+                        <div className="absolute -top-5 -right-5 bg-gradient-to-br from-[#facc15] to-[#ca8a04] text-[#0B0F1A] w-12 h-12 rounded-2xl font-black flex items-center justify-center text-lg shadow-2xl group-hover:scale-125 transition-transform duration-500">
                           {step.num}
                         </div>
-                        <div className="w-16 h-16 bg-[#facc15]/10 rounded-2xl flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-500 border border-[#facc15]/20">
+                        <div className="w-20 h-20 bg-[#facc15]/10 rounded-[2rem] flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-[#0B0F1A] transition-all duration-700 border border-[#facc15]/20 shadow-inner group-hover:shadow-[0_0_30px_rgba(250,204,21,0.5)]">
                           {step.icon}
                         </div>
-                        <h4 className="text-lg font-black italic uppercase tracking-tight">{step.title}</h4>
-                        <p className="text-xs text-gray-400 font-medium leading-relaxed">{step.desc}</p>
+                        <h4 className="text-xl font-black italic uppercase tracking-tighter group-hover:text-[#facc15] transition-colors">{step.title}</h4>
+                        <p className="text-sm text-gray-400 font-medium leading-relaxed opacity-80 group-hover:opacity-100">{step.desc}</p>
                       </div>
                       
                       {/* Ok İşareti (Desktop) */}
                       {i < 4 && (
-                        <div className="hidden lg:flex absolute top-1/2 -right-6 -translate-y-1/2 z-20 text-[#facc15]/40 group-hover:text-[#facc15] transition-colors">
-                          <ChevronRight size={24} />
+                        <div className="hidden lg:flex absolute top-1/2 -right-10 -translate-y-1/2 z-20 text-[#facc15]/20 group-hover:text-[#facc15] group-hover:translate-x-2 transition-all duration-700">
+                          <ChevronRight size={32} strokeWidth={3} />
                         </div>
                       )}
                     </div>
@@ -1638,7 +1628,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                 <p className="text-xl text-gray-400 font-medium">Yasal evraklarınızdan iş sahasına kadar her an yanınızdayız.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <GlowCard customSize={true} className="p-5 shadow-2xl">
+                <GlowCard customSize={true} className="p-8 shadow-2xl bg-black/40 border-white/10">
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-black/40 p-4 text-center flex items-center justify-center">
                     <img src={OturumKartiImg} className="w-full h-full object-contain" alt="Oturum Kartı" />
                   </div>
