@@ -7,23 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="google-site-verification" content="HsjfOhUptoGdvUieEkP78JFy36sSQQiYUM81wdhWzBM" />
     <title>CMSVize | Avrupa Kapısı Açılıyor</title>
-
-    <!--
-      Trusted Types passthrough policy — required for Cloudflare Turnstile and
-      other third-party widgets that inject HTML/scripts at runtime.
-      This ONLY allows existing behaviour; it does not open new attack surfaces.
-    -->
-    <script>
-      if (window.trustedTypes && window.trustedTypes.createPolicy) {
-        window.trustedTypes.createPolicy('default', {
-          createHTML: (string) => string,
-          createScript: (string) => string,
-          createScriptURL: (string) => string,
-        });
-      }
-    </script>
-
-    <!-- Vercel Analytics — must be before </head> -->
+    <!-- Vercel Analytics -->
     <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
   </head>
   <body>
