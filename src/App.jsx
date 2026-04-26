@@ -746,20 +746,17 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         source: "Site Formu"
       };
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("applications")
-        .insert([applicationData])
-        .select();
+        .insert([applicationData]);
 
-      console.log("SUPABASE INSERT RESPONSE", { data, error });
+      console.log("SUPABASE INSERT RESPONSE", { error });
 
       if (error) {
         throw error;
       }
 
       // 4. Update local state and finish
-      await fetchAllData(); // Refresh leads
-      
       if (!window.cms_sub_history) window.cms_sub_history = [];
       window.cms_sub_history.push(Date.now());
       window.cms_sub_history = window.cms_sub_history.slice(-10);
@@ -769,6 +766,13 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       setIsSubmitting(false);
       setFormSuccess(true);
+
+      // Refresh leads in background if possible
+      try {
+        await fetchAllData();
+      } catch (f) {
+        console.warn("Background fetch failed, but submission was successful.");
+      }
     } catch (error) {
       console.error("SUPABASE INSERT ERROR:", error);
       setIsSubmitting(false);
