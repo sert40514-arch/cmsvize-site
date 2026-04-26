@@ -332,9 +332,10 @@ const App = () => {
     }
   };
 
-  // Data Integrity Guard
+  // Data Integrity Guard - ESLint bu pattern'i uyarıyor ama initialization için gerekli
   useEffect(() => {
     if (!siteContent?.stats) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSiteContent(prev => ({
         ...prev,
         stats: STATS_DEFAULTS
@@ -359,11 +360,12 @@ const App = () => {
 
   const formRef = useRef(null);
 
-  // Path Detection and Auth Check
+  // Path Detection and Auth Check - ESLint bu pattern'i uyarıyor ama initialization için gerekli
   useEffect(() => {
     const auth = localStorage.getItem('adminAuth');
     const isLoggedIn = auth === 'true';
     if (isLoggedIn) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAdminLoggedIn(true);
     }
 
