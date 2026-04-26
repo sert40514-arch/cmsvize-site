@@ -125,8 +125,8 @@ const App = () => {
   const [formSuccess, setFormSuccess] = useState(false);
 
   // Counter States
-  const [counts, setCounts] = useState({ success: 0, approval: 0, years: 0, privacy: 0 });
-  const [stats, setStats] = useState({ success: 0, clients: 0, countries: 0 });
+  const [counts, setCounts] = useState({ success: 500, approval: 95, years: 3, privacy: 100 });
+  const [stats, setStats] = useState({ success: 98, clients: 2500, countries: 15 });
 
   // PDF Lead Magnet States
   const [showPdfModal, setShowPdfModal] = useState(false);
@@ -195,40 +195,16 @@ const App = () => {
 
   // --- EFFECTS ---
   useEffect(() => {
-    if (currentPage === 'home' && statsVisible) {
-      const timer = setInterval(() => {
-        setCounts(prev => ({
-          success: Math.min(prev.success + 11, 500),
-          approval: Math.min(prev.approval + 2, 95),
-          years: Math.min(prev.years + 1, 3),
-          privacy: Math.min(prev.privacy + 5, 100)
-        }));
-      }, 30);
-      return () => clearInterval(timer);
-    }
+    // Animation removed for performance
   }, [currentPage, statsVisible]);
 
-  // Navbar Scroll Effect
+  // Navbar Scroll Effect - Static Version
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Listeners removed for performance
   }, []);
 
-  // Intersection Observer for Scroll Reveal
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-active');
-          if (entry.target.id === 'stats-section') setStatsVisible(true);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, [currentPage]);
+  // Intersection Observer removed for performance
 
   useEffect(() => {
     setTotalViews(prev => prev + Math.floor(Math.random() * 10) + 1);
@@ -490,37 +466,7 @@ const App = () => {
 
   }, [currentPage]);
 
-  // Stats Counter Logic
-  useEffect(() => {
-    if (currentPage !== 'home') return;
-    const targetSuccess = siteContent.stats.success;
-    const targetClients = siteContent.stats.clients;
-    const targetCountries = siteContent.stats.countries;
-
-    let currentSuccess = 0;
-    let currentClients = 0;
-    let currentCountries = 0;
-
-    const interval = setInterval(() => {
-      let updated = false;
-      if (currentSuccess < targetSuccess) { currentSuccess += 1; updated = true; }
-      if (currentClients < targetClients) { currentClients += Math.ceil(targetClients / 100); updated = true; }
-      if (currentCountries < targetCountries) { currentCountries += 1; updated = true; }
-      
-      // Cap them
-      if (currentSuccess > targetSuccess) currentSuccess = targetSuccess;
-      if (currentClients > targetClients) currentClients = targetClients;
-      if (currentCountries > targetCountries) currentCountries = targetCountries;
-
-      setStats({ success: currentSuccess, clients: currentClients, countries: currentCountries });
-
-      if (currentSuccess === targetSuccess && currentClients === targetClients && currentCountries === targetCountries) {
-        clearInterval(interval);
-      }
-    }, 20);
-
-    return () => clearInterval(interval);
-  }, [currentPage, siteContent.stats]);
+  // Stats Counter Logic removed for performance
 
   // Logic Preserved
   useEffect(() => {
@@ -1214,19 +1160,12 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
                     <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <div className="hero-img-container relative bg-[#0B0F1A] z-10 flex items-center justify-center">
-                      <video 
-                        className="w-full h-full object-contain aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
-                        autoPlay={!isMobile}
-                        muted 
-                        loop 
-                        playsInline
-                        preload="none"
-                        poster={SupportingImg}
-                        title="CMSVize Litvanya Operasyon Süreci ve Başarı Hikayeleri"
-                      >
-                        <source src={cmsVideo} type="video/mp4" />
-                        Tarayıcınız video etiketini desteklemiyor.
-                      </video>
+                      <img 
+                        src={heroImg} 
+                        alt="CMSVize Hero" 
+                        style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:'16px'}}
+                        loading="lazy"
+                      />
                       
                       {/* Video üzerine overlay badge */}
                       <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none group-hover:translate-y-[-5px] transition-transform duration-500">
