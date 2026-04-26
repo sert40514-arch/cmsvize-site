@@ -1024,14 +1024,6 @@ return (
         }
 
         /* ===== NAVIGATION ===== */
-        nav, header { 
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          z-index: 9999 !important;
-          width: 100% !important;
-        }
         .top-bar {
           background-color: var(--primary);
           color: var(--white);
@@ -1039,27 +1031,31 @@ return (
           display: flex;
           align-items: center;
           font-size: 13px;
-          position: fixed !important;
-          top: 0 !important;
-          z-index: 10000 !important;
-          width: 100% !important;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 10000;
+        }
+        nav {
+          position: fixed;
+          top: 40px;
+          left: 0;
+          right: 0;
+          z-index: 9999;
+          background: white;
+          border-bottom: 1px solid #E2E8F0;
         }
         .navbar {
-          background-color: var(--white);
-          border-bottom: 1px solid var(--border);
           height: 80px;
           display: flex;
           align-items: center;
-          position: fixed !important;
-          top: 40px !important;
-          left: 0 !important;
-          right: 0 !important;
-          width: 100% !important;
-          z-index: 9999 !important;
+          width: 100%;
           transition: all 0.3s ease;
         }
-        main, #root > div > div:not(nav):first-child {
-          margin-top: 110px;
+        .page-content, main, #root > div {
+          padding-top: 110px;
         }
         .navbar.scrolled {
           box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -2089,51 +2085,58 @@ return (
           </section>
         </>
       ) : currentPage === 'blog_detail' ? (
-        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto min-h-screen">
-          {(() => {
-            const post = blogPosts.find(b => b.slug === selectedBlogSlug);
-            if (!post) return <div className="text-white text-center py-20 animate-pulse">Blog yazısı yükleniyor...</div>;
-            
-            return (
-              <div className="animate-fade-up">
-                <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-gray-300 hover:text-[#d69e2e] mb-8 transition-colors">
-                  <ArrowLeft size={16} /><span>Blog'a Dön</span>
-                </button>
-                {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8 border border-white/10 shadow-2xl" />}
-                <div className="flex items-center space-x-3 mb-6">
-                  <span className="text-xs font-black text-[#d69e2e] bg-[#1e3a8a]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
-                  <span className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+        <div className="bg-white min-h-screen pt-40 pb-32 px-6">
+          <div className="max-w-4xl mx-auto">
+            {(() => {
+              const post = blogPosts.find(b => b.slug === selectedBlogSlug);
+              if (!post) return <div className="text-primary text-center py-20 font-bold">Blog yazısı yükleniyor...</div>;
+              
+              return (
+                <div>
+                  <button onClick={() => { setCurrentPage('blog'); window.history.pushState({}, '', '/blog'); }} className="flex items-center space-x-2 text-primary hover:text-gold mb-8 transition-colors font-bold text-sm">
+                    <ArrowLeft size={16} /><span>Blog'a Dön</span>
+                  </button>
+                  {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/0F2557/C9A84C?text=CMSVize+Blog' }} className="w-full h-64 md:h-96 object-cover rounded-xl mb-8 border border-border shadow-md" />}
+                  <div className="flex items-center space-x-3 mb-6">
+                    <span className="text-xs font-bold text-white bg-primary px-3 py-1 rounded uppercase tracking-widest">{post.category}</span>
+                    <span className="text-gray-500 text-sm font-medium">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-title font-bold mb-8 text-primary leading-tight">{post.title}</h1>
+                  <div className="text-text leading-relaxed space-y-6 prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: getTrustedHTML(post.content.replace(/\n/g, '<br/>')) }}></div>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter mb-8 text-white">{post.title}</h1>
-                <div className="text-gray-300 text-lg leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: getTrustedHTML(post.content.replace(/\n/g, '<br/>')) }}></div>
-              </div>
-            );
-          })()}
+              );
+            })()}
+          </div>
         </div>
       ) : currentPage === 'blog' ? (
-        <div className="pt-40 pb-32 px-6 max-w-5xl mx-auto min-h-screen">
-          <h2 className="text-5xl font-black italic uppercase mb-12 tracking-tighter">CMSVize <span className="text-[#d69e2e]">Blog</span></h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {blogPosts.filter(b => b.is_published).map(post => (
-              <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="glass p-6 rounded-xl hover:border-[#d69e2e]/50 transition-all cursor-pointer group flex flex-col h-full border border-white/5">
-                {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/1a1a2e/facc15?text=CMSVize+Blog' }} className="w-full h-48 object-cover rounded-lg mb-4 group-hover:scale-[1.02] transition-transform duration-300 shadow-xl" />}
-                <div className="flex-1">
-                  <span className="text-[10px] font-black text-[#d69e2e] bg-[#1e3a8a]/10 px-3 py-1 rounded-md uppercase tracking-widest">{post.category}</span>
-                  <h3 className="text-xl font-black italic mt-3 mb-2 group-hover:text-[#d69e2e] transition-colors text-white">{post.title}</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed line-clamp-3">{post.summary}</p>
+        <div className="bg-white min-h-screen pt-40 pb-32 px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-title font-bold uppercase tracking-wider text-primary">CMSVİZE <span className="text-gold">BLOG</span></h2>
+              <p className="text-text-light mt-4">Vize, çalışma ve Avrupa'da yaşam hakkında en güncel yazılar.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {blogPosts.filter(b => b.is_published).map(post => (
+                <div key={post.id} onClick={() => { setSelectedBlogSlug(post.slug); setCurrentPage('blog_detail'); window.history.pushState({}, '', `/blog/${post.slug}`); window.scrollTo(0, 0); }} className="bg-white border border-border rounded-lg p-6 hover:border-primary hover:shadow-xl transition-all cursor-pointer group flex flex-col h-full">
+                  {post.cover_image && <img src={post.cover_image} alt={post.title} onError={(e) => { e.target.src = 'https://placehold.co/800x400/0F2557/C9A84C?text=CMSVize+Blog' }} className="w-full h-48 object-cover rounded-md mb-6 group-hover:scale-[1.02] transition-transform duration-300 shadow-sm" />}
+                  <div className="flex-1">
+                    <span className="text-[10px] font-bold text-gold border border-gold px-3 py-1 rounded uppercase tracking-widest mb-3 inline-block">{post.category}</span>
+                    <h3 className="text-xl font-title font-bold mb-3 group-hover:text-gold transition-colors text-primary">{post.title}</h3>
+                    <p className="text-text-light text-sm leading-relaxed line-clamp-3">{post.summary}</p>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-border flex justify-between items-center">
+                    <span className="text-xs text-gray-500 font-medium">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                    <span className="text-xs font-bold text-primary flex items-center space-x-1 group-hover:text-gold transition-colors"><span>Devamını Oku</span> <ChevronRight size={14} /></span>
+                  </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
-                  <span className="text-xs text-gray-500">{new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
-                  <span className="text-xs font-bold text-[#d69e2e] flex items-center space-x-1"><span>Devamını Oku</span> <ChevronRight size={14} /></span>
-                </div>
-              </div>
-            ))}
-            {blogPosts.filter(b => b.is_published).length === 0 && !isBlogLoading && (
-              <div className="col-span-full text-center text-gray-500 py-12">Henüz blog yazısı bulunmamaktadır.</div>
-            )}
-            {isBlogLoading && (
-              <div className="col-span-full text-center text-gray-500 py-12 animate-pulse">Yazılar Yükleniyor...</div>
-            )}
+              ))}
+              {blogPosts.filter(b => b.is_published).length === 0 && !isBlogLoading && (
+                <div className="col-span-full text-center text-gray-500 py-12">Henüz blog yazısı bulunmamaktadır.</div>
+              )}
+              {isBlogLoading && (
+                <div className="col-span-full text-center text-primary font-bold py-12">Yazılar Yükleniyor...</div>
+              )}
+            </div>
           </div>
         </div>
       ) : currentPage === 'privacy' ? (
@@ -2200,90 +2203,98 @@ return (
           </button>
         </div>
       ) : currentPage === 'guides_main' ? (
-        <div className="pt-40 pb-32 px-6 max-w-7xl mx-auto space-y-16 animate-fade-up">
-          <div className="text-center space-y-4">
-            <h1 className="text-6xl font-black italic uppercase tracking-tighter">Avrupa <span className="text-[#d69e2e]">Vize Rehberi</span></h1>
+        <div className="bg-white min-h-screen pb-32">
+          <div className="bg-primary text-white py-20 px-6 text-center">
+            <h1 className="text-4xl md:text-5xl font-title uppercase tracking-wider mb-4">AVRUPA VİZE REHBERİ</h1>
             <p className="text-gray-300 max-w-2xl mx-auto font-medium">Hedeflediğiniz ülkede yaşam, çalışma şartları ve vize süreçleri hakkında en güncel bilgiler.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { id: 'litvanya', name: 'LİTVANYA', flag: '🇱🇹', desc: 'Düşük yaşam maliyeti ve hızlı vize süreciyle Avrupa\'nın parlayan yıldızı.', color: 'border-yellow-600' },
-              { id: 'almanya', name: 'ALMANYA', flag: '🇩🇪', desc: 'Avrupa\'nın en büyük ekonomisi, yüksek maaşlar ve güçlü sosyal haklar.', color: 'border-red-600' },
-              { id: 'polonya', name: 'POLONYA', flag: '🇵🇱', desc: 'Hızlı büyüyen ekonomi ve kolay vize süreçleriyle Türk çalışanlar için ideal.', color: 'border-white' }
-            ].map(country => (
-              <div key={country.id} className={`glass p-8 rounded-3xl border-t-4 ${country.color} space-y-6 hover:translate-y-[-8px] transition-all duration-300 group`}>
-                <div className="text-5xl">{country.flag}</div>
-                <h3 className="text-2xl font-black italic uppercase tracking-tight text-white">{country.name}</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">{country.desc}</p>
-                <button 
-                  onClick={() => setCurrentPage(`guide_${country.id}`)}
-                  className="w-full btn-corporate glass py-3 rounded-xl font-bold uppercase tracking-widest text-xs group-hover:bg-[#1e3a8a] group-hover:text-black transition-colors"
-                >
-                  Rehberi İncele
-                </button>
-              </div>
-            ))}
+          
+          <div className="max-w-7xl mx-auto px-6 mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { id: 'litvanya', name: 'LİTVANYA', code: 'LT', flag: '🇱🇹', desc: 'Düşük yaşam maliyeti ve hızlı vize süreciyle Avrupa\'nın parlayan yıldızı.' },
+                { id: 'almanya', name: 'ALMANYA', code: 'DE', flag: '🇩🇪', desc: 'Avrupa\'nın en büyük ekonomisi, yüksek maaşlar ve güçlü sosyal haklar.' },
+                { id: 'polonya', name: 'POLONYA', code: 'PL', flag: '🇵🇱', desc: 'Hızlı büyüyen ekonomi ve kolay vize süreçleriyle Türk çalışanlar için ideal.' }
+              ].map(country => (
+                <div key={country.id} className="bg-white border border-border rounded-lg overflow-hidden transition-all duration-300 hover:border-primary hover:shadow-xl group flex flex-col h-full">
+                  <div className="bg-primary py-6 flex flex-col items-center justify-center">
+                    <div className="text-4xl mb-2">{country.flag}</div>
+                    <span className="text-gold font-bold text-xl">{country.code}</span>
+                  </div>
+                  <div className="p-8 flex flex-col flex-1 text-center">
+                    <h3 className="text-[24px] font-title text-primary font-bold mb-4">{country.name}</h3>
+                    <p className="text-text-light text-sm leading-relaxed mb-8 flex-1">{country.desc}</p>
+                    <button 
+                      onClick={() => setCurrentPage(`guide_${country.id}`)}
+                      className="w-full border border-gold text-gold py-3 rounded uppercase font-bold text-xs tracking-widest hover:bg-gold hover:text-white transition-colors"
+                    >
+                      REHBERİ İNCELE →
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : currentPage === 'guide_litvanya' ? (
-        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
-              <ArrowLeft size={20} />
-            </button>
-            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Litvanya</span>
+        <div className="bg-white min-h-screen pb-32 font-main text-[#1A1A2E]">
+          <div className="bg-primary pt-32 pb-20 px-6 text-center">
+            <h1 className="text-4xl md:text-5xl font-title uppercase tracking-wider text-white mb-4">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-gold">YAŞAM REHBERİ 2026</span></h1>
           </div>
+          
+          <div className="max-w-4xl mx-auto px-6 mt-8">
+            <div className="flex items-center space-x-2 mb-12 text-sm">
+              <button onClick={() => setCurrentPage('guides_main')} className="text-primary font-bold hover:text-gold transition-colors">Rehberler</button>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-500 font-bold">Litvanya</span>
+            </div>
 
-          <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇱🇹 LİTVANYA KAPSAMLI <br/><span className="text-[#d69e2e]">YAŞAM REHBERİ 2026</span></h1>
-            
-            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-[#d69e2e] space-y-4">
-                <h2 className="text-2xl font-black italic uppercase text-white">Litvanya Hakkında Genel Bilgi</h2>
+            <div className="space-y-12 leading-relaxed opacity-100">
+              <section className="bg-gray p-8 rounded-lg border-l-4 border-gold space-y-4">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold">Litvanya Hakkında Genel Bilgi</h2>
                 <p>Litvanya, Baltık bölgesinde yer alan AB ve NATO üyesi bir ülkedir. Başkenti Vilnius, nüfusu yaklaşık 2.8 milyon, resmi para birimi Euro'dur. Schengen bölgesinde yer alır.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Litvanya?</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Neden Litvanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['27 Schengen ülkesinde vizesiz seyahat', 'Bati Avrupa\'ya kıyasla %40-50 daha uygun yaşam maliyeti', 'Hızlı büyüyen iş ve teknoloji ekosistemi', 'AB vatandaşlığına giden yol', 'Aile birleşimi hakkı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
-                      <span className="text-sm font-bold">{item}</span>
+                    <li key={i} className="bg-white border border-border p-4 rounded flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-gold flex-shrink-0" />
+                      <span className="font-bold">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Şehirler</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Şehirler</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
                     { name: 'Vilnius', title: 'Başkent', desc: 'Kuzey\'in Silicon Valley\'i olarak anılır.' },
                     { name: 'Kaunas', title: 'Sanayi Merkezi', desc: 'Yaşam maliyeti daha uygundur.' },
                     { name: 'Klaipeda', title: 'Liman Şehri', desc: 'Lojistik ve denizcilik sektörü güçlü.' }
                   ].map((city, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
-                      <h4 className="text-lg font-black text-[#d69e2e] italic">{city.name}</h4>
-                      <p className="text-[10px] font-black uppercase text-gray-500">{city.title}</p>
-                      <p className="text-xs">{city.desc}</p>
+                    <div key={i} className="bg-gray p-6 rounded space-y-2 border-t-2 border-primary">
+                      <h4 className="text-lg font-title font-bold text-primary">{city.name}</h4>
+                      <p className="text-xs font-bold uppercase text-text-light">{city.title}</p>
+                      <p className="text-sm">{city.desc}</p>
                     </div>
                   ))}
                 </div>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Kalem</th>
                         <th className="px-6 py-4">Tahmini Maliyet</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'Tek kişilik daire kirası', v: '400-700 EUR/ay' },
                         { k: 'Market alışverişi', v: '200-350 EUR/ay' },
@@ -2291,9 +2302,9 @@ return (
                         { k: 'Sağlık sigortası', v: '20-40 EUR/ay' },
                         { k: 'Ortalama toplam', v: '700-1200 EUR/ay' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2302,16 +2313,16 @@ return (
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Sektör</th>
                         <th className="px-6 py-4">Aylık Maaş</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'TIR Şoförü (KOD95)', v: '1.800-2.500 EUR' },
                         { k: 'Fabrika İşçisi', v: '1.000-1.400 EUR' },
@@ -2319,9 +2330,9 @@ return (
                         { k: 'BT Uzmanı', v: '2.500-4.000 EUR' },
                         { k: 'Asgari Ücret', v: '~1.038 EUR' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2330,76 +2341,77 @@ return (
               </section>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                <div className="glass p-8 rounded-3xl space-y-4">
-                  <h3 className="text-xl font-black italic uppercase text-white">Konaklama</h3>
+                <div className="bg-gray border border-border p-8 rounded space-y-4">
+                  <h3 className="text-xl font-title font-bold uppercase text-primary">Konaklama</h3>
                   <p className="text-sm">Litvanya'da konaklama bulmak görece kolaydır. Kira sözleşmesi oturum kartı başvurusu için zorunludur. CMSVize olarak konaklama bulma sürecinde de destek sağlıyoruz.</p>
                 </div>
-                <div className="glass p-8 rounded-3xl space-y-4">
-                  <h3 className="text-xl font-black italic uppercase text-white">Sağlık & Ulaşım</h3>
+                <div className="bg-gray border border-border p-8 rounded space-y-4">
+                  <h3 className="text-xl font-title font-bold uppercase text-primary">Sağlık & Ulaşım</h3>
                   <p className="text-sm">Çalışanlar işveren aracılığıyla devlet sağlık sistemine dahil olur. Şehir içi ve şehirler arası ulaşım ağı oldukça gelişmiş ve ekonomiktir.</p>
                 </div>
               </div>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Sık Sorulan Sorular</h2>
                 <div className="space-y-4">
                   {[
                     { q: 'Litvanya\'da çalışmak için dil şartı var mı?', a: 'Çoğu sektörde dil şartı yoktur. İngilizce bilen işverenler yaygındır.' },
                     { q: 'Litvanya\'dan diğer AB ülkelerine geçiş yapabilir miyim?', a: 'Evet, Schengen vizesiyle 27 ülkede serbestçe seyahat edebilirsiniz.' },
                     { q: 'Aile birleşimi için ne kadar beklenir?', a: 'Oturum kartınızı aldıktan sonra aile birleşimi başvurusu yapılabilir. Ortalama 2-3 ay sürer.' }
                   ].map((faq, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
-                      <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
+                    <div key={i} className="bg-white border border-border p-6 rounded space-y-2">
+                      <p className="font-bold text-primary">S: {faq.q}</p>
+                      <p className="text-[#1A1A2E]">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
+            <div className="mt-16 p-10 rounded bg-primary text-center space-y-6 text-white shadow-xl">
               <div className="space-y-2">
-                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-300 font-medium">Litvanya oturum kartı ve iş imkanları için formu doldurun, sizi arayalım.</p>
+                <h3 className="text-2xl font-title font-bold uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-300">Litvanya oturum kartı ve iş imkanları için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="bg-gold text-white px-10 py-4 rounded font-bold uppercase tracking-wider hover:bg-[#b0923d] transition-colors">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
           </div>
         </div>
       ) : currentPage === 'guide_almanya' ? (
-        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
-              <ArrowLeft size={20} />
-            </button>
-            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Almanya</span>
+        <div className="bg-white min-h-screen pb-32 font-main text-[#1A1A2E]">
+          <div className="bg-primary pt-32 pb-20 px-6 text-center">
+            <h1 className="text-4xl md:text-5xl font-title uppercase tracking-wider text-white mb-4">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-gold">ÇALIŞMA REHBERİ 2026</span></h1>
           </div>
+          
+          <div className="max-w-4xl mx-auto px-6 mt-8">
+            <div className="flex items-center space-x-2 mb-12 text-sm">
+              <button onClick={() => setCurrentPage('guides_main')} className="text-primary font-bold hover:text-gold transition-colors">Rehberler</button>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-500 font-bold">Almanya</span>
+            </div>
 
-          <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇩🇪 ALMANYA KAPSAMLI <br/><span className="text-[#d69e2e]">ÇALIŞMA REHBERİ 2026</span></h1>
-            
-            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-red-600 space-y-4">
-                <h2 className="text-2xl font-black italic uppercase text-white">Almanya Hakkında Genel Bilgi</h2>
+            <div className="space-y-12 leading-relaxed opacity-100">
+              <section className="bg-gray p-8 rounded-lg border-l-4 border-gold space-y-4">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold">Almanya Hakkında Genel Bilgi</h2>
                 <p>Almanya, Avrupa'nın en büyük ekonomisi ve Türk göçmenler için en popüler destinasyondur. Başkenti Berlin, nüfusu ~84 milyon, para birimi Euro'dur.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Almanya?</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Neden Almanya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en yüksek maaşları', 'Güçlü sosyal haklar ve işçi güvencesi', 'Kaliteli sağlık ve eğitim sistemi', 'Büyük Türk topluluğu (yaklaşık 3 milyon)', 'Yüksek yaşam standardı'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
-                      <span className="text-sm font-bold">{item}</span>
+                    <li key={i} className="bg-white border border-border p-4 rounded flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-gold flex-shrink-0" />
+                      <span className="font-bold">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Popüler İş Alanları</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Popüler İş Alanları</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     { name: 'TIR Şoförlüğü', desc: 'KOD95 belgesi zorunludur. Maaşlar 2.500-3.500 EUR arasındadır.' },
@@ -2407,25 +2419,25 @@ return (
                     { name: 'Fabrika & Üretim', desc: 'Otomotiv (BMW, Mercedes) sektöründe alım fazladır.' },
                     { name: 'İnşaat', desc: 'Tecrübeli işçilere yüksek ücret ödenmektedir.' }
                   ].map((job, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2 border-b-2 border-white/5">
-                      <h4 className="text-lg font-black text-[#d69e2e] italic">{job.name}</h4>
-                      <p className="text-xs">{job.desc}</p>
+                    <div key={i} className="bg-gray p-6 rounded space-y-2 border-t-2 border-primary">
+                      <h4 className="text-lg font-title font-bold text-primary">{job.name}</h4>
+                      <p className="text-sm">{job.desc}</p>
                     </div>
                   ))}
                 </div>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Pozisyon</th>
                         <th className="px-6 py-4">Aylık Maaş (Brüt)</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'TIR Şoförü', v: '2.500-3.500 EUR' },
                         { k: 'Depo İşçisi', v: '1.800-2.200 EUR' },
@@ -2433,9 +2445,9 @@ return (
                         { k: 'İnşaat İşçisi', v: '2.200-3.000 EUR' },
                         { k: 'Asgari Ücret', v: '~1.700 EUR' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2443,22 +2455,22 @@ return (
                 </div>
               </section>
 
-              <section className="glass p-10 rounded-3xl border border-[#d69e2e]/30 space-y-4">
-                <h2 className="text-2xl font-black italic uppercase text-white">KOD95 Belgesi Nedir?</h2>
+              <section className="bg-gray border border-border p-8 rounded space-y-4">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold">KOD95 Belgesi Nedir?</h2>
                 <p className="text-sm">Avrupa'da ticari araç kullananlar için zorunlu mesleki yeterlilik belgesidir. Ehliyette "95" kodu olarak görünür. CMSVize olarak KOD95 belgesi olan TIR şoförlerine özel işveren eşleştirme yapıyoruz.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Kalem</th>
                         <th className="px-6 py-4">Tahmini Maliyet</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'Tek kişilik daire', v: '800-1.500 EUR/ay' },
                         { k: 'Market alışverişi', v: '300-500 EUR/ay' },
@@ -2466,9 +2478,9 @@ return (
                         { k: 'Sağlık sigortası', v: 'İşveren Öder' },
                         { k: 'Ortalama toplam', v: '1.300-2.200 EUR/ay' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2477,73 +2489,74 @@ return (
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Sık Sorulan Sorular</h2>
                 <div className="space-y-4">
                   {[
                     { q: 'Almancam olmadan çalışabilir miyim?', a: 'TIR şoförlüğü ve bazı fabrika işlerinde Almanca şartı aranmaz. Ancak öğrenmek kariyer için önemlidir.' },
                     { q: 'Almanya\'da oturum izninden vatandaşlığa geçiş ne kadar sürer?', a: 'Genellikle 5-8 yıl yasal ikamet ve dil şartı (B1) gerekmektedir.' }
                   ].map((faq, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
-                      <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
+                    <div key={i} className="bg-white border border-border p-6 rounded space-y-2">
+                      <p className="font-bold text-primary">S: {faq.q}</p>
+                      <p className="text-[#1A1A2E]">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
+            <div className="mt-16 p-10 rounded bg-primary text-center space-y-6 text-white shadow-xl">
               <div className="space-y-2">
-                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-300 font-medium">Almanya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+                <h3 className="text-2xl font-title font-bold uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-300">Almanya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="bg-gold text-white px-10 py-4 rounded font-bold uppercase tracking-wider hover:bg-[#b0923d] transition-colors">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
           </div>
         </div>
       ) : currentPage === 'guide_polonya' ? (
-        <div className="pt-40 pb-32 px-6 max-w-4xl mx-auto space-y-12 animate-fade-up">
-          <div className="flex items-center space-x-4 mb-8">
-            <button onClick={() => setCurrentPage('guides_main')} className="w-12 h-12 glass rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors">
-              <ArrowLeft size={20} />
-            </button>
-            <span className="text-gray-500 font-black uppercase tracking-widest text-xs">Rehberler / Polonya</span>
+        <div className="bg-white min-h-screen pb-32 font-main text-[#1A1A2E]">
+          <div className="bg-primary pt-32 pb-20 px-6 text-center">
+            <h1 className="text-4xl md:text-5xl font-title uppercase tracking-wider text-white mb-4">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-gold">ÇALIŞMA REHBERİ 2026</span></h1>
           </div>
+          
+          <div className="max-w-4xl mx-auto px-6 mt-8">
+            <div className="flex items-center space-x-2 mb-12 text-sm">
+              <button onClick={() => setCurrentPage('guides_main')} className="text-primary font-bold hover:text-gold transition-colors">Rehberler</button>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-500 font-bold">Polonya</span>
+            </div>
 
-          <div className="space-y-12">
-            <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-tight">🇵🇱 POLONYA KAPSAMLI <br/><span className="text-[#d69e2e]">ÇALIŞMA REHBERİ 2026</span></h1>
-            
-            <div className="prose prose-invert max-w-none space-y-12 text-gray-300 leading-relaxed">
-              <section className="glass p-10 rounded-3xl border-l-4 border-white space-y-4">
-                <h2 className="text-2xl font-black italic uppercase text-white">Polonya Hakkında Genel Bilgi</h2>
+            <div className="space-y-12 leading-relaxed opacity-100">
+              <section className="bg-gray p-8 rounded-lg border-l-4 border-gold space-y-4">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold">Polonya Hakkında Genel Bilgi</h2>
                 <p>Polonya, Orta Avrupa'nın en hızlı büyüyen ekonomilerinden biridir. Başkenti Varşova, nüfusu ~38 milyon, para birimi Zloti (PLN)'dir.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-[#d69e2e]">Neden Polonya?</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Neden Polonya?</h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
                   {['Avrupa\'nın en hızlı büyüyen ekonomisi', 'Almanya\'ya kıyasla kolay vize süreci', 'Uygun yaşam maliyeti', 'Güçlü sanayi ve üretim sektörü', 'Türkiye\'ye yakın konum'].map((item, i) => (
-                    <li key={i} className="glass p-4 rounded-xl flex items-center space-x-3">
-                      <CheckCircle2 size={18} className="text-[#d69e2e] flex-shrink-0" />
-                      <span className="text-sm font-bold">{item}</span>
+                    <li key={i} className="bg-white border border-border p-4 rounded flex items-center space-x-3">
+                      <CheckCircle2 size={18} className="text-gold flex-shrink-0" />
+                      <span className="font-bold">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Ortalama Maaşlar (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Ortalama Maaşlar (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Pozisyon</th>
                         <th className="px-6 py-4">Aylık Maaş</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'Fabrika İşçisi', v: '700-1.000 EUR' },
                         { k: 'Depo İşçisi', v: '700-900 EUR' },
@@ -2551,9 +2564,9 @@ return (
                         { k: 'TIR Şoförü', v: '1.500-2.200 EUR' },
                         { k: 'Asgari Ücret', v: '~900 EUR' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2562,25 +2575,25 @@ return (
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Yaşam Maliyeti (2026)</h2>
-                <div className="overflow-hidden rounded-2xl glass border border-white/5">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Yaşam Maliyeti (2026)</h2>
+                <div className="overflow-hidden rounded border border-border">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-white font-black uppercase text-[10px] tracking-widest">
+                    <thead className="bg-primary text-white font-bold uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4">Kalem</th>
                         <th className="px-6 py-4">Tahmini Maliyet</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                       {[
                         { k: 'Tek kişilik daire', v: '300-600 EUR/ay' },
                         { k: 'Market alışverişi', v: '150-250 EUR/ay' },
                         { k: 'Ulaşım', v: '30-50 EUR/ay' },
                         { k: 'Toplam', v: '550-950 EUR/ay' }
                       ].map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray'}>
                           <td className="px-6 py-4 font-medium">{row.k}</td>
-                          <td className="px-6 py-4 text-[#d69e2e] font-black">{row.v}</td>
+                          <td className="px-6 py-4 text-primary font-bold">{row.v}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2588,36 +2601,34 @@ return (
                 </div>
               </section>
 
-              <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Vize Süreci</h2>
-                <div className="glass p-10 rounded-3xl space-y-4">
-                  <p>Polonya'da çalışmak için D tipi ulusal vize gereklidir. İşveren daveti veya iş sözleşmesi ile başvuru yapılır. Onay süresi 2-4 haftadır, bu da Almanya'ya göre çok daha hızlı bir seçenektir.</p>
-                </div>
+              <section className="bg-gray border border-border p-8 rounded space-y-4">
+                <h2 className="text-2xl font-title uppercase text-primary font-bold">Vize Süreci</h2>
+                <p>Polonya'da çalışmak için D tipi ulusal vize gereklidir. İşveren daveti veya iş sözleşmesi ile başvuru yapılır. Onay süresi 2-4 haftadır, bu da Almanya'ya göre çok daha hızlı bir seçenektir.</p>
               </section>
 
               <section className="space-y-6">
-                <h2 className="text-2xl font-black italic uppercase text-white">Sık Sorulan Sorular</h2>
+                <h2 className="text-2xl font-title uppercase text-primary font-bold border-b border-border pb-2">Sık Sorulan Sorular</h2>
                 <div className="space-y-4">
                   {[
                     { q: 'Polonya\'dan diğer Schengen ülkelerine geçiş yapabilir miyim?', a: 'Evet, Polonya Schengen üyesidir. Oturum izniyle 27 ülkede seyahat edebilirsiniz.' },
                     { q: 'Polonya vizesi ne kadar sürede çıkar?', a: 'Ortalama 2-4 hafta. Almanya\'ya göre çok daha hızlı.' },
                     { q: 'Polonya\'da dil şartı var mı?', a: 'Fabrika işlerinde genellikle aranmaz. Temel İngilizce veya Rusça bilen işverenler yaygındır.' }
                   ].map((faq, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl space-y-2">
-                      <p className="font-black text-white text-sm">S: {faq.q}</p>
-                      <p className="text-gray-300 text-sm italic">C: {faq.a}</p>
+                    <div key={i} className="bg-white border border-border p-6 rounded space-y-2">
+                      <p className="font-bold text-primary">S: {faq.q}</p>
+                      <p className="text-[#1A1A2E]">C: {faq.a}</p>
                     </div>
                   ))}
                 </div>
               </section>
             </div>
 
-            <div className="mt-20 p-12 rounded-3xl glass border border-[#d69e2e]/30 text-center space-y-8">
+            <div className="mt-16 p-10 rounded bg-primary text-center space-y-6 text-white shadow-xl">
               <div className="space-y-2">
-                <h3 className="text-3xl font-black italic uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
-                <p className="text-gray-300 font-medium">Polonya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
+                <h3 className="text-2xl font-title font-bold uppercase">Uzman Ekibimizle Ücretsiz Görüşün</h3>
+                <p className="text-gray-300">Polonya iş fırsatları ve vize süreci için formu doldurun, sizi arayalım.</p>
               </div>
-              <button onClick={scrollToForm} className="btn-corporate bg-[#1e3a8a] text-black px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider hover:scale-105 transition-transform">
+              <button onClick={scrollToForm} className="bg-gold text-white px-10 py-4 rounded font-bold uppercase tracking-wider hover:bg-[#b0923d] transition-colors">
                 ÜCRETSİZ BAŞVURU BAŞLAT
               </button>
             </div>
