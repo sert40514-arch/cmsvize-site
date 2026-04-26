@@ -930,18 +930,23 @@ return (
 
         /* Mobile Performance Optimization - Critical Fixes */
         @media (max-width: 768px) {
+          html { font-size: 14px; }
           body { overflow-x: hidden; }
           img, video { max-width: 100%; height: auto; }
-          .container { padding: 0 16px; }
-          section { padding: 40px 16px; }
+          .container { padding: 0 12px; }
+          section { padding: 24px 12px; }
 
+          /* Hide non-essential on mobile */
           .top-bar { display: none !important; }
-          .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important; }
-          .reveal-on-scroll, .reveal-left { transition: opacity 0.5s ease-out !important; transform: none !important; }
+          
+          /* Simplify glass effect for performance */
+          .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important; }
+          
+          /* Disable animations on mobile for performance */
+          .reveal-on-scroll, .reveal-left { transition: opacity 0.3s ease-out !important; transform: none !important; }
           .hero-slide-in { animation: none !important; opacity: 1 !important; transform: none !important; }
           .animate-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
           .shimmer { animation: none !important; }
-
           
           /* GlowCard (Spotlight) Aggressive Mobile Disable */
           [data-glow] {
@@ -952,24 +957,61 @@ return (
             box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
           }
           [data-glow]::before,
-          [data-glow]::after {
-            display: none !important;
-          }
-          [data-glow] [data-glow] {
-            display: none !important;
-          }
+          [data-glow]::after { display: none !important; }
+          [data-glow] [data-glow] { display: none !important; }
 
           * { background-attachment: scroll !important; }
           
-          .hero-title { font-size: clamp(28px, 8vw, 48px) !important; }
-
+          /* Typography fixes */
+          .hero-title { font-size: clamp(24px, 7vw, 36px) !important; line-height: 1.1 !important; }
+          h1 { font-size: clamp(24px, 6vw, 36px) !important; }
+          h2 { font-size: clamp(20px, 5vw, 28px) !important; }
+          h3 { font-size: clamp(16px, 4vw, 22px) !important; }
+          p { font-size: 14px !important; line-height: 1.5 !important; }
+          
+          /* Fix grids - single column on mobile */
+          .grid-cols-2, .grid-cols-3, .grid-cols-4 { grid-template-columns: 1fr !important; }
+          .grid { gap: 12px !important; }
+          
+          /* Form fixes */
+          .input-corporate { padding: 12px !important; font-size: 14px !important; }
+          .btn-corporate { padding: 14px 20px !important; font-size: 14px !important; width: 100%; text-align: center; }
+          
           /* Navbar & Logo Fix */
-          nav { top: 0 !important; height: 64px !important; }
-          .nav-logo-container { width: 72px !important; height: 72px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
-          .nav-logo { max-width: 64px !important; width: 64px !important; height: auto !important; object-fit: contain !important; }
+          nav { top: 0 !important; height: 56px !important; padding: 0 12px !important; }
+          .nav-logo-container { width: 48px !important; height: 48px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+          .nav-logo { max-width: 44px !important; width: 44px !important; height: auto !important; object-fit: contain !important; }
           
           /* Footer Logo Fix */
-          .footer-logo { max-width: 120px !important; height: auto !important; }
+          .footer-logo { max-width: 100px !important; height: auto !important; }
+          
+          /* Mobile menu spacing */
+          .mobile-menu-open { padding: 16px !important; }
+          
+          /* Card fixes */
+          .linkedin-card, .linkedin-faq { padding: 16px !important; }
+          
+          /* Modal/Popup fixes */
+          .fixed { padding: 12px !important; }
+          
+          /* Table fixes for admin */
+          table { font-size: 10px !important; }
+          th, td { padding: 8px 4px !important; }
+          
+          /* WhatsApp float - smaller on mobile */
+          .fixed.bottom-6 { bottom: 12px !important; right: 12px !important; }
+          .fixed.bottom-6 > div { padding: 10px 14px !important; }
+          .fixed.bottom-6 svg { width: 20px !important; height: 20px !important; }
+        }
+
+        /* Small mobile (under 480px) */
+        @media (max-width: 480px) {
+          html { font-size: 13px; }
+          section { padding: 20px 10px; }
+          .btn-corporate { padding: 12px 16px !important; font-size: 13px !important; }
+          h1 { font-size: 22px !important; }
+          .glass { padding: 16px !important; }
+          .grid { gap: 8px !important; }
         }
 
 
