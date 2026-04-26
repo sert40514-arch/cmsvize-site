@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Turnstile } from "react-turnstile";
 import { supabase } from './lib/supabase';
 import {
@@ -230,7 +230,7 @@ const App = () => {
   const [trackingError, setTrackingError] = useState(false);
 
   // Security States
-  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState(null);
   const [submittedTrackingId, setSubmittedTrackingId] = useState('');
   const [cookieConsent, setCookieConsent] = useState(() => localStorage.getItem('cookieConsent'));
@@ -748,10 +748,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       return;
     }
 
-    if (!turnstileToken) {
-      showToast("Lütfen güvenlik doğrulamasını tamamlayın.");
-      return;
-    }
+
 
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       showToast("Supabase ortam değişkenleri eksik.");
@@ -1009,6 +1006,7 @@ return (
           background-color: var(--white);
           margin: 0;
           padding: 0;
+          padding-top: 120px;
         }
 
         h1, h2, h3, h4, .font-title {
@@ -1034,8 +1032,12 @@ return (
           display: flex;
           align-items: center;
           font-size: 13px;
-          position: relative;
-          z-index: 1001;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 10000;
         }
         .navbar {
           background-color: var(--white);
@@ -1043,9 +1045,12 @@ return (
           height: 80px;
           display: flex;
           align-items: center;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
+          position: fixed;
+          top: 40px;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 9999;
           transition: all 0.3s ease;
         }
         .navbar.scrolled {
@@ -1974,26 +1979,10 @@ return (
                             <option>A1 Transfer</option>
                           </select>
                         </div>
-                        
-                        <div className="flex justify-center py-2">
-                          <Turnstile
-                            sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAA4uW9S9j_f3s_2j"}
-                            onVerify={(token) => {
-                              setTurnstileToken(token);
-                              setIsTurnstileVerified(true);
-                            }}
-                          />
-                        </div>
-
                         <button 
                           type="submit" 
                           disabled={isSubmitting}
-                          onClick={() => {
-                            if (!isTurnstileVerified && !turnstileToken) {
-                              showToast('Güvenlik doğrulaması yükleniyor, lütfen bekleyin veya sayfayı yenileyin.');
-                            }
-                          }}
-                          className="w-full btn-gold py-5 text-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full btn-gold py-5 text-xl mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSubmitting ? 'GÖNDERİLİYOR...' : 'BAŞVURUYU TAMAMLA'}
                         </button>
@@ -2032,23 +2021,22 @@ return (
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#3b82f6]/10 via-[#0f172a]/0 to-transparent"></div>
             <div className="max-w-7xl mx-auto space-y-16 relative z-10">
               <div className="text-center space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter">Aktif <span className="text-[#d69e2e]">Avrupa Ağı</span></h2>
+                <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-white">Aktif <span className="text-[#d69e2e]">Avrupa Ağı</span></h2>
                 <p className="text-gray-300 font-medium">Uzmanlık alanımızdaki 5 ülkede kesintisiz hizmet.</p>
               </div>
               <div className="flex flex-wrap justify-center gap-6">
                 {[
-                  { country: "Almanya", flag: "🇩🇪", desc: "Tır & Nitelikli" },
-                  { country: "Polonya", flag: "🇵🇱", desc: "Lojistik & Depo" },
-                  { country: "Litvanya", flag: "🇱🇹", desc: "A1 & 2 Yıllık Oturum" },
-                  { country: "Hollanda", flag: "🇳🇱", desc: "High-Skilled" },
-                  { country: "Fransa", flag: "🇫🇷", desc: "Çalışma İzni" }
+                  { country: "Almanya", code: "DE", flag: "🇩🇪", desc: "Tır & Nitelikli" },
+                  { country: "Polonya", code: "PL", flag: "🇵🇱", desc: "Lojistik & Depo" },
+                  { country: "Litvanya", code: "LT", flag: "🇱🇹", desc: "A1 & 2 Yıllık Oturum" },
+                  { country: "Hollanda", code: "NL", flag: "🇳🇱", desc: "High-Skilled" },
+                  { country: "Fransa", code: "FR", flag: "🇫🇷", desc: "Çalışma İzni" }
                 ].map((item, i) => (
-                  <div key={i} className="glass p-6 rounded-2xl flex flex-col items-center justify-center space-y-3 w-40 hover:scale-105 hover:border-[#d69e2e]/30 transition-all cursor-pointer group">
-                    <div className="text-4xl group-hover:-translate-y-2 transition-transform drop-shadow-2xl">{item.flag}</div>
-                    <div className="text-center">
-                      <p className="font-black text-white text-sm uppercase">{item.country}</p>
-                      <p className="text-[10px] text-[#d69e2e] font-bold mt-1 tracking-widest">{item.desc}</p>
-                    </div>
+                  <div key={i} className="flex flex-col items-center justify-center text-center p-8 rounded-xl w-44 cursor-pointer group transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,168,76,0.2)]" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)'}}>
+                    <div className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">{item.flag}</div>
+                    <p className="text-xl font-black text-[#C9A84C] tracking-wider mb-1">{item.code}</p>
+                    <p className="font-bold text-white text-sm">{item.country}</p>
+                    <p className="text-[11px] text-gray-400 mt-1 leading-snug">{item.desc}</p>
                   </div>
                 ))}
               </div>
