@@ -891,7 +891,8 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
         .text-gradient { background: linear-gradient(135deg, #fff 0%, #facc15 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
         .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
-        .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(250, 204, 21, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .hero-img-container { position: relative; width: 100%; max-width: 620px; border-radius: 24px; overflow: hidden; border: 2px solid rgba(250, 204, 21, 0.2); box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); transition: all 0.5s ease; }
+        .hero-img-container:hover { border-color: rgba(250, 204, 21, 0.4); box-shadow: 0 0 70px rgba(250, 204, 21, 0.2); }
         .linkedin-card { background: #1B1F23; border: 1px solid #30363D; border-radius: 4px; }
         .linkedin-faq { background: #1B1F23; border: 1px solid #30363D; }
         .btn-corporate { border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
@@ -968,78 +969,96 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
       {currentPage === 'home' ? (
         <>
           {/* HERO SECTION */}
-          <section className="relative pt-40 lg:pt-56 pb-24 lg:pb-32 px-6">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10"></div>
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-              <div className="space-y-10 animate-fade-up">
-                <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-lg text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
-                  <Star size={16} fill="currentColor" />
-                  <span>Sınırlı Kontenjan • Bugün sadece 12 kişi kabul ediliyor</span>
+          <section className="relative pt-32 lg:pt-48 pb-24 lg:pb-32 px-6 overflow-hidden">
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#facc15]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#0a66c2]/5 rounded-full blur-[120px] -z-10"></div>
+            
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                {/* Sol Kolon: İçerik */}
+                <div className="lg:col-span-7 space-y-10 animate-fade-up">
+                  <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-2.5 rounded-full text-[#facc15] font-black text-xs tracking-widest uppercase shadow-inner">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#facc15] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#facc15]"></span>
+                    </span>
+                    <span>Sınırlı Kontenjan • Bugün sadece 12 kişi kabul ediliyor</span>
+                  </div>
+
+                  <div className="space-y-6">
+                    <h1 className="text-5xl lg:text-7xl font-black leading-[1.05] tracking-tighter italic uppercase">
+                      2 Yıllık Litvanya <br />
+                      <span className="text-[#facc15]">Oturum Kartı</span> <br />
+                      <span className="text-3xl lg:text-5xl block mt-2 normal-case font-black opacity-90">ile Avrupa’da Çalışma Fırsatı</span>
+                    </h1>
+                    <p className="text-xl lg:text-2xl text-gray-400 max-w-2xl leading-relaxed font-medium">
+                      Dil bilmeden Avrupa’da çalışma fırsatı. Tüm süreci uzman ekibimiz yönetir, siz sadece yola çıkarsınız.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-5">
+                    <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-10 py-5 font-black text-xl flex items-center justify-center space-x-3 group shadow-[0_10px_30px_rgba(250,204,21,0.2)]">
+                      <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
+                      <ChevronRight className="group-hover:translate-x-2 transition-transform" />
+                    </button>
+                    <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-10 py-5 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                      <BookOpen className="text-[#facc15]" />
+                      <span>UYGUNLUK TESTİ</span>
+                    </button>
+                  </div>
+
+                  {/* Güven Rakamları / Metrics */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t border-white/5">
+                    {[
+                      { label: "2 Yıl", text: "Oturum Kartı" },
+                      { label: "6–12 Hf", text: "Ortalama Süre" },
+                      { label: "27 Ülke", text: "Schengen Hakları" },
+                      { label: "Ücretsiz", text: "Ön Değerlendirme" }
+                    ].map((m, i) => (
+                      <div key={i} className="space-y-1">
+                        <p className="text-2xl font-black text-[#facc15] tracking-tighter italic">{m.label}</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black leading-tight">{m.text}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-6">
-                  <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tighter italic uppercase">
-                    2 Yıllık Litvanya <br />
-                    <span className="text-gradient">Oturum Kartı</span> <br />
-                    İle Avrupa'da Çalışma
-                  </h1>
-                  <p className="text-xl lg:text-2xl text-gray-400 max-w-xl leading-relaxed font-medium">
-                    Dil bilmeden Avrupa’da çalışma fırsatı.<br className="hidden lg:block" /> Tüm süreci biz yönetiyoruz, sen sadece yola çık.
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-5">
-                  <button onClick={scrollToForm} className="btn-corporate bg-[#facc15] text-[#0B0F1A] px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 group">
-                    <span>ÜCRETSİZ BAŞVURU BAŞLAT</span>
-                    <ChevronRight className="group-hover:translate-x-2 transition-transform" />
-                  </button>
-                  <button onClick={() => setShowWizard(true)} className="btn-corporate glass px-12 py-6 font-black text-xl flex items-center justify-center space-x-3 hover:bg-white/10 relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                    <BookOpen className="text-[#facc15]" />
-                    <span>UYGUNLUK TESTİ</span>
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-4 pt-2">
-                  {[
-                    { icon: <Camera size={14} />, text: "Tır Şoförlüğü (KOD95)" },
-                    { icon: <Star size={14} />, text: "A1 Transfer İle Giriş" },
-                    { icon: <Camera size={14} />, text: "Fabrika & Depo İşleri" },
-                    { icon: <ShieldCheck size={14} />, text: "2 Yıllık Oturum Garantisi" }
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest text-[#facc15]">
-                      {item.icon}
-                      <span>{item.text}</span>
+
+                {/* Sağ Kolon: Video / Görsel Alanı */}
+                <div className="lg:col-span-5 flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
+                  <div className="w-full max-w-[500px] relative group">
+                    {/* Arka plan glow efekti */}
+                    <div className="absolute -inset-4 bg-[#facc15]/10 rounded-[32px] blur-3xl opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="hero-img-container relative bg-[#131926] z-10">
+                      <video 
+                        className="w-full h-full object-cover aspect-[4/5] lg:aspect-[4/5] shadow-2xl" 
+                        controls 
+                        playsInline
+                        poster={SupportingImg}
+                      >
+                        <source src={cmsVideo} type="video/mp4" />
+                        Tarayıcınız video etiketini desteklemiyor.
+                      </video>
+                      
+                      {/* Video üzerine overlay badge */}
+                      <div className="absolute bottom-6 left-6 right-6 p-4 glass rounded-xl border border-white/10 backdrop-blur-md z-20 flex items-center justify-between pointer-events-none">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-[#facc15]">Resmi Süreç</p>
+                          <p className="text-sm font-black text-white italic">Litvanya Operasyonlarımız</p>
+                        </div>
+                        <div className="flex -space-x-2">
+                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-[#0a66c2] flex items-center justify-center text-[10px] font-bold">LT</div>
+                          <div className="w-8 h-8 rounded-full border-2 border-[#131926] bg-red-600 flex items-center justify-center text-[10px] font-bold">EU</div>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-3 gap-10 pt-10 border-t border-white/5">
-                  <div>
-                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">312+</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Başvuru</p>
                   </div>
-                  <div>
-                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">{activeViewers}</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Aktif</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-black text-[#facc15] tracking-tighter italic">2dk</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mt-2">Son Talep</p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                <div className="hero-img-container">
-                  <video 
-                    className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto" 
-                    controls 
-                    playsInline
-                  >
-                    <source src={cmsVideo} type="video/mp4" />
-                    Tarayıcınız video etiketini desteklemiyor.
-                  </video>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
                 </div>
               </div>
             </div>
           </section>
+
 
           {/* STATS TICKER */}
           <div className="bg-[#facc15] py-5 border-y-4 border-[#0B0F1A] rotate-[-1deg] relative z-20 scale-105 shadow-2xl overflow-hidden">
