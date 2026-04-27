@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Turnstile } from "react-turnstile";
 import { supabase } from './lib/supabase';
 import {
@@ -218,6 +218,13 @@ const App = () => {
     phone: "905459918268",
     whatsapp: "905459918268"
   });
+  const [adminStatsBaseline, setAdminStatsBaseline] = useState(STATS_DEFAULTS);
+  const [adminSettingsBaseline, setAdminSettingsBaseline] = useState({
+    title: "CMSVize | Avrupa Kapısı Açılıyor",
+    phone: "905459918268",
+    whatsapp: "905459918268"
+  });
+  const [adminLastSavedAt, setAdminLastSavedAt] = useState(null);
 
   // Toast & Tracking States
   const [toastMessage, setToastMessage] = useState('');
@@ -237,6 +244,14 @@ const App = () => {
   const [cookieConsent, setCookieConsent] = useState(() => localStorage.getItem('cookieConsent'));
   const [scrolled, setScrolled] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const statsDirty = useMemo(
+    () => JSON.stringify(siteContent?.stats || {}) !== JSON.stringify(adminStatsBaseline || {}),
+    [siteContent?.stats, adminStatsBaseline]
+  );
+  const settingsDirty = useMemo(
+    () => JSON.stringify(siteSettings || {}) !== JSON.stringify(adminSettingsBaseline || {}),
+    [siteSettings, adminSettingsBaseline]
+  );
 
   // --- EFFECTS ---
   useEffect(() => {
@@ -434,6 +449,13 @@ const App = () => {
       setCurrentPage('guide_polonya');
     }
   }, []);
+
+  useEffect(() => {
+    if (adminLoggedIn) {
+      setAdminStatsBaseline(siteContent?.stats || STATS_DEFAULTS);
+      setAdminSettingsBaseline(siteSettings || {});
+    }
+  }, [adminLoggedIn]);
 
   // SEO & Scroll Logic
   useEffect(() => {
@@ -801,6 +823,7 @@ Mesaj: ${data.message || 'Bilgi almak istiyorum.'}`;
 
       // Finally set success state at the very end to avoid premature unmounting
       setFormSuccess(true);
+      showToast("Başvurunuz alındı.");
       setIsSubmitting(false);
     } catch (error) {
       console.error("SUPABASE INSERT ERROR:", error);
@@ -999,6 +1022,12 @@ return (
           --font-main: 'Inter', sans-serif;
           --font-title: 'Playfair Display', serif;
           --transition-base: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          --radius-sm: 8px;
+          --radius-md: 12px;
+          --radius-lg: 16px;
+          --shadow-soft: 0 10px 28px rgba(8, 15, 32, 0.08);
+          --shadow-card: 0 16px 44px rgba(8, 15, 32, 0.12);
+          --section-space: 104px;
         }
 
         body {
@@ -1009,8 +1038,21 @@ return (
           padding: 0;
         }
 
+        section {
+          scroll-margin-top: 128px;
+        }
+
         h1, h2, h3, h4, .font-title {
           font-family: var(--font-title);
+          line-height: 1.18;
+          letter-spacing: -0.01em;
+        }
+        h1 { font-size: clamp(2rem, 3.8vw, 3.5rem); }
+        h2 { font-size: clamp(1.75rem, 3vw, 3rem); }
+        h3 { font-size: clamp(1.25rem, 2vw, 2rem); }
+        p {
+          line-height: 1.72;
+          max-width: 72ch;
         }
 
         /* ===== SCROLL REVEAL ===== */
@@ -1025,7 +1067,7 @@ return (
         }
 
         /* ===== NAVIGATION ===== */
-        nav img.logo, .navbar-logo, nav .logo-container {
+        .site-navbar img.logo, .navbar-logo, .site-navbar .logo-container {
           background: transparent !important;
           background-color: transparent !important;
         }
@@ -1043,7 +1085,7 @@ return (
           width: 100%;
           z-index: 10000;
         }
-        nav {
+        .site-navbar {
           position: fixed;
           top: 40px;
           left: 0;
@@ -1080,22 +1122,32 @@ return (
           background-color: var(--gold);
           color: var(--primary);
           padding: 10px 24px;
-          border-radius: 4px;
+          border-radius: 8px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          transition: all 0.2s ease;
+          box-shadow: 0 6px 16px rgba(201, 168, 76, 0.22);
+          transition: var(--transition-base);
+        }
+        .btn-corporate {
+          border-radius: var(--radius-sm);
+          border: 1px solid rgba(201, 168, 76, 0.26);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        .btn-corporate:hover {
+          border-color: rgba(201, 168, 76, 0.5);
         }
         .btn-gold:hover {
           background-color: var(--gold-light);
           transform: translateY(-1px);
+          box-shadow: 0 10px 22px rgba(201, 168, 76, 0.28);
         }
 
         /* ===== HERO SECTION ===== */
         .hero-section {
           background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
           color: var(--white);
-          padding: 100px 0;
+          padding: var(--section-space) 0;
           position: relative;
           overflow: hidden;
         }
@@ -1110,7 +1162,7 @@ return (
         }
         .hero-title {
           font-size: 52px;
-          line-height: 1.1;
+          line-height: 1.14;
           margin-bottom: 24px;
         }
         .hero-title span {
@@ -1118,35 +1170,36 @@ return (
           text-decoration: underline;
         }
         .hero-subtitle {
-          font-size: 16px;
+          font-size: 17px;
           color: #94A3B8;
-          max-width: 500px;
-          line-height: 1.6;
+          max-width: 560px;
+          line-height: 1.72;
           margin-bottom: 32px;
         }
         .hero-btn-outline {
           border: 1px solid var(--gold);
           color: var(--gold);
           padding: 14px 28px;
-          border-radius: 4px;
+          border-radius: 8px;
           font-weight: 700;
-          transition: all 0.2s ease;
+          transition: var(--transition-base);
         }
         .hero-btn-outline:hover {
           background: rgba(201, 168, 76, 0.1);
         }
         .hero-card {
           background: var(--white);
-          border-radius: 12px;
+          border-radius: 14px;
           padding: 40px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          border: 1px solid rgba(15, 37, 87, 0.09);
+          box-shadow: 0 20px 56px rgba(8, 15, 32, 0.2);
           color: var(--primary);
         }
 
         /* ===== STATISTICS ===== */
         .stats-section {
           background-color: var(--gray);
-          padding: 60px 0;
+          padding: 80px 0;
         }
         .stat-item {
           border-top: 2px solid var(--gold);
@@ -1168,15 +1221,15 @@ return (
         .service-card {
           background: var(--white);
           padding: 32px;
-          border-radius: 8px;
+          border-radius: 12px;
           transition: all 0.3s ease;
-          border: 1px solid var(--border);
+          border: 1px solid rgba(15, 37, 87, 0.12);
           height: 100%;
         }
         .service-card:hover {
-          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-          border-top: 4px solid var(--gold);
-          transform: translateY(-5px);
+          box-shadow: 0 14px 36px rgba(8, 15, 32, 0.08);
+          border-top: 3px solid var(--gold);
+          transform: translateY(-3px);
         }
         .icon-box {
           width: 40px;
@@ -1209,7 +1262,7 @@ return (
         /* ===== TIMELINE ===== */
         .timeline-section {
           background-color: var(--gray);
-          padding: 100px 0;
+          padding: var(--section-space) 0;
         }
         .timeline-step {
           position: relative;
@@ -1243,8 +1296,10 @@ return (
         .testimonial-card {
           background: var(--gray);
           padding: 24px;
-          border-radius: 8px;
-          border-top: 3px solid var(--primary);
+          border-radius: 12px;
+          border: 1px solid rgba(15, 37, 87, 0.1);
+          border-top: 3px solid var(--gold);
+          box-shadow: 0 8px 24px rgba(8, 15, 32, 0.04);
         }
         .testimonial-name {
           color: var(--primary);
@@ -1262,23 +1317,74 @@ return (
         /* ===== BLOG ===== */
         .blog-section {
           background-color: var(--gray);
-          padding: 100px 0;
+          padding: var(--section-space) 0;
         }
         .blog-card {
           background: var(--white);
-          border-radius: 8px;
+          border-radius: 12px;
           overflow: hidden;
           transition: all 0.3s ease;
+          border: 1px solid rgba(15, 37, 87, 0.08);
         }
         .blog-card:hover {
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          box-shadow: 0 12px 28px rgba(8, 15, 32, 0.1);
         }
         .category-badge {
           background: var(--primary);
           color: var(--white);
-          padding: 4px 12px;
+          padding: 5px 12px;
           font-size: 11px;
-          font-weight: 600;
+          font-weight: 700;
+          border-radius: 9999px;
+          letter-spacing: 0.04em;
+        }
+
+        .hero-section p,
+        .stats-section p,
+        .timeline-section p,
+        #referanslar p,
+        #hizmetler p,
+        #ekip p,
+        #sss p {
+          line-height: 1.7;
+        }
+
+        .trust-card {
+          border-radius: var(--radius-md);
+          border: 1px solid rgba(15, 37, 87, 0.1);
+          box-shadow: var(--shadow-soft);
+        }
+
+        .admin-shell {
+          background: radial-gradient(circle at top right, rgba(201, 168, 76, 0.08), transparent 42%), #080C14;
+        }
+        .admin-sidebar {
+          background: linear-gradient(180deg, #0f172a 0%, #0b1222 100%);
+        }
+        .admin-content {
+          background: linear-gradient(180deg, rgba(15, 23, 42, 0.64), rgba(8, 12, 20, 0.82));
+        }
+        .glass {
+          background: rgba(15, 23, 42, 0.68);
+          border: 1px solid rgba(255, 255, 255, 0.09);
+          box-shadow: var(--shadow-card);
+          backdrop-filter: blur(10px);
+        }
+        .admin-panel-table thead th {
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          background: #0f172a;
+        }
+        .admin-input {
+          border-radius: var(--radius-sm);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(15, 23, 42, 0.55);
+        }
+        .admin-input:focus {
+          outline: none;
+          border-color: rgba(201, 168, 76, 0.65);
+          box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.16);
         }
 
         /* ===== FOOTER ===== */
@@ -1294,6 +1400,13 @@ return (
         /* ===== MOBILE RULES ===== */
         @media (max-width: 768px) {
           .top-bar { display: none !important; }
+          .site-navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+          }
           main, #root > div > div:not(nav):first-child { margin-top: 70px; }
           .navbar { height: 70px !important; top: 0 !important; }
           .hero-title { font-size: 36px; }
@@ -1304,6 +1417,7 @@ return (
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .service-grid { grid-template-columns: 1fr !important; }
           .hero-grid { grid-template-columns: 1fr !important; }
+          .admin-content { padding: 20px 16px !important; }
           
           * { 
             animation: none !important; 
@@ -1331,7 +1445,7 @@ return (
 
       {/* NAVBAR */}
       {!currentPage.startsWith('admin') && (
-        <nav className={`fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0f172a]/90 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
+        <nav className={`site-navbar fixed top-10 left-0 w-full z-50 transition-all duration-300 h-20 flex items-center ${scrolled ? 'bg-[#0f172a]/90 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.3)] border-b border-white/5' : 'bg-transparent'}`}>
           <div className="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
             <div onClick={() => setCurrentPage('home')} className="nav-logo-container flex items-center group cursor-pointer">
               <img src={logo2Img} alt="CMSVize - Avrupa Vize ve Çalışma İzni Danışmanlığı" className="nav-logo h-[50px] w-auto object-contain transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
@@ -1345,7 +1459,7 @@ return (
 
               <div className="flex items-center space-x-4 border border-white/10 p-1.5 rounded-lg bg-[#1e293b]">
                 <button onClick={() => setShowTrackingModal(true)} className="btn-corporate px-6 py-2.5 text-gray-300 hover:text-white font-black flex items-center space-x-2 transition-all hover:bg-white/5 rounded-md">
-                  <Search size={16} className="text-[#3b82f6]" />
+                  <Search size={16} className="text-[#C9A84C]" />
                   <span>BAŞVURU TAKİP</span>
                 </button>
                 <button onClick={scrollToForm} className="btn-gold">
@@ -1400,6 +1514,29 @@ return (
                     <h3 className="text-2xl font-bold mb-2 text-primary font-title">Ücretsiz Ön Değerlendirme</h3>
                     <p className="text-sm text-gray-500 mb-6">24 saat içinde uzmanımız sizi arar</p>
                     
+                    {formSuccess ? (
+                      <div className="space-y-4 text-center py-4">
+                        <div className="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto">
+                          <CheckCircle2 size={28} />
+                        </div>
+                        <h4 className="text-xl font-bold text-primary">Başvurunuz alındı</h4>
+                        <p className="text-sm text-gray-500">
+                          En kısa sürede ekibimiz sizinle iletişime geçecek.
+                        </p>
+                        {submittedTrackingId && (
+                          <p className="text-xs text-gray-500">
+                            Takip Kodunuz: <span className="font-bold text-primary">{submittedTrackingId}</span>
+                          </p>
+                        )}
+                        <button
+                          type="button"
+                          onClick={resetForm}
+                          className="w-full btn-gold py-4 rounded-lg flex items-center justify-center space-x-2"
+                        >
+                          <span>YENİ BAŞVURU OLUŞTUR</span>
+                        </button>
+                      </div>
+                    ) : (
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <input 
                         type="text" 
@@ -1453,14 +1590,15 @@ return (
                         />
                       </div>
 
-                      <button type="submit" className="w-full btn-gold py-4 rounded-lg flex items-center justify-center space-x-2">
-                        <span>HEMEN BAŞVUR</span>
+                      <button type="submit" disabled={isSubmitting} className="w-full btn-gold py-4 rounded-lg flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span>{isSubmitting ? 'GÖNDERİLİYOR...' : 'HEMEN BAŞVUR'}</span>
                         <ChevronRight size={18} />
                       </button>
                       <p className="text-[11px] text-center text-gray-400 mt-4">
                         🔒 Bilgileriniz güvende. KVKK kapsamında korunur.
                       </p>
                     </form>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1699,17 +1837,17 @@ return (
           <section id="istatistik" className="py-24 bg-gray reveal-on-scroll">
             <div className="max-w-7xl mx-auto px-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div className="text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
+                <div className="trust-card text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
                   <div className="flex justify-center text-gold mb-2"> <Star size={48} /> </div>
                   <p className="text-6xl font-title text-primary tracking-tighter">%{stats.success}</p>
                   <p className="text-text-light font-bold uppercase tracking-widest text-xs">Başarı Oranı</p>
                 </div>
-                <div className="text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
+                <div className="trust-card text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
                   <div className="flex justify-center text-gold mb-2"> <Users size={48} /> </div>
                   <p className="text-6xl font-title text-primary tracking-tighter">{stats.clients}+</p>
                   <p className="text-text-light font-bold uppercase tracking-widest text-sm">Mutlu Danışan</p>
                 </div>
-                <div className="text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
+                <div className="trust-card text-center space-y-4 bg-white p-10 rounded-lg border-t-4 border-gold shadow-sm">
                   <div className="flex justify-center text-gold mb-2"> <Globe size={48} /> </div>
                   <p className="text-6xl font-title text-primary tracking-tighter">{stats.countries}+</p>
                   <p className="text-text-light font-bold uppercase tracking-widest text-sm">Hedef Ülke</p>
@@ -1727,7 +1865,7 @@ return (
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {((testimonials || []).filter(t => t.is_active)).map((ref, idx) => (
-                  <div key={ref.id || idx} className="testimonial-card shadow-sm hover:shadow-md transition-shadow">
+                  <div key={ref.id || idx} className="trust-card testimonial-card shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex space-x-3">
                         <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">{ref.name[0]}</div>
@@ -2570,38 +2708,38 @@ return (
           </div>
         </div>
       ) : currentPage === 'admin-dashboard' && adminLoggedIn ? (
-        <div className="min-h-screen bg-[#080C14] text-white">
+        <div className="admin-shell min-h-screen bg-[#080C14] text-white">
           <div className="flex h-screen">
             {/* Sidebar */}
-            <div className="w-72 bg-[#0f172a] border-r border-white/5 p-8 flex flex-col justify-between">
+            <div className="admin-sidebar w-72 bg-[#0f172a] border-r border-white/5 p-8 flex flex-col justify-between">
               <div className="space-y-10">
                 <div className="flex items-center space-x-2 px-2">
                   <img src={logoImg} alt="CMSVize Logo" className="h-[32px] w-auto object-contain" />
                   <span className="font-black italic text-xl tracking-tighter text-white opacity-80">ADMIN</span>
                 </div>
-                <nav className="space-y-2">
-                  <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
+                <div className="space-y-2">
+                  <button onClick={() => setAdminTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'dashboard' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Activity size={18} /> <span>Dashboard</span>
                   </button>
-                  <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('stats')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'stats' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Star size={18} /> <span>Dinamik Veriler</span>
                   </button>
-                  <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('team')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'team' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Users size={18} /> <span>Ekip Yönetimi</span>
                   </button>
-                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('reviews')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'reviews' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <MessageSquare size={18} /> <span>Müşteri Yorumları</span>
                   </button>
-                  <button onClick={() => setAdminTab('blog')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'blog' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('blog')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'blog' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <BookOpen size={18} /> <span>Blog Yazıları</span>
                   </button>
-                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#1e3a8a] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('leads')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'leads' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Briefcase size={18} /> <span>Başvurular</span>
                   </button>
-                  <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#1e3a8a] text-black' : 'text-gray-300 hover:bg-white/5'}`}>
+                  <button onClick={() => setAdminTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg font-bold transition-all ${adminTab === 'settings' ? 'bg-[#1e3a8a] text-white shadow-[0_10px_25px_rgba(30,58,138,0.35)]' : 'text-gray-300 hover:bg-white/5'}`}>
                     <Settings size={18} /> <span>Site Ayarları</span>
                   </button>
-                </nav>
+                </div>
               </div>
               <button onClick={() => { 
                 localStorage.removeItem('adminAuth');
@@ -2614,7 +2752,7 @@ return (
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 lg:p-12 relative">
+            <div className="admin-content flex-1 overflow-y-auto p-6 lg:p-12 relative">
               {toastMessage && (
                 <div className="absolute top-6 right-6 bg-green-500 text-white font-bold px-6 py-3 rounded-lg shadow-2xl flex items-center space-x-2 animate-fade-up z-50">
                   <CheckCircle2 size={20} />
@@ -2623,7 +2761,7 @@ return (
               )}
               
               <div className="max-w-5xl space-y-12">
-                <div className="flex justify-between items-end border-b border-white/5 pb-8">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 border-b border-white/5 pb-8">
                   <div>
                     <h1 className="text-3xl lg:text-4xl font-black italic uppercase tracking-tighter">
                       {adminTab === 'dashboard' && 'Genel Durum'}
@@ -2639,7 +2777,7 @@ return (
                 </div>
 
                 <div className="text-right hidden md:block">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sistem Durumu</p>
                   <div className="flex flex-col items-end">
                     <p className="text-green-500 font-bold flex items-center justify-end space-x-2"> <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> <span>Çevrimiçi</span> </p>
                     <div className="bg-green-500/10 text-green-500 px-2 py-0.5 rounded border border-green-500/20 text-[9px] font-black uppercase mt-1 flex items-center space-x-1">
@@ -2716,7 +2854,7 @@ return (
                           type="number" 
                           value={siteContent?.stats?.success || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, success: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e]"
                         />
                       </div>
                       <div className="glass p-8 rounded-xl space-y-4">
@@ -2725,7 +2863,7 @@ return (
                           type="number" 
                           value={siteContent?.stats?.clients || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, clients: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e]"
                         />
                       </div>
                       <div className="glass p-8 rounded-xl space-y-4">
@@ -2734,14 +2872,32 @@ return (
                           type="number" 
                           value={siteContent?.stats?.countries || 0} 
                           onChange={(e) => setSiteContent({...siteContent, stats: {...siteContent.stats, countries: parseInt(e.target.value) || 0}})}
-                          className="w-full bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e] outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg text-2xl font-black text-[#d69e2e]"
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end pt-4 border-t border-white/5">
-                      <button onClick={() => showToast('İstatistik verileri başarıyla güncellendi!')} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-white/5">
+                      <p className="text-xs text-gray-400 font-medium">
+                        {statsDirty ? 'Kaydedilmemiş değişiklik var.' : 'Tüm değişiklikler kaydedildi.'}
+                        {adminLastSavedAt && <span className="ml-2 text-gray-500">Son kayıt: {adminLastSavedAt}</span>}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setSiteContent({ ...siteContent, stats: adminStatsBaseline })}
+                          disabled={!statsDirty}
+                          className="px-5 py-3 rounded-lg border border-white/10 text-xs font-black text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:border-[#d69e2e]/50 transition-colors"
+                        >
+                          VAZGEÇ
+                        </button>
+                        <button onClick={() => {
+                          setAdminStatsBaseline(siteContent?.stats || STATS_DEFAULTS);
+                          setAdminLastSavedAt(new Date().toLocaleString('tr-TR'));
+                          showToast('İstatistik verileri başarıyla güncellendi!');
+                        }} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>DEĞİŞİKLİKLERİ KAYDET</span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -2804,7 +2960,7 @@ return (
                           placeholder="İsim veya telefon ara..." 
                           value={leadSearch}
                           onChange={(e) => setLeadSearch(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 pl-12 pr-4 py-3 rounded-lg text-sm font-bold outline-none focus:border-[#d69e2e]" 
+                          className="admin-input w-full pl-12 pr-4 py-3 rounded-lg text-sm font-bold" 
                         />
                       </div>
                       <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -2812,18 +2968,28 @@ return (
                         <select 
                           value={leadStatusFilter}
                           onChange={(e) => setLeadStatusFilter(e.target.value)}
-                          className="flex-1 md:w-48 bg-black/30 border border-white/10 px-4 py-3 rounded-lg text-xs font-bold outline-none focus:border-[#d69e2e]"
+                          className="admin-input flex-1 md:w-48 px-4 py-3 rounded-lg text-xs font-bold"
                         >
                           <option value="All">Tüm Durumlar</option>
                           <option value="İşlemde">İşlemde</option>
                           <option value="Tamamlandı">Tamamlandı</option>
                           <option value="Reddedildi">Reddedildi</option>
                         </select>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLeadSearch('');
+                            setLeadStatusFilter('All');
+                          }}
+                          className="px-4 py-3 rounded-lg border border-white/10 text-xs font-bold text-gray-300 hover:text-white hover:border-[#d69e2e]/50 transition-colors"
+                        >
+                          FİLTREYİ TEMİZLE
+                        </button>
                       </div>
                     </div>
 
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
+                    <div className="overflow-x-auto rounded-xl border border-white/10">
+                      <table className="admin-panel-table w-full text-left border-collapse">
                         <thead>
                           <tr className="border-b border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-500">
                             <th className="p-4">Müşteri Bilgisi</th>
@@ -2938,6 +3104,13 @@ return (
                                 <div className="flex flex-col items-center space-y-4">
                                   <Search size={40} className="opacity-20" />
                                   <span>Henüz Veri Yok</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => fetchAllData()}
+                                    className="px-4 py-2 rounded-md border border-white/10 text-[11px] text-gray-300 hover:text-white hover:border-[#d69e2e]/50 transition-colors"
+                                  >
+                                    VERİLERİ YENİDEN YÜKLE
+                                  </button>
                                 </div>
                               </td>
                             </tr>
@@ -3217,7 +3390,7 @@ return (
                         <input 
                           value={siteSettings?.title || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, title: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg font-bold text-white"
                         />
                       </div>
                       <div className="space-y-2">
@@ -3225,7 +3398,7 @@ return (
                         <input 
                           value={siteSettings?.phone || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, phone: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg font-bold text-white"
                         />
                       </div>
                       <div className="space-y-2">
@@ -3233,11 +3406,24 @@ return (
                         <input 
                           value={siteSettings?.whatsapp || ''} 
                           onChange={(e) => setSiteSettings({...siteSettings, whatsapp: e.target.value})}
-                          className="w-full bg-black/50 border border-white/10 px-4 py-3 rounded-lg font-bold text-white outline-none focus:border-[#d69e2e]"
+                          className="admin-input w-full px-4 py-3 rounded-lg font-bold text-white"
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end pt-4 border-t border-white/5">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-white/5">
+                      <p className="text-xs text-gray-400 font-medium">
+                        {settingsDirty ? 'Kaydedilmemiş ayarlar mevcut.' : 'Ayarlar güncel.'}
+                        {adminLastSavedAt && <span className="ml-2 text-gray-500">Son kayıt: {adminLastSavedAt}</span>}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setSiteSettings(adminSettingsBaseline)}
+                          disabled={!settingsDirty}
+                          className="px-5 py-3 rounded-lg border border-white/10 text-xs font-black text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:border-[#d69e2e]/50 transition-colors"
+                        >
+                          VAZGEÇ
+                        </button>
                       <button onClick={async () => {
                         try {
                           const { error } = await supabase.from('site_settings').update({
@@ -3248,6 +3434,8 @@ return (
                           
                           if (error) throw error;
                           showToast('Site ayarları kaydedildi!');
+                          setAdminSettingsBaseline(siteSettings);
+                          setAdminLastSavedAt(new Date().toLocaleString('tr-TR'));
                           fetchAllData(); // Refresh UI including document title
                         } catch (err) {
                           console.error(err);
@@ -3256,6 +3444,7 @@ return (
                       }} className="bg-[#1e3a8a] text-white font-black px-8 py-3 rounded-lg flex items-center space-x-2 hover:scale-105 transition-all">
                         <Save size={18} /> <span>AYARLARI KAYDET</span>
                       </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -3635,6 +3824,8 @@ return (
                 <button onClick={() => setCurrentPage('privacy')} className="hover:text-gold transition-colors">GİZLİLİK POLİTİKASI</button>
                 <span className="text-gray-600">|</span>
                 <button onClick={() => setCurrentPage('terms')} className="hover:text-gold transition-colors">KULLANIM KOŞULLARI</button>
+                <span className="text-gray-600">|</span>
+                <button onClick={() => setCurrentPage('cookies')} className="hover:text-gold transition-colors">ÇEREZ POLİTİKASI</button>
               </div>
             </div>
           </div>
