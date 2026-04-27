@@ -1396,7 +1396,7 @@ return (
 
                 {/* Sağ Kolon */}
                 <div className="lg:col-span-5">
-                  <div className="hero-card">
+                  <div className="hero-card" ref={formRef}>
                     <h3 className="text-2xl font-bold mb-2 text-primary font-title">Ücretsiz Ön Değerlendirme</h3>
                     <p className="text-sm text-gray-500 mb-6">24 saat içinde uzmanımız sizi arar</p>
                     
@@ -1467,37 +1467,7 @@ return (
             </div>
           </section>
 
-          {/* GÜVEN LOGOLARI */}
-          <div className="bg-[#F4F6FA] border-y border-[#E2E8F0] py-4">
-            <div className="max-w-7xl mx-auto px-6">
-              <div className="grid grid-cols-2 md:flex md:flex-wrap items-center justify-center gap-4 md:gap-10 text-[12px] font-medium text-[#6B7280]">
-                <div className="flex items-center space-x-2 justify-center md:justify-start">
-                  <span className="text-[20px] leading-none">🇹🇷</span>
-                  <span>T.C. Onaylı Danışmanlık</span>
-                </div>
-                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
-                <div className="flex items-center space-x-2 justify-center md:justify-start">
-                  <span className="text-[20px] leading-none">🇪🇺</span>
-                  <span>AB Schengen Bölgesi</span>
-                </div>
-                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
-                <div className="flex items-center space-x-2 justify-center md:justify-start col-span-2 md:col-span-1">
-                  <span className="text-[20px] leading-none">🇱🇹</span>
-                  <span>Litvanya Göçmenlik Dairesi</span>
-                </div>
-                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
-                <div className="flex items-center space-x-2 justify-center md:justify-start">
-                  <span className="text-[20px] leading-none">🔒</span>
-                  <span>KVKK Uyumlu</span>
-                </div>
-                <div className="hidden md:block w-px h-6 bg-[#E2E8F0]"></div>
-                <div className="flex items-center space-x-2 justify-center md:justify-start">
-                  <span className="text-[20px] leading-none">⭐</span>
-                  <span>%95+ Onay Oranı</span>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           {/* İSTATİSTİKLER BÖLÜMÜ */}
           <section className="stats-section" id="stats-section">
@@ -1928,7 +1898,11 @@ return (
                 {[
                   { q: "Almanya randevu süreci nasıl işler?", a: "Randevular iDATA üzerinden atanmaktadır. Ortalama bekleme süresi 2-6 haftadır." },
                   { q: "Litvanya oturum izni ne kadar sürer?", a: "Dosya onay süreci genellikle 4-6 hafta sürmektedir." },
-                  { q: "Vize reddi alırsam ne olur?", a: "Ret gerekçeleri incelenerek resmi itiraz süreci başlatılır." }
+                  { q: "Vize reddi alırsam ne olur?", a: "Ret gerekçeleri incelenerek resmi itiraz süreci başlatılır." },
+                  { q: "Litvanya oturum kartı ile hangi ülkelere gidebilirim?", a: "Litvanya oturum kartı, Schengen bölgesindeki 27 AB ülkesinde vizesiz seyahat ve kısa süreli konaklama hakkı tanır. Almanya, Fransa, Hollanda, İspanya gibi tüm Schengen ülkelerine serbestçe girebilirsiniz." },
+                  { q: "Başvuru için Türkiye'de mi olmam gerekiyor?", a: "Evet, pasaport ve belge hazırlık süreçleri Türkiye'den yürütülmektedir. Ancak tüm sürecimiz online danışmanlık şeklinde ilerler, fiziksel ofis ziyareti zorunlu değildir." },
+                  { q: "CMSVize'nin danışmanlık ücreti ne kadar?", a: "Ön değerlendirme tamamen ücretsizdir. Danışmanlık ücretimiz başvuru profilinize ve hedef ülkeye göre belirlenir. Detaylı bilgi için ücretsiz görüşme talep edebilirsiniz." },
+                  { q: "Belgelerimi nasıl iletmem gerekiyor?", a: "Tüm belgeler WhatsApp veya e-posta üzerinden dijital olarak iletilmektedir. Fiziksel belge gönderimi gereken durumlarda kargo sürecinde de rehberlik sağlanır." }
                 ].map((faq, idx) => (
                   <div key={idx} className="bg-white rounded-lg border border-border overflow-hidden">
                     <button onClick={() => setActiveFaq(activeFaq === idx ? null : idx)} className="w-full p-6 flex justify-between items-center text-left">
@@ -1946,134 +1920,20 @@ return (
             </div>
           </section>
 
-          {/* BAŞVURU FORMU */}
-          <section ref={formRef} className="py-24 px-6 bg-white">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-0 rounded-xl overflow-hidden shadow-2xl border border-border">
-                {/* Sol Kolon: Form */}
-                <div className="p-10 lg:p-16 bg-white">
-                  {formSuccess ? (
-                    <div className="min-h-[400px] flex items-center justify-center">
-                      <div className="text-center space-y-8 w-full max-w-md mx-auto">
-                        <div className="w-20 h-20 bg-gold/10 border-2 border-gold rounded-full flex items-center justify-center mx-auto">
-                          <CheckCircle2 size={40} className="text-gold" />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-title text-primary mb-3">Başvurunuz Başarıyla Alındı</h3>
-                          <p className="text-text-light text-sm">Sayın <strong className="text-primary">{formData.name || 'Değerli Müşterimiz'}</strong>,</p>
-                          <p className="text-text-light text-sm mt-1">Başvurunuz sistemimize kaydedilmiştir.</p>
-                          <p className="text-text-light text-sm">Uzman danışmanımız en kısa sürede sizinle iletişime geçecektir.</p>
-                        </div>
-                        {submittedTrackingId && (
-                          <div className="bg-gray rounded-lg p-6 border border-border">
-                            <p className="text-xs font-bold text-text-light uppercase tracking-widest mb-2">Takip Kodunuz</p>
-                            <button
-                              onClick={() => { navigator.clipboard?.writeText(submittedTrackingId); showToast('Takip kodu kopyalandı!'); }}
-                              className="text-2xl font-title text-gold tracking-widest hover:text-gold-light transition-colors"
-                              title="Kopyalamak için tıklayın"
-                            >
-                              {submittedTrackingId}
-                            </button>
-                            <p className="text-[10px] text-text-light mt-2">Kopyalamak için üstüne tıklayın</p>
-                          </div>
-                        )}
-                        <div className="flex items-center justify-center space-x-2 text-xs text-text-light">
-                          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                          <span>Ortalama Dönüş Süresi: <strong>15-30 dakika</strong></span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <button onClick={resetForm} className="bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-primary-light transition-colors text-sm">YENİ BAŞVURU YAP</button>
-                          <a href={`https://wa.me/905459918268?text=${encodeURIComponent('Merhaba, yeni başvuru yaptım. Takip kodum: ' + (submittedTrackingId || ''))}`} target="_blank" rel="noreferrer" className="bg-[#25D366] text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm flex items-center justify-center">WHATSAPP'TAN ULAŞ</a>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <h2 className="text-3xl font-title text-primary mb-8 uppercase">Ücretsiz Ön Değerlendirme</h2>
-                      <form onSubmit={handleFormSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold text-primary uppercase tracking-widest">AD SOYAD</label>
-                          <input 
-                            required 
-                            name="name" 
-                            value={formData.name} 
-                            onChange={handleInputChange}
-                            className="w-full p-4 border border-border rounded-lg focus:border-gold outline-none bg-gray/30"
-                            placeholder="Ad Soyad"
-                          />
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="space-y-2">
-                            <label className="text-xs font-bold text-primary uppercase tracking-widest">TELEFON</label>
-                            <input 
-                              required 
-                              name="phone" 
-                              value={formData.phone} 
-                              onChange={handleInputChange}
-                              className="w-full p-4 border border-border rounded-lg focus:border-gold outline-none bg-gray/30"
-                              placeholder="05xx xxx xx xx"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-xs font-bold text-primary uppercase tracking-widest">ÜLKE</label>
-                            <select 
-                              name="country" 
-                              value={formData.country} 
-                              onChange={handleInputChange}
-                              className="w-full p-4 border border-border rounded-lg focus:border-gold outline-none bg-gray/30"
-                            >
-                              <option>Almanya</option>
-                              <option>Polonya</option>
-                              <option>Litvanya</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold text-primary uppercase tracking-widest">ALAN</label>
-                          <select 
-                            name="workField" 
-                            value={formData.workField} 
-                            onChange={handleInputChange}
-                            className="w-full p-4 border border-border rounded-lg focus:border-gold outline-none bg-gray/30"
-                          >
-                            <option>Tır Şoförlüğü</option>
-                            <option>Fabrika / Depo</option>
-                            <option>A1 Transfer</option>
-                          </select>
-                        </div>
-                        <button 
-                          type="submit" 
-                          disabled={isSubmitting}
-                          className="w-full btn-gold py-5 text-xl mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {isSubmitting ? 'GÖNDERİLİYOR...' : 'BAŞVURUYU TAMAMLA'}
-                        </button>
-                      </form>
-                    </>
-                  )}
-                </div>
-                {/* Sağ Kolon: Info */}
-                <div className="p-10 lg:p-16 bg-primary text-white flex flex-col justify-center">
-                  <h3 className="text-4xl font-title mb-8 leading-tight">Avrupa Kapısı <br/><span className="text-gold">Sizin İçin Açılıyor</span></h3>
-                  <div className="space-y-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center text-gold flex-shrink-0"><CheckCircle2 size={20} /></div>
-                      <p className="font-medium text-gray-300">Resmi ve güvenli başvuru süreci.</p>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center text-gold flex-shrink-0"><CheckCircle2 size={20} /></div>
-                      <p className="font-medium text-gray-300">Uzman danışman kadrosu ile tam destek.</p>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                      <div className="w-8 h-8 bg-gold/20 rounded-full flex items-center justify-center text-gold flex-shrink-0"><CheckCircle2 size={20} /></div>
-                      <p className="font-medium text-gray-300">%95+ onaylanmış başvuru oranı.</p>
-                    </div>
-                  </div>
-                  <div className="mt-12 pt-8 border-t border-white/10">
-                    <p className="text-gold font-bold mb-2">📞 +90 545 991 82 68</p>
-                    <p className="text-gray-400 text-sm italic">24 saat içinde size dönüş sağlıyoruz.</p>
-                  </div>
-                </div>
+          {/* CTA SECTION */}
+          <section className="py-20 px-6 bg-[#0F2557]">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="text-white text-center md:text-left">
+                <h2 className="text-3xl md:text-4xl font-title font-bold mb-4">Avrupa Kariyerinizi Bugün Başlatın</h2>
+                <p className="text-gray-300 text-lg">500+ başarılı başvuruyla kanıtlanmış uzmanlığımızla yanınızdayız.</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                <button onClick={scrollToForm} className="btn-gold whitespace-nowrap text-center text-primary">
+                  ÜCRETSİZ BAŞVURU BAŞLAT
+                </button>
+                <a href="tel:+905459918268" className="border border-white text-white px-8 py-3 rounded text-center font-bold whitespace-nowrap hover:bg-white/10 transition-colors flex items-center justify-center">
+                  +90 545 991 82 68
+                </a>
               </div>
             </div>
           </section>
@@ -2095,8 +1955,8 @@ return (
                   { country: "Fransa", code: "FR", flag: "🇫🇷", desc: "Çalışma İzni" }
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center justify-center text-center p-8 rounded-lg w-44 cursor-pointer group transition-all duration-300 hover:border-gold hover:bg-white/10" style={{background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(201,168,76,0.3)'}}>
-                    <div className="text-4xl mb-3 group-hover:-translate-y-1 transition-transform">{item.flag}</div>
-                    <p className="text-[32px] font-bold text-gold tracking-wider mb-1 leading-none">{item.code}</p>
+                    <p className="text-[32px] font-bold text-gold tracking-wider mb-2 leading-none">{item.code}</p>
+                    <div className="text-4xl mb-2 group-hover:-translate-y-1 transition-transform">{item.flag}</div>
                     <p className="font-bold text-white text-[16px] mt-2">{item.country}</p>
                     <p className="text-[13px] text-gray-300 mt-1 leading-snug">{item.desc}</p>
                   </div>
